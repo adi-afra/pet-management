@@ -9,7 +9,7 @@
         public int Age { get; private set; }
         public string Kind { get; private set; }
         public string Breed { get; private set; }
-        public List<string> Meetings { get; private set; }
+        public List<Meeting> Meetings { get; private set; }
 
         //cvonstructor with all the fields as parameters, and validation for age and null or empty strings
         public Pet(string id, string name, int age, string kind, string breed)
@@ -44,7 +44,7 @@
             Age = age;
             Kind = kind;
             Breed = breed;
-            Meetings = new List<string>();
+            Meetings = new List<Meeting>();
         }
 
         //protected setters for the fields, with validation for age (doing the validation in the property setter
@@ -97,12 +97,12 @@
         }
 
         //methods for adding and removing items from the list (no validation for now)
-        protected void addMeeting(string meeting)
+        protected void addMeeting(Meeting meeting)
         {
             Meetings.Add(meeting);
         }
 
-        protected void removeMeeting(string meeting)
+        protected void removeMeeting(Meeting meeting)
         {
             Meetings.Remove(meeting);
         }
