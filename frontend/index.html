@@ -9,58 +9,151 @@
 </head>
 
 <body>
-    
-    <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="logo"></div>
 
-        <div class="search" id="openFilters">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search & Filter" readonly>
-        </div>        
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo"></div>
 
-        <div class="nav-icons">
-            <i class="fa-regular fa-user"></i>
-            <i class="fa-solid fa-bars"></i>
-        </div>        
-    </header>
+    <div class="search" id="openFilters">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search & Filter" readonly>
+    </div>
+
+    <div class="nav-icons">
+      <i class="fa-regular fa-user"></i>
+      <i class="fa-solid fa-bars" id="menuBtn"></i>
+    </div>
+  </header>
+
+  <!-- DASHBOARD MENU (Brandon) -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <div id="dashPanel" class="dash-panel hidden">
+    <div class="dash-head">
+      <div class="dash-brand">
+        <span class="brand-badge"><i class="fa-solid fa-paw"></i></span>
+        <span class="brand-name">DM shelter</span>
+      </div>
+      <button class="close-btn" id="closeBtn" type="button">✕</button>
+    </div>
+
+    <nav class="dash-links">
+      <button class="dash-link active" type="button" data-page="gallery">
+        <i class="fa-solid fa-user-group"></i> Pet Gallery
+      </button>
+
+      <button class="dash-link" type="button" data-page="dashboard">
+        <i class="fa-solid fa-table-columns"></i> Dashboard
+      </button>
+
+      <button class="dash-link" type="button" data-page="inventory">
+        <i class="fa-solid fa-bone"></i> Pet Inventory
+      </button>
+
+      <button class="dash-link" type="button" data-page="adoptions">
+        <i class="fa-regular fa-heart"></i> Adoptions
+      </button>
+
+      <div class="dash-divider"></div>
+
+      <button class="dash-link" type="button" data-page="settings">
+        <i class="fa-solid fa-gear"></i> Settings
+      </button>
+
+      <button class="dash-link logout" type="button" id="logoutBtn">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </nav>
+  </div>
+
+
+
+  <!-- PAGE Pet Gallery  -->
+  <section class="page is-active" data-page="gallery">
 
     <!-- HERO SECTION -->
     <section class="hero">
-        <h1>Rehoming</h1>
-        <p>
-            Could you give a dog a forever home? Browse our pooches looking for a new start.
-        </p>
+      <h1>Rehoming</h1>
+      <p>Could you give a dog a forever home? Browse our pooches looking for a new start.</p>
     </section>
 
-    <!-- CONTENT -->
+     <!-- CONTENT -->
     <section class="content">
-        <div class="content-header">
-            <h2>Available for Adoption</h2>
+      <div class="content-header">
+        <h2>Available for Adoption</h2>
 
-            <div class="filters">
-                <button class="filter-btn active">All Pets</button>
-                <button class="filter-btn">Dogs</button>
-                <button class="filter-btn">Cats</button>
-            </div>            
+        <div class="filters">
+          <button class="filter-btn active">All Pets</button>
+          <button class="filter-btn">Dogs</button>
+          <button class="filter-btn">Cats</button>
+        </div>
+      </div>
+
+       <!-- PET CARDS (WITH ADDED IMAGES BY BRANDON)-->
+      <div class="cards">
+        <div class="card">
+        <img class="buddy" src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60" alt="Dog">
+          <div class="info">
+      <h3>Buddy</h3>
+      <p>2 years • Dog</p>
+    </div>
+
         </div>
 
-        <!-- PET CARDS -->
-        <div class="cards">
-            <div class="card">
-                <img src="">
-            </div>
+        <div class="card">
+          
+       <img class="luna" src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60" alt="Dog">
+           <div class="info">
+      <h3>Luna</h3>
+      <p>1 year • Dog</p>
+    </div>
 
-            <div class="card">
-                <img src="">
-            </div>
-
-            <div class="card">
-                <img src="">
-            </div>
         </div>
+
+        <div class="card">
+          <img class="milo" src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60" alt="Cat">
+          <div class="info">
+      <h3>Milo</h3>
+      <p>3 years • Cat</p>
+    </div>
+        </div>
+      </div>
     </section>
 
-    <script src="main.js"></script>
+  </section>
+
+  <!-- PAGE: Dashboard -->
+  <section class="page" data-page="dashboard">
+    <section class="content">
+      <h2>Dashboard</h2>
+      <p>Stats / overview (placeholder).</p>
+    </section>
+  </section>
+
+  <!-- PAGE: Inventory -->
+  <section class="page" data-page="inventory">
+    <section class="content">
+      <h2>Pet Inventory</h2>
+      <p>Manage pets.</p>
+    </section>
+  </section>
+
+  <!-- PAGE: Adoptions -->
+  <section class="page" data-page="adoptions">
+    <section class="content">
+      <h2>Adoptions</h2>
+      <p>Adoption requests.</p>
+    </section>
+  </section>
+
+  <!-- PAGE: Settings -->
+  <section class="page" data-page="settings">
+    <section class="content">
+      <h2>Settings</h2>
+      <p>Account / preferences.</p>
+    </section>
+  </section>
+
+  <script src="main.js"></script>
 </body>
 </html>
