@@ -8,17 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-<script src="main.js"></script>
-
 <body>
     
     <!-- NAVBAR -->
     <header class="navbar">
         <div class="logo"></div>
 
-        <div class="search">
-            <input type="text" placeholder="Search & Filter">
-        </div>
+        <div class="search" id="openFilters">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search & Filter" readonly>
+        </div>        
 
         <div class="nav-icons">
             <i class="fa-regular fa-user"></i>
@@ -62,5 +61,6 @@
         </div>
     </section>
 
+    <script src="main.js"></script>
 </body>
 </html>
