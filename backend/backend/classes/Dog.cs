@@ -5,10 +5,12 @@ namespace backend.classes
 	public class Dog : Pet
 	{
         //Constructor 
-		public Dog(string id,string name, int age, string breed)
-		{
+		public Dog(string id, string name, int age, string breed)
+		
             //calling the parent constructor 
-            : base(id, name, age, "Dog", breed)
+            : base(id, name, age, "Dog", breed) 
+		{ 
+			
 		}
 
 	}

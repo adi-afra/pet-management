@@ -11,7 +11,7 @@
         public string Breed { get; private set; }
         public List<Meeting> Meetings { get; private set; }
 
-        //cvonstructor with all the fields as parameters, and validation for age and null or empty strings
+        //constructor with all the fields as parameters, and validation for age and null or empty strings
         public Pet(string id, string name, int age, string kind, string breed)
         {
             if (age < 0)

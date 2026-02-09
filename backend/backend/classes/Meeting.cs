@@ -1,5 +1,6 @@
 ﻿using System;
-using namespace backend.classes
+
+namespace backend.classes
 {
 	public class Meeting
 	{
@@ -33,7 +34,7 @@ using namespace backend.classes
             //setting up the attributes with values
             Date = date;
             Pet = pet;
-            UserID = userID
+            UserID = userID;
 		}
 
 
@@ -41,7 +42,7 @@ using namespace backend.classes
         //setters
         protected void setDate(string date)
         {
-            if (string.IsNullOrWhiteSpace(userID))
+            if (string.IsNullOrWhiteSpace(date))
             {
                 throw new ArgumentNullException("user Id can not be empty");
             }
@@ -61,7 +62,7 @@ using namespace backend.classes
 
         protected void setUserID(string id)
         {
-            if (string.IsNullOrWhiteSpace(userID))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 throw new ArgumentNullException("user Id can not be empty");
             }
