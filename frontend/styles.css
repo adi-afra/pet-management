@@ -1,280 +1,165 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Arial", sans-serif;
+/* Base */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+body { background: #fff; color: #0b1b2b; }
+
+/* Navbar bits that are custom */
+.logo { font-size: 28px; }
+.nav-icons i { font-size: 20px; cursor: pointer; }
+
+/* Search pill (custom look) */
+.search{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  border-radius:20px;
+  background:#f1f1f1;
+  cursor:pointer;
+  width:240px;
+}
+.search i{ font-size:14px; color:#9ca3af; }
+.search input{
+  border:none; outline:none; background:transparent;
+  width:100%; font-size:14px; cursor:pointer;
+}
+.search input::placeholder{ color:#9ca3af; }
+
+/* Hero yellow block */
+.hero{
+  background:#ffd400;
+  padding: 80px 20px;
 }
 
-body {
-    background-color: #ffffff;
-    color: #0b1b2b;
+/* Filters */
+.filters .filter-btn{
+  padding:10px 18px;
+  border-radius:20px;
+  border:none;
+  background:#f1f1f1;
+  cursor:pointer;
+  font-weight:600;
+}
+.filters .filter-btn.active{
+  background:#fff;
+  border:1px solid #ddd;
 }
 
-/* NAVBAR */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 32px;
+/* Pet cards (custom, instead of Bootstrap card) */
+.pet-card{
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
 }
-
-.logo {
-    font-size: 28px;
-}
-
-/* SEARCH */
-.search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-radius: 20px;
-    background: #f1f1f1;
-    cursor: pointer;
-    width: 240px;
-}
-
-.search i {
-    font-size: 14px;
-    color: #9ca3af;
-}
-
-.search input {
-    border: none;
-    outline: none;
-    background: transparent;
-    width: 100%;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.search input::placeholder {
-    color: #9ca3af;
-}
-
-.nav-icons i {
-    margin-left: 16px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* HERO */
-.hero {
-    background-color: #ffd400;
-    text-align: center;
-    padding: 80px 20px;
-}
-
-.hero h1 {
-    font-size: 56px;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 18px;
-    max-width: 600px;
-    margin: 0 auto;
-    font-weight: 500;
-}
-
-/* CONTENT */
-.content {
-    padding: 60px 40px;
-}
-
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.content-header h2 {
-    font-size: 28px;
-}
-
-/* FILTERS */
-.filters button {
-    padding: 10px 18px;
-    border-radius: 20px;
-    border: none;
-    background-color: #f1f1f1;
-    margin-left: 10px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.filters .active {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-}
-
-/* CARDS */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 30px;
-}
-
-.card {
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    background: #fff;
-}
-
-/* just added */
-.card img {
-  width: 100%;
-  height: 250px;             
-  object-fit: cover;
-  object-position: center 50%;
-  display: block;
-  border-radius: 16px 16px 0 0;
-}
-
-
-
-/*  DASHBOARD DROPDOWN (Brandon) */
-
-.hidden { display: none; }
-
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 50;
-}
-
-.dash-panel {
-    position: fixed;
-    top: 80px;         /* below navbar */
-    right: 20px;
-    width: 340px;
-    background: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    z-index: 60;
-    overflow: hidden;
-
-    /* slide down animation */
-    transform: translateY(-20px);
-    opacity: 0;
-    transition: transform 220ms ease, opacity 220ms ease;
-}
-
-.dash-panel.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.dash-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 16px 10px;
-}
-
-.dash-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand-badge {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #ffd400; /* exact yellow highlight feel */
-    display: grid;
-    place-items: center;
-}
-
-.brand-name {
-    font-weight: 800;
-    font-size: 20px;
-}
-
-.close-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 12px;
-    background: #f1f1f1;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.dash-links {
-    padding: 10px;
-}
-
-.dash-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 14px;
-    font-weight: 700;
-    color: #0b1b2b;
-}
-
-.dash-link i {
-    width: 20px;
-    text-align: center;
-    opacity: 0.85;
-}
-
-.dash-link.active {
-    background: #ffd400;
-    box-shadow: 0 10px 18px rgba(255, 212, 0, 0.35);
-}
-
-.dash-divider {
-    height: 1px;
-    background: #eee;
-    margin: 12px 10px;
-}
-
-.dash-link.logout {
-    color: #e11d48;
-}
-
-.dash-link {
-  border: none;
-  background: transparent;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-}
-
-.page { display: none; }
-.page.is-active { display: block; }
-
-.card h3 {
-    padding: 10px 14px 0;
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.card p {
-    padding: 4px 14px 14px;
-    color: #6b7280;
-    font-weight: 600;
-}
-
 .pet-img{
-  width: 100%;
-  height: 160px;      
-  object-fit: cover;
-  display: block;
+  width:100%;
+  height:240px;          /* change this if you want smaller */
+  object-fit:cover;
+  display:block;
+  border-radius:16px 16px 0 0;
 }
 
-/* Crop positions, adjust to keep the animaes faces visible */
+/* Fine-tune face positioning per image */
 .pet-img.buddy { object-position: center 45%; }
-.card img.luna { object-position: center 60%; }
-.card img.milo { object-position: center 62%; }
+.pet-img.luna  { object-position: center 60%; }
+.pet-img.milo  { object-position: center 65%; }
+
+/* Text under images */
+.info h3{
+  padding: 10px 14px 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.info p{
+  padding: 4px 14px 14px;
+  color:#6b7280;
+  font-weight:600;
+}
+
+/* Dashboard dropdown */
+.hidden { display:none; }
+
+.overlay{
+  position:fixed; inset:0;
+  background: rgba(0,0,0,0.35);
+  z-index: 50;
+}
+
+.dash-panel{
+  position:fixed;
+  top:80px;
+  right:20px;
+  width:340px;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  z-index:60;
+  overflow:hidden;
+  transform: translateY(-20px);
+  opacity:0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+.dash-panel.show{ transform: translateY(0); opacity:1; }
+
+.dash-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 16px 10px;
+}
+
+.dash-brand{ display:flex; align-items:center; gap:10px; }
+.brand-badge{
+  width:40px; height:40px; border-radius:50%;
+  background:#ffd400;
+  display:grid; place-items:center;
+}
+.brand-name{ font-weight:800; font-size:20px; }
+
+.close-btn{
+  width:36px; height:36px;
+  border:none;
+  border-radius:12px;
+  background:#f1f1f1;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.dash-links{ padding:10px; }
+
+.dash-link{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border-radius:14px;
+  font-weight:700;
+  color:#0b1b2b;
+
+  /* make button look like link */
+  width:100%;
+  border:none;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+}
+
+.dash-link i{ width:20px; text-align:center; opacity:0.85; }
+
+.dash-link.active{
+  background:#ffd400;
+  box-shadow: 0 10px 18px rgba(255,212,0,0.35);
+}
+
+.dash-divider{
+  height:1px;
+  background:#eee;
+  margin:12px 10px;
+}
+
+.dash-link.logout{ color:#e11d48; }
+
+/* Page switching */
+.page{ display:none; }
+.page.is-active{ display:block; }
 
 
 
