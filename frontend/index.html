@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Care Management</title>
+ 
 
-  <!-- Bootstrap CSS -->
+  <!-- Bootstrap CSS (Brandon)-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Font icons -->
@@ -17,9 +18,14 @@
 
 <body>
 
-  <!-- NAVBAR -->
+  <!-- NAVBAR (Brandon)-->
   <header class="navbar px-4 py-3 d-flex align-items-center justify-content-between">
-    <div class="logo fw-bold fs-4">DM Shelter</div>
+    <div class="logo d-flex align-items-center gap-2">
+      <span class="brand-badge"><i class="fa-solid fa-paw"></i></span>
+      <span class="brand-name">DM Shelter</span>
+    </div>
+    
+    
 
     <div class="search" id="openFilters">
       <i class="fa-solid fa-magnifying-glass"></i>
@@ -32,7 +38,7 @@
     </div>
   </header>
 
-  <!-- DASHBOARD MENU -->
+  <!-- DASHBOARD MENU (brandon) -->
   <div id="overlay" class="overlay hidden"></div>
 
   <div id="dashPanel" class="dash-panel hidden">
@@ -73,7 +79,7 @@
     </nav>
   </div>
 
-  <!-- PAGE Pet Gallery -->
+  <!-- PAGE Pet Gallery (brandon) -->
   <section class="page is-active" data-page="gallery">
 
     <!-- HERO -->
@@ -100,7 +106,7 @@
           </div>
         </div>
 
-        <!-- PET CARDS (Bootstrap Grid) -->
+        <!-- PET CARDS (Bootstrap Grid by brandon) -->
         <div class="row g-4">
 
           <div class="col-12 col-md-6 col-lg-4">
@@ -133,22 +139,206 @@
             </div>
           </div>
 
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="pet-card">
+                <img class="pet-img max" src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60" alt="Max">
+                <div class="info">
+                  <h3>Max</h3>
+                  <p>4 years • Dog</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-4">
+            <div class="pet-card">
+              <img class="pet-img" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60" alt="Cat">
+              <div class="info">
+                <h3>Nala</h3>
+                <p>2 years • Cat</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-4">
+            <div class="pet-card">
+              <img class="pet-img" src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60" alt="Dog">
+              <div class="info">
+                <h3>Rocky</h3>
+                <p>3 years • Dog</p>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
     </section>
   </section>
 
-  <!-- PAGE Dashboard -->
-  <section class="page" data-page="dashboard">
-    <section class="py-5">
-      <div class="container">
-        <h2 class="fw-bold">Dashboard</h2>
-        <p>Stats / overview (placeholder).</p>
+  <!-- PAGE Dashboard (Brandon)-->
+<section class="page" data-page="dashboard">
+  <section class="hero text-center">
+  <div class="container py-4">
+
+    <!-- Breadcrumb -->
+    <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
+      <i class="fa-solid fa-house"></i>
+      <span>/</span>
+      <span class="fw-semibold">Dashboard</span>
+    </div>
+
+    <!-- Header -->
+    <div class="mb-4">
+      <h2 class="fw-bold mb-1">Your Overview</h2>
+      <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="dash-stat card border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="dash-icon bg-warning-subtle text-warning">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+            <div>
+              <div class="text-muted small fw-semibold">Saved Pets</div>
+              <div class="fs-3 fw-bold">6</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="dash-stat card border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="dash-icon bg-primary-subtle text-primary">
+              <i class="fa-solid fa-paper-plane"></i>
+            </div>
+            <div>
+              <div class="text-muted small fw-semibold">Applications</div>
+              <div class="fs-3 fw-bold">2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="dash-stat card border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="dash-icon bg-success-subtle text-success">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div>
+              <div class="text-muted small fw-semibold">Visits Booked</div>
+              <div class="fs-3 fw-bold">1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="dash-stat card border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="dash-icon bg-info-subtle text-info">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div>
+              <div class="text-muted small fw-semibold">Alerts</div>
+              <div class="fs-3 fw-bold">3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- PAGE Inventory -->
+    <!-- Main panels -->
+    <div class="row g-3">
+      <!-- Activity / timeline (simple list with recent activity, favourites, applications, visits booked) -->
+      <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="fw-bold mb-3">Recent Activity</h5>
+
+            <div class="dash-item d-flex align-items-start gap-3">
+              <div class="dash-dot bg-warning"></div>
+              <div>
+                <div class="fw-semibold">You saved “Max” to favourites</div>
+                <div class="text-muted small">Today • 10:42</div>
+              </div>
+            </div>
+
+            <div class="dash-item d-flex align-items-start gap-3">
+              <div class="dash-dot bg-primary"></div>
+              <div>
+                <div class="fw-semibold">Application submitted for “Buddy”</div>
+                <div class="text-muted small">Yesterday • 18:12</div>
+              </div>
+            </div>
+
+            <div class="dash-item d-flex align-items-start gap-3">
+              <div class="dash-dot bg-success"></div>
+              <div>
+                <div class="fw-semibold">Visit booked (Saturday)</div>
+                <div class="text-muted small">2 days ago • 13:05</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences / progress bars -->
+      <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="fw-bold mb-3">Your Preferences</h5>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small fw-semibold">
+                <span>Dogs</span><span class="text-muted">70%</span>
+              </div>
+              <div class="progress" style="height:10px;">
+                <div class="progress-bar bg-primary" style="width:70%"></div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small fw-semibold">
+                <span>Cats</span><span class="text-muted">25%</span>
+              </div>
+              <div class="progress" style="height:10px;">
+                <div class="progress-bar bg-danger" style="width:25%"></div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between small fw-semibold">
+                <span>Other</span><span class="text-muted">5%</span>
+              </div>
+              <div class="progress" style="height:10px;">
+                <div class="progress-bar bg-warning" style="width:5%"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-4 dash-callout">
+              <div class="fw-bold mb-1">Tip</div>
+              <div class="text-muted small mb-0">
+                Save pets to compare them later, then submit one application when you’re ready.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+  <!-- PAGE Inventory (brandon) -->
   <section class="page" data-page="inventory">
     <section class="py-5">
       <div class="container">
@@ -158,7 +348,7 @@
     </section>
   </section>
 
-  <!-- PAGE Adoptions -->
+  <!-- PAGE Adoptions (Brandon) -->
   <section class="page" data-page="adoptions">
     <section class="py-5">
       <div class="container">
@@ -168,7 +358,7 @@
     </section>
   </section>
 
-  <!-- PAGE Settings -->
+  <!-- PAGE Settings (Brandon) -->
   <section class="page" data-page="settings">
     <section class="py-5">
       <div class="container">

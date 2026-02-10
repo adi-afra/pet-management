@@ -1,12 +1,12 @@
-/* Base */
+/* Base Brandon */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 body { background: #fff; color: #0b1b2b; }
 
-/* Navbar bits that are custom */
+/* Navbar bits that are custom brandon */
 .logo { font-size: 28px; }
 .nav-icons i { font-size: 20px; cursor: pointer; }
 
-/* Search pill (custom look) */
+/* Search pill (custom look) Brandon */
 .search{
   display:flex; align-items:center; gap:10px;
   padding:10px 16px;
@@ -22,13 +22,13 @@ body { background: #fff; color: #0b1b2b; }
 }
 .search input::placeholder{ color:#9ca3af; }
 
-/* Hero yellow block */
+/* Hero yellow block Brandon */
 .hero{
   background:#ffd400;
   padding: 80px 20px;
 }
 
-/* Filters */
+/* Filters Brandon */
 .filters .filter-btn{
   padding:10px 18px;
   border-radius:20px;
@@ -42,7 +42,7 @@ body { background: #fff; color: #0b1b2b; }
   border:1px solid #ddd;
 }
 
-/* Pet cards (custom, instead of Bootstrap card) */
+/* Pet cards (custom, instead of Bootstrap card) Brandon  */
 .pet-card{
   border-radius:16px;
   overflow:hidden;
@@ -51,18 +51,18 @@ body { background: #fff; color: #0b1b2b; }
 }
 .pet-img{
   width:100%;
-  height:240px;          /* change this if you want smaller */
+  height:240px;          
   object-fit:cover;
   display:block;
   border-radius:16px 16px 0 0;
 }
 
-/* Fine-tune face positioning per image */
+/* Fine tune face positioning per image brandon */
 .pet-img.buddy { object-position: center 45%; }
 .pet-img.luna  { object-position: center 60%; }
 .pet-img.milo  { object-position: center 65%; }
 
-/* Text under images */
+/* Text under images Brandon */
 .info h3{
   padding: 10px 14px 0;
   font-size: 18px;
@@ -74,7 +74,7 @@ body { background: #fff; color: #0b1b2b; }
   font-weight:600;
 }
 
-/* Dashboard dropdown */
+/* Dashboard dropdown Brandon */
 .hidden { display:none; }
 
 .overlay{
@@ -134,7 +134,7 @@ body { background: #fff; color: #0b1b2b; }
   font-weight:700;
   color:#0b1b2b;
 
-  /* make button look like link */
+  /* make button look like link (Brandon) */
   width:100%;
   border:none;
   background:transparent;
@@ -157,9 +157,15 @@ body { background: #fff; color: #0b1b2b; }
 
 .dash-link.logout{ color:#e11d48; }
 
-/* Page switching */
+/* Page switching Brandon */
 .page{ display:none; }
 .page.is-active{ display:block; }
 
+.pet-img.max {
+    object-position: center 30%;
+  }
 
-
+  .dash-link:hover{
+    background: rgba(255, 212, 0, 0.25);
+  }
+  
