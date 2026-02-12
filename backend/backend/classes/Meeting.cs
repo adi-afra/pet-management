@@ -12,30 +12,14 @@ namespace backend.classes
 
 
 
-		public Meeting(string date, Pet pet, string userID)
+		public Meeting(string date, Pet pet, string userId)
 		{
-
-            //verifications 
-            if(pet == null)
-            {
-                throw new ArgumentNullException("pet argument can not be empty");
-            }
-
-            if (string.IsNullOrWhiteSpace(userID))
-            {
-                throw new ArgumentNullException("user Id can not be empty");
-            }
-
-            if (string.IsNullOrWhiteSpace(date))
-            {
-                throw new ArgumentNullException("date can not be empty");
-            }
-
+            //checking if any of the attributes is null, then throw an error
             //setting up the attributes with values
-            Date = date;
-            Pet = pet;
-            UserID = userID;
-		}
+            Date = date ?? throw new ArgumentNullException(nameof(date),"date can not be empty");;
+            Pet = pet ?? throw new ArgumentNullException(nameof(pet),"pet argument can not be empty");
+            UserID = userId ?? throw new ArgumentNullException(nameof(userId),"user Id can not be empty");
+        }
 
 
 
@@ -60,7 +44,7 @@ namespace backend.classes
             Pet = pet;
         }
 
-        protected void setUserID(string id)
+        protected void setUserId(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
