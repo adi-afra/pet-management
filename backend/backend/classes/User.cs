@@ -51,7 +51,8 @@ public abstract class User
 
         Password = password;
     }
+
     
-    
-    
+    public abstract string getRole();
+
 }
