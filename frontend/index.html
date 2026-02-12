@@ -27,9 +27,15 @@
     
     
 
-    <div class="search" id="openFilters">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="Search & Filter" readonly>
+    <div class="search-wrapper">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search Pets">
+        </div>
+    
+        <div class="filter-icon" id="openFiltersModal">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
     </div>
 
     <div class="nav-icons d-flex align-items-center gap-3">
@@ -38,7 +44,57 @@
     </div>
   </header>
 
-  <!-- DASHBOARD MENU (brandon) -->
+  <!-- SEARCH FILTER MODAL -->
+  <div class="filter-modal" id="filterModal">
+    <div class="filter-box">
+
+        <div class="filter-header">
+            <h3>Filters</h3>
+            <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
+        </div>
+
+        <!-- SPECIES -->
+        <div class="filter-section">
+            <p>Species</p>
+            <div class="filters">
+                <button class="filter-btn active" data-group="species">All</button>
+                <button class="filter-btn" data-group="species">Dogs</button>
+                <button class="filter-btn" data-group="species">Cats</button>
+            </div>
+        </div>
+
+        <!-- AGE -->
+        <div class="filter-section">
+            <p>Age</p>
+            <div class="filters">
+                <button class="filter-btn active" data-group="age">All</button>
+                <button class="filter-btn" data-group="age">Puppy / Kitten</button>
+                <button class="filter-btn" data-group="age">Young</button>
+                <button class="filter-btn" data-group="age">Adult</button>
+            </div>
+        </div>
+
+        <!-- SIZE -->
+        <div class="filter-section">
+            <p>Size</p>
+            <div class="filters">
+                <button class="filter-btn active" data-group="size">All</button>
+                <button class="filter-btn" data-group="size">Small</button>
+                <button class="filter-btn" data-group="size">Medium</button>
+                <button class="filter-btn" data-group="size">Large</button>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="filter-actions">
+            <button class="reset-btn">Reset</button>
+            <button class="show-btn">Show Results</button>
+        </div>
+
+    </div>
+  </div>
+
+  <!-- DASHBOARD MENU -->
   <div id="overlay" class="overlay hidden"></div>
 
   <div id="dashPanel" class="dash-panel hidden">
@@ -368,6 +424,16 @@
     </section>
   </section>
 
+  <!-- PAGE Search Results -->
+  <section class="page" data-page="results">
+    <section class="py-5">
+      <div class="container text-center">
+        <h2 class="fw-bold">Results</h2>
+        <p class="text-muted">Filtered results will appear here.</p>
+      </div>
+    </section>
+  </section>  
+
   <!-- Bootstrap link -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -375,3 +441,4 @@
   <script src="main.js"></script>
 </body>
 </html>
+

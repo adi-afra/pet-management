@@ -165,6 +165,173 @@ body { background: #fff; color: #0b1b2b; }
     object-position: center 30%;
   }
 
+/* Search bar styling (navbar only) */
+.navbar .search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    background: #f1f1f1;
+    width: 240px;
+}
+
+/* Search icon inside navbar search */
+.navbar .search i {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* Search input field */
+.navbar .search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Placeholder text styling */
+.navbar .search input::placeholder {
+    color: #9ca3af;
+}
+
+/* Wrapper for search bar and filter icon */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Filter icon button */
+.filter-icon {
+    width: 44px;
+    height: 44px;
+    background: #f1f1f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Icon inside filter button */
+.filter-icon i {
+    font-size: 14px;
+    color: #0b1b2b;
+}
+
+
+/* Filter modal overlay */
+.filter-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Filter modal container */
+.filter-box {
+    background: #fff;
+    width: 320px;
+    border-radius: 20px;
+    padding: 24px;
+}
+
+/* Modal header layout */
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Close icon styling */
+.filter-header i {
+    cursor: pointer;
+}
+
+
+/* Individual filter sections */
+.filter-section {
+    margin-bottom: 24px;
+}
+
+/* Filter section title */
+.filter-section p {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+
+/* Filter button container scoped to modal */
+.filter-modal .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Filter buttons */
+.filter-modal .filter-btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #f1f1f1;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Active filter button state */
+.filter-modal .filter-btn.active {
+    background: #ffd400;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+
+/* Action buttons container */
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Reset button styling */
+.filter-actions .reset-btn {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 999px;
+    background: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Reset button hover state */
+.filter-actions .reset-btn:hover {
+    background: #f1f1f1;
+}
+
+/* Show results button styling */
+.filter-actions .show-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 999px;
+    background: #001f5b;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Show results button hover state */
+.filter-actions .show-btn:hover {
+    background: #003080;
+}
+
   .dash-link:hover{
     background: rgba(255, 212, 0, 0.25);
   }
