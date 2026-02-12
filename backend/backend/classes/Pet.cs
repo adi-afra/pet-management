@@ -1,4 +1,7 @@
-﻿namespace backend.classes
+﻿using System; 
+
+
+namespace backend.classes
 {
     public abstract class Pet
     {
@@ -49,7 +52,7 @@
 
         //protected setters for the fields, with validation for age (doing the validation in the property setter
         //can sometimes be a bit messy in my view, so I prefer to have separate methods for setting the fields with validation) 
-        protected void setAge(int age)
+        public void setAge(int age)
         {
             if (age < 0)
             {
@@ -58,7 +61,7 @@
             Age = age;
         }
 
-        protected void setName(string name)
+        public void setName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -67,7 +70,7 @@
             Name = name;
         }
 
-        protected void setKind(string kind)
+        public void setKind(string kind)
         {
             if (string.IsNullOrWhiteSpace(kind))
             {
@@ -76,7 +79,7 @@
             Kind = kind;
         }
 
-        protected void setBreed(string breed)
+        public void setBreed(string breed)
         {
             if (string.IsNullOrWhiteSpace(breed))
             {
@@ -85,7 +88,7 @@
             Breed = breed;
         }
 
-        protected void setId(string id)
+        public void setId(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -97,12 +100,12 @@
         }
 
         //methods for adding and removing items from the list (no validation for now)
-        protected void addMeeting(Meeting meeting)
+        public void addMeeting(Meeting meeting)
         {
             Meetings.Add(meeting);
         }
 
-        protected void removeMeeting(Meeting meeting)
+        public void removeMeeting(Meeting meeting)
         {
             Meetings.Remove(meeting);
         }
