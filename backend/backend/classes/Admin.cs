@@ -1,16 +1,17 @@
-﻿namespace backend.classes
+﻿using System;
+
+namespace backend.classes
 {
     public class Admin : User
     {
-        public string Role { get; private set; } = "Admin";
         //constructor for Admin which adds a new field for their role
-        public Admin(string id, string username, string password) : base(id, username, password)
+        public Admin(string id, string username, string password) : 
+            base(id, username, password)
         {
-            Role = "Admin";
         }
 
         //overriding the getRole method to return the role of the user
-        public override string getRole() { return Role; }
+        public override string getRole() { return "Admin"; }
 
         //methods to change different fields of an instance of a Pet
 
