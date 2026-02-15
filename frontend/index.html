@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pet Care Management</title>
- 
+
 
   <!-- Bootstrap CSS (Brandon)-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,22 +25,22 @@
       <span class="brand-badge"><i class="fa-solid fa-paw"></i></span>
       <span class="brand-name">DM Shelter</span>
     </div>
-    
-    
+
+
 
     <div class="search-wrapper">
-        <div class="search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search Pets">
-        </div>
-    
-        <div class="filter-icon" id="openFiltersModal">
-            <i class="fa-solid fa-sliders"></i>
-        </div>
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search Pets">
+      </div>
+
+      <div class="filter-icon" id="openFiltersModal">
+        <i class="fa-solid fa-sliders"></i>
+      </div>
     </div>
 
     <div class="nav-icons d-flex align-items-center gap-3">
-      <i class="fa-regular fa-user"></i>
+      <i class="fa-regular fa-user" id="registrationPage"></i>
       <i class="fa-solid fa-bars" id="menuBtn"></i>
     </div>
   </header>
@@ -48,48 +49,48 @@
   <div class="filter-modal" id="filterModal">
     <div class="filter-box">
 
-        <div class="filter-header">
-            <h3>Filters</h3>
-            <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
-        </div>
+      <div class="filter-header">
+        <h3>Filters</h3>
+        <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
+      </div>
 
-        <!-- SPECIES -->
-        <div class="filter-section">
-            <p>Species</p>
-            <div class="filters">
-                <button class="filter-btn active" data-group="species">All</button>
-                <button class="filter-btn" data-group="species">Dogs</button>
-                <button class="filter-btn" data-group="species">Cats</button>
-            </div>
+      <!-- SPECIES -->
+      <div class="filter-section">
+        <p>Species</p>
+        <div class="filters">
+          <button class="filter-btn active" data-group="species">All</button>
+          <button class="filter-btn" data-group="species">Dogs</button>
+          <button class="filter-btn" data-group="species">Cats</button>
         </div>
+      </div>
 
-        <!-- AGE -->
-        <div class="filter-section">
-            <p>Age</p>
-            <div class="filters">
-                <button class="filter-btn active" data-group="age">All</button>
-                <button class="filter-btn" data-group="age">Puppy / Kitten</button>
-                <button class="filter-btn" data-group="age">Young</button>
-                <button class="filter-btn" data-group="age">Adult</button>
-            </div>
+      <!-- AGE -->
+      <div class="filter-section">
+        <p>Age</p>
+        <div class="filters">
+          <button class="filter-btn active" data-group="age">All</button>
+          <button class="filter-btn" data-group="age">Puppy / Kitten</button>
+          <button class="filter-btn" data-group="age">Young</button>
+          <button class="filter-btn" data-group="age">Adult</button>
         </div>
+      </div>
 
-        <!-- SIZE -->
-        <div class="filter-section">
-            <p>Size</p>
-            <div class="filters">
-                <button class="filter-btn active" data-group="size">All</button>
-                <button class="filter-btn" data-group="size">Small</button>
-                <button class="filter-btn" data-group="size">Medium</button>
-                <button class="filter-btn" data-group="size">Large</button>
-            </div>
+      <!-- SIZE -->
+      <div class="filter-section">
+        <p>Size</p>
+        <div class="filters">
+          <button class="filter-btn active" data-group="size">All</button>
+          <button class="filter-btn" data-group="size">Small</button>
+          <button class="filter-btn" data-group="size">Medium</button>
+          <button class="filter-btn" data-group="size">Large</button>
         </div>
+      </div>
 
-        <!-- ACTIONS -->
-        <div class="filter-actions">
-            <button class="reset-btn">Reset</button>
-            <button class="show-btn">Show Results</button>
-        </div>
+      <!-- ACTIONS -->
+      <div class="filter-actions">
+        <button class="reset-btn">Reset</button>
+        <button class="show-btn">Show Results</button>
+      </div>
 
     </div>
   </div>
@@ -167,7 +168,9 @@
 
           <div class="col-12 col-md-6 col-lg-4">
             <div class="pet-card h-100">
-              <img class="pet-img buddy" src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60" alt="dog">
+              <img class="pet-img buddy"
+                src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60"
+                alt="dog">
               <div class="info">
                 <h3>Buddy</h3>
                 <p>2 years • Dog</p>
@@ -177,7 +180,9 @@
 
           <div class="col-12 col-md-6 col-lg-4">
             <div class="pet-card h-100">
-              <img class="pet-img luna" src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60" alt="dog">
+              <img class="pet-img luna"
+                src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60"
+                alt="dog">
               <div class="info">
                 <h3>Luna</h3>
                 <p>1 year • Dog</p>
@@ -187,7 +192,9 @@
 
           <div class="col-12 col-md-6 col-lg-4">
             <div class="pet-card h-100">
-              <img class="pet-img milo" src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60" alt="dog">
+              <img class="pet-img milo"
+                src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60"
+                alt="dog">
               <div class="info">
                 <h3>Milo</h3>
                 <p>3 years • Dog</p>
@@ -196,118 +203,124 @@
           </div>
 
 
-            <div class="col-12 col-md-6 col-lg-4">
-              <div class="pet-card">
-                <img class="pet-img max" src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60" alt="Max">
-                <div class="info">
-                  <h3>Max</h3>
-                  <p>4 years • Dog</p>
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="pet-card">
+              <img class="pet-img max"
+                src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60"
+                alt="Max">
+              <div class="info">
+                <h3>Max</h3>
+                <p>4 years • Dog</p>
               </div>
             </div>
           </div>
-          
+
           <div class="col-md-4 mb-4">
             <div class="pet-card">
-              <img class="pet-img" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60" alt="Cat">
+              <img class="pet-img"
+                src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60"
+                alt="Cat">
               <div class="info">
                 <h3>Nala</h3>
                 <p>2 years • Cat</p>
               </div>
             </div>
           </div>
-          
+
           <div class="col-md-4 mb-4">
             <div class="pet-card">
-              <img class="pet-img" src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60" alt="Dog">
+              <img class="pet-img"
+                src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60"
+                alt="Dog">
               <div class="info">
                 <h3>Rocky</h3>
                 <p>3 years • Dog</p>
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </section>
   </section>
 
   <!-- PAGE Dashboard (Brandon)-->
-<section class="page" data-page="dashboard">
-  <section class="hero text-center">
-  <div class="container py-4">
+  <section class="page" data-page="dashboard">
+    <section class="hero text-center">
+      <div class="container py-4">
 
-    <!-- Breadcrumb -->
-    <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
-      <i class="fa-solid fa-house"></i>
-      <span>/</span>
-      <span class="fw-semibold">Dashboard</span>
-    </div>
+        <!-- Breadcrumb -->
+        <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
+          <i class="fa-solid fa-house"></i>
+          <span>/</span>
+          <span class="fw-semibold">Dashboard</span>
+        </div>
 
-    <!-- Header -->
-    <div class="mb-4">
-      <h2 class="fw-bold mb-1">Your Overview</h2>
-      <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
-    </div>
+        <!-- Header -->
+        <div class="mb-4">
+          <h2 class="fw-bold mb-1">Your Overview</h2>
+          <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
+        </div>
 
-    <!-- Stat cards -->
-    <div class="row g-3 mb-4">
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="dash-stat card border-0 shadow-sm">
-          <div class="card-body d-flex align-items-center gap-3">
-            <div class="dash-icon bg-warning-subtle text-warning">
-              <i class="fa-solid fa-heart"></i>
+        <!-- Stat cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="dash-stat card border-0 shadow-sm">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="dash-icon bg-warning-subtle text-warning">
+                  <i class="fa-solid fa-heart"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-semibold">Saved Pets</div>
+                  <div class="fs-3 fw-bold">6</div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div class="text-muted small fw-semibold">Saved Pets</div>
-              <div class="fs-3 fw-bold">6</div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="dash-stat card border-0 shadow-sm">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="dash-icon bg-primary-subtle text-primary">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-semibold">Applications</div>
+                  <div class="fs-3 fw-bold">2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="dash-stat card border-0 shadow-sm">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="dash-icon bg-success-subtle text-success">
+                  <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-semibold">Visits Booked</div>
+                  <div class="fs-3 fw-bold">1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="dash-stat card border-0 shadow-sm">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="dash-icon bg-info-subtle text-info">
+                  <i class="fa-solid fa-bell"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-semibold">Alerts</div>
+                  <div class="fs-3 fw-bold">3</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="dash-stat card border-0 shadow-sm">
-          <div class="card-body d-flex align-items-center gap-3">
-            <div class="dash-icon bg-primary-subtle text-primary">
-              <i class="fa-solid fa-paper-plane"></i>
-            </div>
-            <div>
-              <div class="text-muted small fw-semibold">Applications</div>
-              <div class="fs-3 fw-bold">2</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="dash-stat card border-0 shadow-sm">
-          <div class="card-body d-flex align-items-center gap-3">
-            <div class="dash-icon bg-success-subtle text-success">
-              <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <div>
-              <div class="text-muted small fw-semibold">Visits Booked</div>
-              <div class="fs-3 fw-bold">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="dash-stat card border-0 shadow-sm">
-          <div class="card-body d-flex align-items-center gap-3">
-            <div class="dash-icon bg-info-subtle text-info">
-              <i class="fa-solid fa-bell"></i>
-            </div>
-            <div>
-              <div class="text-muted small fw-semibold">Alerts</div>
-              <div class="fs-3 fw-bold">3</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
     <!-- Main panels -->
     <div class="row g-3">
@@ -390,8 +403,8 @@
       </div>
     </div>
 
-  </div>
-</section>
+    </div>
+  </section>
 
 
   <!-- PAGE Inventory (brandon) -->
@@ -424,6 +437,121 @@
     </section>
   </section>
 
+  <!-- Registration Page -->
+  <section class="page" data-page="registration">
+
+    <main class=" d-flex align-items-center justify-content-center p-3">
+      <div class="card shadow-lg border-0 rounded-4" style="width:620px;">
+        <div class="card-body p-3 p-md-4">
+
+          <!-- ================= REGISTER (Fabasshir)================= -->
+          <div class="text-center mb-4">
+            <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center mx-auto shadow"
+              style="width:96px;height:96px;">
+              <span style="font-size:38px;">🐾</span>
+            </div>
+          </div>
+
+          <h1 class="text-center fw-bold mb-2" style="font-size:3rem;">Join PetHaven</h1>
+          <p class="text-center text-secondary fw-semibold mb-5 fs-4">
+            Create an account to start managing your animal rescue.
+          </p>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold fs-4">Email Address</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-white">✉️</span>
+              <input type="email" class="form-control" placeholder="staff@pethaven.org" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold fs-4">Password</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-white">🔒</span>
+              <input type="password" class="form-control" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-warning w-100 fw-bold py-3 fs-3 shadow">
+            Create Account <span class="ms-2">→</span>
+          </button>
+          </form>
+
+          <p class="text-center mt-4 fw-semibold fs-5 mb-0">
+            Already have an account?
+            <span id="loginBtn" class="fw-bold text-warning text-decoration-underline ms-1" style="cursor:pointer;">
+              Sign in instead
+            </span>
+          </p>
+
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <section class="page" data-page="login">
+
+    <main class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+      <div class="card shadow-lg border-0 rounded-4" style="max-width:620px;width:100%;">
+        <div class="card-body p-4 p-md-5">
+
+          <!-- ================= LOGIN(Fabasshir) ================= -->
+          <div class="text-center mb-4">
+            <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center mx-auto shadow"
+              style="width:96px;height:96px;">
+              <span style="font-size:38px;">🐾</span>
+            </div>
+          </div>
+
+          <h1 class="text-center fw-bold mb-2" style="font-size:3rem;">Sign In</h1>
+          <p class="text-center text-secondary fw-semibold mb-5 fs-4">
+            Enter your credentials to manage your shelter.
+          </p>
+
+          <form>
+            <div class="mb-4">
+              <label class="form-label fw-bold fs-4">Email Address</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-white">✉️</span>
+                <input type="email" class="form-control" placeholder="staff@pethaven.org" required>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <label class="form-label fw-bold fs-4 mb-0">Password</label>
+                <a href="#" class="fw-bold text-warning text-decoration-none">Forgot password?</a>
+              </div>
+              <div class="input-group input-group-lg mt-2">
+                <span class="input-group-text bg-white">🔒</span>
+                <input type="password" class="form-control" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <button id="loginSubmit" type="button" class="btn btn-warning w-100 fw-bold py-3 fs-3 shadow">
+              Sign In <span class="ms-2">→</span>
+            </button>
+
+          </form>
+
+
+          <p class="text-center mt-5 fw-semibold fs-5 mb-0">
+            Don't have an account?
+
+            <span id="goToRegister" class="fw-bold text-warning text-decoration-underline ms-1" style="cursor:pointer;">
+              Register now
+            </span>
+
+          </p>
+
+
+        </div>
+      </div>
+    </main>
+
+  </section>
+
   <!-- PAGE Search Results -->
   <section class="page" data-page="results">
     <section class="py-5">
@@ -432,13 +560,13 @@
         <p class="text-muted">Filtered results will appear here.</p>
       </div>
     </section>
-  </section>  
+  </section>
 
   <!-- Bootstrap link -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
- 
+
   <script src="main.js"></script>
 </body>
-</html>
 
+</html>

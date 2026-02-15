@@ -1,6 +1,5 @@
 
 // Filters (to keep active button)
-
 const filterButtons = document.querySelectorAll(".filter-btn");
 
 filterButtons.forEach((button) => {
@@ -9,6 +8,7 @@ filterButtons.forEach((button) => {
     button.classList.add("active");
   });
 });
+
 
 
 
@@ -22,17 +22,17 @@ const closeBtn = document.getElementById("closeBtn");
 function openDash() {
   overlay.classList.remove("hidden");
   dashPanel.classList.remove("hidden");
-
   // allows CSS animation to run
   requestAnimationFrame(() => dashPanel.classList.add("show"));
 }
 
+
 function closeDash() {
   dashPanel.classList.remove("show");
   overlay.classList.add("hidden");
-
   setTimeout(() => dashPanel.classList.add("hidden"), 220);
 }
+
 
 if (menuBtn && dashPanel && overlay && closeBtn) {
   menuBtn.addEventListener("click", openDash);
@@ -42,10 +42,11 @@ if (menuBtn && dashPanel && overlay && closeBtn) {
 
 
 // Page switching (show/hide pages)
-
 const pages = document.querySelectorAll(".page");
 const dashLinks = document.querySelectorAll(".dash-link[data-page]");
 
+
+//function fpr switching between pages
 function showPage(pageName) {
   pages.forEach((p) => p.classList.remove("is-active"));
 
@@ -66,9 +67,20 @@ dashLinks.forEach((btn) => {
 });
 
 
+//show registration page
+const registrationBtn = document.getElementById("registrationPage");
+registrationBtn?.addEventListener("click", () => {
+  showPage("registration");
+  closeDash(); 
+});
+
+const loginBtn = document.getElementById("loginBtn");
+loginBtn?.addEventListener("click",() => {
+    showPage("login");
+    closeDash();
+});
 
 // Logout (demo, still needs work)
-
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
@@ -79,8 +91,8 @@ if (logoutBtn) {
 
 
 
-//Search input handling (show results after searching in the box)
 
+//Search input handling (show results after searching in the box)
 const searchInput = document.querySelector('.search input');
 
 searchInput?.addEventListener('keydown', (e) => {
@@ -98,20 +110,22 @@ searchInput?.addEventListener('keydown', (e) => {
 
 
 // Filter modal open/close
-
 const filterModal = document.getElementById("filterModal");
 const openFiltersBtn = document.getElementById("openFiltersModal");
 const closeFiltersBtn = document.getElementById("closeFiltersModal");
+
 
 // Open filter modal
 openFiltersBtn?.addEventListener("click", () => {
   filterModal.style.display = "flex";
 });
 
+
 // Close filter modal
 closeFiltersBtn?.addEventListener("click", () => {
   filterModal.style.display = "none";
 });
+
 
 // Click outside to close
 filterModal?.addEventListener("click", (e) => {
@@ -120,7 +134,10 @@ filterModal?.addEventListener("click", (e) => {
   }
 });
 
+
+
 //Filter button logic
+
 
 //Ensure only one filter button is active per secton
 filterModal?.querySelectorAll(".filter-btn").forEach((button) => {
@@ -145,9 +162,10 @@ filterModal?.querySelectorAll(".filter-btn").forEach((button) => {
   );
 });
 
+
+
 // Reset filter to default state
 const resetBtn = document.querySelector(".filter-actions .reset-btn");
-
 resetBtn?.addEventListener("click", () => {
   document.querySelectorAll(".filter-section").forEach((section) => {
     const buttons = section.querySelectorAll(".filter-btn");
@@ -160,10 +178,10 @@ resetBtn?.addEventListener("click", () => {
   });
 });
 
+
+
 // Show results and close modal
-
 const showResultsBtn = document.querySelector(".filter-actions .show-btn");
-
 showResultsBtn?.addEventListener("click", () => {
   // Navigate to results page
   showPage("results");
@@ -171,4 +189,7 @@ showResultsBtn?.addEventListener("click", () => {
   // Close filter modal
   filterModal.style.display = "none";
 });
+
+
+
 
