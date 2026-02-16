@@ -1,60 +1,49 @@
 using System;
 
-namespace backend.classes;
-
-public abstract class User
+namespace backend.classes
 {
-    //attributes
-    public string Id { get; }
-    public string Username { get; private set; }
-    public string Password { get; private set; }
 
-
-    //constructor with validation
-    public User(string id, string username, string password)
+    //abstract base class representing any system user
+    public abstract class User
     {
-        if (string.IsNullOrWhiteSpace(id))
+        //properties
+        public string Id { get; }
+        public string Username { get; private set; }
+        public string Password { get; private set; }
+
+
+        //constructor with validation
+        protected User(string id, string username, string password)
         {
-            throw new ArgumentNullException(nameof(id),"The id cannot be null");
+            Id = ValidateString(id, nameof(id));
+            Username = ValidateString(username, nameof(username));
+            Password = ValidateString(password, nameof(password));
         }
 
-        if (string.IsNullOrWhiteSpace(username))
+        //update username with validation
+        public void setUsername(string username)
         {
-            throw new ArgumentNullException(nameof(username),"username cannot be empty");
-        }
-        
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            throw new ArgumentNullException(nameof(password),"password cannot be empty");
+            Username = ValidateString(username, nameof(username));
         }
 
-        Id = id;
-        Username = username;
-        Password = password;
+        //update password with validation
+        public void setPassword(string password)
+        {
+            Password = ValidateString(password, nameof(password));
+        }
+
+        //helper method to avoid repeating validation logic
+        protected string ValidateString(string value, string paramName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException($"{paramName} cannot be null or empty.");
+
+            return value;
+        }
+
+        //each derived class must define its role
+        public abstract string getRole();
+
     }
-
-    //setters for username and password
-    public void setUsername(string username)
-    {
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            throw new ArgumentNullException(nameof(username),"username cannot be empty");
-        }
-
-        Username = username;
-    }
-
-    public void setPassword(string password)
-    {
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            throw new ArgumentNullException(nameof(password),"password cannot be empty");
-        }
-
-        Password = password;
-    }
-
-    
-    public abstract string getRole();
 
 }

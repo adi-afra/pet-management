@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace backend.classes
 {
+	//represents a client who can book meetings with pets
 	public class Client : User
 	{
 		// List field to store client's meetings
