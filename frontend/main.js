@@ -57,6 +57,15 @@ function showPage(pageName) {
   dashLinks.forEach((b) => b.classList.remove("active"));
   const activeBtn = document.querySelector(`.dash-link[data-page="${pageName}"]`);
   if (activeBtn) activeBtn.classList.add("active");
+
+  //deleting the navbar is we are in login or register
+  const navbar = document.getElementById("mainNavbar");
+
+  if (pageName === "login" || pageName === "registration") {
+    navbar.classList.add("d-none")
+  } else {
+    navbar.classList.remove("d-none")
+  }
 }
 
 dashLinks.forEach((btn) => {
@@ -86,6 +95,13 @@ const signinBtn = document.getElementById("goToRegister");
 signinBtn?.addEventListener("click",() => {
     showPage("registration");
     closeDash();
+});
+
+//switches from login or register to home
+document.querySelectorAll(".backToHome").forEach(btn => {
+  btn.addEventListener("click", () =>{
+    showPage("gallery");
+  });
 });
 
 // Logout (demo, still needs work)
