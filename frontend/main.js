@@ -74,9 +74,17 @@ registrationBtn?.addEventListener("click", () => {
   closeDash(); 
 });
 
+//switches from register to login
 const loginBtn = document.getElementById("loginBtn");
 loginBtn?.addEventListener("click",() => {
     showPage("login");
+    closeDash();
+});
+
+//switches from register to login
+const signinBtn = document.getElementById("goToRegister");
+signinBtn?.addEventListener("click",() => {
+    showPage("registration");
     closeDash();
 });
 
