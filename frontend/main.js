@@ -81,7 +81,7 @@ loginBtn?.addEventListener("click",() => {
     closeDash();
 });
 
-//switches from register to login
+//switches from login to register
 const signinBtn = document.getElementById("goToRegister");
 signinBtn?.addEventListener("click",() => {
     showPage("registration");
