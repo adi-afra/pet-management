@@ -54,8 +54,34 @@ namespace backend.classes
             UserID = id;
         }
 
+        // Try to convert string Date into a real DateTime (Brandon added)
+        private DateTime? GetParsedDate()
+        {
+            if (DateTime.TryParse(Date, out var parsed))
+            {
+                return parsed;
+            }
 
+            return null;
+        }
 
-	}
+        // Used for dashboard "Visits booked" (this may not be needed)
+        public bool IsUpcoming()
+        {
+            var parsed = GetParsedDate();
+            return parsed != null && parsed > DateTime.Now;
+        }
+
+        public bool IsPast()
+        {
+            var parsed = GetParsedDate();
+            return parsed != null && parsed < DateTime.Now;
+        }
+
+        // Useful for debugging or logging
+        public override string ToString()
+        {
+            return $"Meeting: {Date} | Pet: {Pet?.Name} | User: {UserID}";
+        }
+    }
 }
-

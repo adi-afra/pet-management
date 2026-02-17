@@ -14,6 +14,9 @@ namespace backend.classes
         public string Breed { get; private set; }
         public List<Meeting> Meetings { get; private set; }
 
+        // Tracks whether the pet has been adopted (new) 
+        public bool IsAdopted { get; private set; } = false;
+        
         //constructor with all the fields as parameters, and validation for age and null or empty strings
         public Pet(string id, string name, int age, string kind, string breed)
         {
@@ -50,6 +53,23 @@ namespace backend.classes
             Meetings = new List<Meeting>();
         }
 
+        // Marks the pet as adopted
+        public void MarkAdopted()
+        {
+            if (IsAdopted)
+            {
+                throw new InvalidOperationException("Pet is already adopted.");
+            }
+
+            IsAdopted = true;
+        }
+
+        // Helper method for filtering pets in the gallery
+        public bool IsAvailable()
+        {
+            return !IsAdopted;
+        }
+        
         //protected setters for the fields, with validation for age (doing the validation in the property setter
         //can sometimes be a bit messy in my view, so I prefer to have separate methods for setting the fields with validation) 
         public void setAge(int age)

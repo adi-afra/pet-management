@@ -21,5 +21,46 @@ namespace backend.classes
         public void changeAge(Pet pet, int newAge) { pet.setAge(newAge); }
         public void changeKind(Pet pet, String newKind) { pet.setKind(newKind); }
         public void changeBreed(Pet pet, String newBreed){ pet.setBreed(newBreed); }
+
+        
+        // Approve an adoption application (Brandon added)
+        public void ApproveApplication(AdoptionApplication application)
+        {
+            if (application == null)
+                throw new ArgumentNullException(nameof(application));
+
+            application.Approve();
+        }
+
+        // Reject an adoption application
+        public void RejectApplication(AdoptionApplication application)
+        {
+            if (application == null)
+                throw new ArgumentNullException(nameof(application));
+
+            application.Reject();
+        }
+
+        // Mark a pet as adopted
+        public void MarkPetAsAdopted(Pet pet)
+        {
+            if (pet == null)
+                throw new ArgumentNullException(nameof(pet));
+
+            pet.MarkAdopted();
+        }
+
+        // Cancel a meeting booked by a client
+        public void CancelMeeting(Meeting meeting, Client client)
+        {
+            if (meeting == null)
+                throw new ArgumentNullException(nameof(meeting));
+
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
+
+            client.Meetings.Remove(meeting);
+            meeting.Pet.removeMeeting(meeting);
+        }
     }
 }
