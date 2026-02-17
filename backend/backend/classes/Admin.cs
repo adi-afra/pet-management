@@ -2,6 +2,7 @@
 
 namespace backend.classes
 {
+    //represents an administrator with permission to modify pets
     public class Admin : User
     {
         //constructor for Admin which adds a new field for their role
@@ -11,7 +12,10 @@ namespace backend.classes
         }
 
         //overriding the getRole method to return the role of the user
-        public override string getRole() { return "Admin"; }
+        public override string getRole()
+        {
+            return "Admin";
+        }
 
         //methods to change different fields of an instance of a Pet
 

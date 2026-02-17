@@ -2,6 +2,7 @@
 
 namespace backend.classes
 {
+    //represents a scheduled meeting between a client and a pet
 	public class Meeting
 	{
         //meetings class attributes

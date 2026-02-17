@@ -3,51 +3,43 @@
 
 namespace backend.classes
 {
+    //abstract base class representing a pet in the shelter
     public abstract class Pet
     {
         //all the fields are public so the children classes can see them (C# is like this) with public getters
-        //and private setters
+
+        //properties with private setters to protect data integrity
         public string Id { get; private set; }
         public string Name { get; private set; }
         public int Age { get; private set; }
         public string Kind { get; private set; }
         public string Breed { get; private set; }
+
+        //list of meetings associated with this pet
         public List<Meeting> Meetings { get; private set; }
 
         //constructor with all the fields as parameters, and validation for age and null or empty strings
         public Pet(string id, string name, int age, string kind, string breed)
         {
+            Id = ValidateString(id, nameof(id));
+            Name = ValidateString(name, nameof(name));
+            Kind = ValidateString(kind, nameof(kind));
+            Breed = ValidateString(breed, nameof(breed));
+
             if (age < 0)
-            {
                 throw new ArgumentException("Age cannot be negative.");
-            }
 
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentException("Id cannot be null or empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Name cannot be null or empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(kind))
-            {
-                throw new ArgumentException("Kind cannot be null or empty.");
-            }
-
-            if (string.IsNullOrWhiteSpace(breed))
-            {
-                throw new ArgumentException("Breed cannot be null or empty.");
-            }
-
-            Id = id;
-            Name = name;
             Age = age;
-            Kind = kind;
-            Breed = breed;
             Meetings = new List<Meeting>();
+        }
+
+        //validation helper
+        protected string ValidateString(string value, string paramName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException($"{paramName} cannot be null or empty.");
+
+            return value;
         }
 
         //protected setters for the fields, with validation for age (doing the validation in the property setter
@@ -61,50 +53,21 @@ namespace backend.classes
             Age = age;
         }
 
-        public void setName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Name cannot be null or empty.");
-            }
-            Name = name;
-        }
-
-        public void setKind(string kind)
-        {
-            if (string.IsNullOrWhiteSpace(kind))
-            {
-                throw new ArgumentException("Kind cannot be null or empty.");
-            }
-            Kind = kind;
-        }
-
-        public void setBreed(string breed)
-        {
-            if (string.IsNullOrWhiteSpace(breed))
-            {
-                throw new ArgumentException("Breed cannot be null or empty.");
-            }
-            Breed = breed;
-        }
-
-        public void setId(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentException("Id cannot be null or empty.");
-            }
-            Id = id;
-
-
-        }
+        public void setName(string name) => Name = ValidateString(name, nameof(name));
+        public void setKind(string kind) => Kind = ValidateString(kind, nameof(kind));
+        public void setBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
+        public void setId(string id) => Id = ValidateString(id, nameof(id));
 
         //methods for adding and removing items from the list (no validation for now)
         public void addMeeting(Meeting meeting)
         {
+            if (meeting == null)
+                throw new ArgumentNullException(nameof(meeting));
+
             Meetings.Add(meeting);
         }
 
+        //removes a meeting from the pet
         public void removeMeeting(Meeting meeting)
         {
             Meetings.Remove(meeting);
