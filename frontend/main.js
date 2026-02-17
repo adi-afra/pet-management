@@ -46,7 +46,7 @@ const pages = document.querySelectorAll(".page");
 const dashLinks = document.querySelectorAll(".dash-link[data-page]");
 
 
-//function fpr switching between pages
+//function for switching between pages
 function showPage(pageName) {
   pages.forEach((p) => p.classList.remove("is-active"));
 
@@ -58,7 +58,7 @@ function showPage(pageName) {
   const activeBtn = document.querySelector(`.dash-link[data-page="${pageName}"]`);
   if (activeBtn) activeBtn.classList.add("active");
 
-  //deleting the navbar is we are in login or register
+  //deleting the navbar if we are in login or register
   const navbar = document.getElementById("mainNavbar");
 
   if (pageName === "login" || pageName === "registration") {
