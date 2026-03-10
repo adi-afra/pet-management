@@ -6,6 +6,9 @@ namespace backend.classes
 	public class Cat : Pet
 	{
 		// Constructor
+		
+		protected Cat() {} //Empty constructor for EF
+		
 		public Cat(string id, string name, int age, string breed)
 			: base(id, name, age, "Cat", breed)
 		{

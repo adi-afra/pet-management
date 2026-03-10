@@ -5,6 +5,9 @@ namespace backend.classes
 	public class Dog : Pet
 	{
         //Constructor 
+        
+        protected Dog() {} //Empty constructor for EF
+        
 		public Dog(string id, string name, int age, string breed)
 		
             //calling the parent constructor 
@@ -15,4 +18,3 @@ namespace backend.classes
 
 	}
 }
-

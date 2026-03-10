@@ -6,36 +6,35 @@ namespace backend.classes
 	public class Meeting
 	{
         //meetings class attributes
-		public string Date { get; private set; }
+        public int Id { get; private set;  }
+		public DateTime Date { get; private set; }
         //using Pet class as a data type so we wouldnt need verification
         public Pet Pet { get; private set; }
-        public string UserID { get; private set; }
+        public string PetId { get; private set; }  // EF Foreign Key
+        public string UserId { get; private set; }
 
 
+        protected Meeting() {} //Empty constructor for EF
 
-		public Meeting(string date, Pet pet, string userId)
+		public Meeting(DateTime date, Pet pet, string userId)
 		{
             //checking if any of the attributes is null, then throw an error
             //setting up the attributes with values
-            Date = date ?? throw new ArgumentNullException(nameof(date),"date can not be empty");;
+            Date = date;
             Pet = pet ?? throw new ArgumentNullException(nameof(pet),"pet argument can not be empty");
-            UserID = userId ?? throw new ArgumentNullException(nameof(userId),"user Id can not be empty");
+            UserId = userId ?? throw new ArgumentNullException(nameof(userId),"user Id can not be empty");
+            PetId = pet.Id;
         }
 
 
 
         //setters
-        protected void setDate(string date)
+        protected void SetDate(DateTime date)
         {
-            if (string.IsNullOrWhiteSpace(date))
-            {
-                throw new ArgumentNullException("user Id can not be empty");
-            }
-
             Date = date;
         }
 
-        protected void setPet(Pet pet)
+        protected void SetPet(Pet pet)
         {
             if (pet == null)
             {
@@ -45,18 +44,17 @@ namespace backend.classes
             Pet = pet;
         }
 
-        protected void setUserId(string id)
+        protected void SetUserId(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
                 throw new ArgumentNullException("user Id can not be empty");
             }
 
-            UserID = id;
+            UserId = id;
         }
 
 
 
 	}
 }
-

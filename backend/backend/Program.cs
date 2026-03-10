@@ -1,15 +1,25 @@
+using backend.Data;
+using Microsoft.EntityFrameworkCore;
+using backend.classes;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ------------------- Configure Services -------------------
 
+// Add controllers
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configure EF Core with SQL Server (AWS RDS)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add Swagger for API testing
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ------------------- Configure Middleware -------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,7 +27,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

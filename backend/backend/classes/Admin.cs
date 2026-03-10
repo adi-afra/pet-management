@@ -5,6 +5,9 @@ namespace backend.classes
     //represents an administrator with permission to modify pets
     public class Admin : User
     {
+        
+        protected Admin() {} //Empty constructor for EF
+        
         //constructor for Admin which adds a new field for their role
         public Admin(string id, string username, string password) : 
             base(id, username, password)
@@ -19,11 +22,11 @@ namespace backend.classes
 
         //methods to change different fields of an instance of a Pet
 
-        public void chnageId(Pet pet, String newId) {pet.setId(newId);}
+        public void ChnageId(Pet pet, string newId) { pet.SetId(newId); }
 
-        public void changeName(Pet pet, String newName) { pet.setName(newName); }
-        public void changeAge(Pet pet, int newAge) { pet.setAge(newAge); }
-        public void changeKind(Pet pet, String newKind) { pet.setKind(newKind); }
-        public void changeBreed(Pet pet, String newBreed){ pet.setBreed(newBreed); }
+        public void ChangeName(Pet pet, string newName) { pet.SetName(newName); }
+        public void ChangeAge(Pet pet, int newAge) { pet.SetAge(newAge); }
+        public void ChangeKind(Pet pet, string newKind) { pet.SetKind(newKind); }
+        public void ChangeBreed(Pet pet, string newBreed) { pet.SetBreed(newBreed); }
     }
 }

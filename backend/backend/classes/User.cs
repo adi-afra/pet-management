@@ -7,12 +7,15 @@ namespace backend.classes
     public abstract class User
     {
         //properties
-        public string Id { get; }
+        public string Id { get; private set;}
         public string Username { get; private set; }
         public string Password { get; private set; }
 
 
         //constructor with validation
+        
+        protected User() {} //empty constructor for EF
+        
         protected User(string id, string username, string password)
         {
             Id = ValidateString(id, nameof(id));

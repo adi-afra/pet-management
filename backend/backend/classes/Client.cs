@@ -10,6 +10,9 @@ namespace backend.classes
 		public List<Meeting> Meetings { get; private set; }
 
 		// Constructor
+		
+		protected Client() {} //empty constructor for EF
+		
 		public Client(string id, string username, string password)
 			: base(id, username, password)
 		{
@@ -24,7 +27,7 @@ namespace backend.classes
 
 		// Method to create a meeting object with the current id and adds it to the client's and
 		//pet's meeting lists
-		public void CreateMeeting(string date, Pet pet)
+		public void CreateMeeting(DateTime date, Pet pet)
 		{
 			if (pet == null)
 			{
@@ -34,7 +37,7 @@ namespace backend.classes
 			Meeting meeting = new Meeting(date, pet, this.Id);
 
 			Meetings.Add(meeting);
-			pet.addMeeting(meeting);
+			pet.AddMeeting(meeting);
 		}
 	}
 }
