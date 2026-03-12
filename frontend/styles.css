@@ -1,12 +1,12 @@
-/* Base */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+/* Base Brandon */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Geom", sans-serif;}
 body { background: #fff; color: #0b1b2b; }
 
-/* Navbar bits that are custom */
+/* Navbar bits that are custom brandon */
 .logo { font-size: 28px; }
 .nav-icons i { font-size: 20px; cursor: pointer; }
 
-/* Search pill (custom look) */
+/* Search pill (custom look) Brandon */
 .search{
   display:flex; align-items:center; gap:10px;
   padding:10px 16px;
@@ -22,13 +22,14 @@ body { background: #fff; color: #0b1b2b; }
 }
 .search input::placeholder{ color:#9ca3af; }
 
-/* Hero yellow block */
+/* Hero yellow block Brandon */
 .hero{
+  margin-top: 20px;
   background:#ffd400;
-  padding: 80px 20px;
+  padding: 30px 20px;
 }
 
-/* Filters */
+/* Filters Brandon */
 .filters .filter-btn{
   padding:10px 18px;
   border-radius:20px;
@@ -42,7 +43,7 @@ body { background: #fff; color: #0b1b2b; }
   border:1px solid #ddd;
 }
 
-/* Pet cards (custom, instead of Bootstrap card) */
+/* Pet cards (custom, instead of Bootstrap card) Brandon  */
 .pet-card{
   border-radius:16px;
   overflow:hidden;
@@ -51,18 +52,18 @@ body { background: #fff; color: #0b1b2b; }
 }
 .pet-img{
   width:100%;
-  height:240px;          /* change this if you want smaller */
+  height:240px;          
   object-fit:cover;
   display:block;
   border-radius:16px 16px 0 0;
 }
 
-/* Fine-tune face positioning per image */
+/* Fine tune face positioning per image brandon */
 .pet-img.buddy { object-position: center 45%; }
 .pet-img.luna  { object-position: center 60%; }
 .pet-img.milo  { object-position: center 65%; }
 
-/* Text under images */
+/* Text under images Brandon */
 .info h3{
   padding: 10px 14px 0;
   font-size: 18px;
@@ -74,7 +75,7 @@ body { background: #fff; color: #0b1b2b; }
   font-weight:600;
 }
 
-/* Dashboard dropdown */
+/* Dashboard dropdown Brandon */
 .hidden { display:none; }
 
 .overlay{
@@ -123,18 +124,18 @@ body { background: #fff; color: #0b1b2b; }
   font-size:18px;
 }
 
-.dash-links{ padding:10px; }
+.dash-links{ padding:10px;}
 
 .dash-link{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:16px;
   padding:14px;
   border-radius:14px;
   font-weight:700;
   color:#0b1b2b;
 
-  /* make button look like link */
+  /* make button look like link (Brandon) */
   width:100%;
   border:none;
   background:transparent;
@@ -147,6 +148,8 @@ body { background: #fff; color: #0b1b2b; }
 .dash-link.active{
   background:#ffd400;
   box-shadow: 0 10px 18px rgba(255,212,0,0.35);
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .dash-divider{
@@ -157,9 +160,289 @@ body { background: #fff; color: #0b1b2b; }
 
 .dash-link.logout{ color:#e11d48; }
 
-/* Page switching */
+/* Page switching Brandon */
 .page{ display:none; }
 .page.is-active{ display:block; }
 
+.pet-img.max {
+    object-position: center 30%;
+  }
 
+/* Search bar styling (navbar only) */
+.navbar .search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    background: #f1f1f1;
+    width: 400px;
+}
+
+/* Search icon inside navbar search */
+.navbar .search i {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* Search input field */
+.navbar .search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Placeholder text styling */
+.navbar .search input::placeholder {
+    color: #9ca3af;
+}
+
+/* Wrapper for search bar and filter icon */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 450px;
+}
+
+/* Filter icon button */
+.filter-icon {
+    width: 44px;
+    height: 44px;
+    background: #f1f1f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Icon inside filter button */
+.filter-icon i {
+    font-size: 14px;
+    color: #0b1b2b;
+}
+
+
+/* Filter modal overlay */
+.filter-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Filter modal container */
+.filter-box {
+    background: #fff;
+    width: 320px;
+    border-radius: 20px;
+    padding: 24px;
+}
+
+/* Modal header layout */
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Close icon styling */
+.filter-header i {
+    cursor: pointer;
+}
+
+
+/* Individual filter sections */
+.filter-section {
+    margin-bottom: 24px;
+}
+
+/* Filter section title */
+.filter-section p {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+
+/* Filter button container scoped to modal */
+.filter-modal .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Filter buttons */
+.filter-modal .filter-btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #f1f1f1;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Active filter button state */
+.filter-modal .filter-btn.active {
+    background: #ffd400;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+
+/* Action buttons container */
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Reset button styling */
+.filter-actions .reset-btn {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 999px;
+    background: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Reset button hover state */
+.filter-actions .reset-btn:hover {
+    background: #f1f1f1;
+}
+
+/* Show results button styling */
+.filter-actions .show-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 999px;
+    background: #001f5b;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Show results button hover state */
+.filter-actions .show-btn:hover {
+    background: #003080;
+}
+
+.dash-link:hover{
+    background: rgba(255, 212, 0, 0.25);
+}
+
+
+
+.logo-img {
+  height: auto;
+  width: 40px;
+}
+  
+
+.carousel-img {
+  height: 75vh;
+  object-fit: cover;
+}
+
+/* Background image for login */
+.login-bg {
+  background: url('images/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+/* Background image for register */
+.register-bg {
+  background: url('images/register-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+/* Login card styling */
+.login-card {
+  max-width: 380px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.85); /* Transparent white */
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-left: 500px;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+
+/* Logo size */
+.login-logo {
+  max-width: 100px;
+}
+
+/* Wider card for register */
+.register-card {
+  max-width: 750px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+
+.register-left {
+  background: rgba(255, 193, 7, 0.08); 
+}
+
+
+@media (max-width: 768px) {
+  .register-card {
+    max-width: 420px;
+  }
+  .register-left {
+    display: none; 
+  }
+}
+
+
+/* resize cards*/
+.dash-stat {
+  max-width: 230px;
+  border-radius: 14px;
+  transition: 0.3s ease;
+}
+
+.dash-stat:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+/*icon size*/
+.dash-big-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.activity-card {
+  background-color: rgba(240, 240, 240, 0.895) !important; 
+  backdrop-filter: blur(10px); 
+  border-radius: 1rem;
+  border: none;
+  padding: 1rem;
+  overflow-y: auto;
+  border-radius: 0;
+  height: 350px;
+}
 
