@@ -159,6 +159,134 @@ filterModal?.addEventListener("click", (e) => {
 });
 
 
+function makeMeetingCard(name, datee, timee, animall, breedd) {
+
+    // main card
+    const card = document.createElement("div");
+    card.className = "card shadow-sm";
+
+    const cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+
+    // header section
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "d-flex justify-content-between";
+
+    const title = document.createElement("h5");
+    title.className = "card-title mb-1";
+
+    const heartIcon = document.createElement("i");
+    heartIcon.className = "bi bi-heart me-2";
+
+    title.appendChild(heartIcon);
+    title.appendChild(document.createTextNode("Meet " + name));
+
+    headerDiv.appendChild(title);
+
+    // date/time
+    const date = document.createElement("p");
+    date.className = "mb-1";
+
+    const calendarIcon = document.createElement("i");
+    calendarIcon.className = "bi bi-calendar-event me-2";
+
+    date.appendChild(calendarIcon);
+    date.appendChild(
+        document.createTextNode(`${datee} • ${timee}`)
+    );
+
+    // animal
+    const animal = document.createElement("p");
+    animal.className = "mb-1";
+
+    const pawIcon = document.createElement("i");
+    pawIcon.className = "bi bi-paw me-2";
+
+    animal.appendChild(pawIcon);
+    animal.appendChild(
+        document.createTextNode("Animal: " + animall)
+    );
+
+    // breed
+    const breed = document.createElement("p");
+    breed.className = "mb-2";
+
+    const tagIcon = document.createElement("i");
+    tagIcon.className = "bi bi-tag me-2";
+
+    breed.appendChild(tagIcon);
+    breed.appendChild(
+        document.createTextNode("Breed: " + breedd)
+    );
+
+    // delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn btn-danger btn-sm";
+
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "bi bi-trash me-1";
+
+    deleteButton.appendChild(trashIcon);
+    deleteButton.appendChild(document.createTextNode("Delete"));
+
+    /* 
+    // delete functionality
+    deleteButton.addEventListener("click", () => {
+        console.log("Deleting meeting:", meetingObj.id);
+
+        card.remove();
+
+        // later you could call:
+        // deleteMeeting(meetingObj.id)
+    });
+
+    */
+    
+
+    // assembling the card
+    cardBody.appendChild(headerDiv);
+    cardBody.appendChild(date);
+    cardBody.appendChild(animal);
+    cardBody.appendChild(breed);
+    cardBody.appendChild(deleteButton);
+
+    card.appendChild(cardBody);
+
+    return card;
+}
+
+async function showMeetings() {
+    document.getElementById("meetingsContainer").appendChild(makeMeetingCard("jack", "25 jan", "16:00", "dog", "german"));
+}
+
+
+// Adoption modal open/close
+const adoptionModal = document.getElementById("adoptionModal");
+const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
+const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
+
+
+// Open filter modal
+openAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "flex";
+    showMeetings();
+});
+
+
+// Close filter modal
+closeAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "none";
+});
+
+
+// Click outside to close
+adoptionModal?.addEventListener("click", (e) => {
+    if (e.target === adoptionModal) {
+        adoptionModal.style.display = "none";
+    }
+});
+
+
 
 //Filter button logic
 

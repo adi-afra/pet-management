@@ -27,620 +27,698 @@
 
 <body>
 
-  <!-- NAVBAR (Brandon)-->
-  <header id="mainNavbar" class="navbar px-4 py-3 d-flex align-items-center justify-content-between">
-    <div class="logo d-flex align-items-center gap-2">
-      <span class="brand-badge">
-        <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
-      </span>
-      <span class="brand-name">Fortuna Tails</span>
-    </div>
-    
-
-
-
-    <div class="search-wrapper">
-      <div class="search">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search Pets">
-      </div>
-
-      <div class="filter-icon" id="openFiltersModal">
-        <i class="fa-solid fa-sliders"></i>
-      </div>
-    </div>
-
-    <div class="nav-icons d-flex align-items-center gap-4">
-      <i class="fa-regular fa-user" id="registrationPage"></i>
-      <i class="fa-solid fa-bars" id="menuBtn"></i>
-    </div>
-  </header>
-
-  <!-- SEARCH FILTER MODAL -->
-  <div class="filter-modal" id="filterModal">
-    <div class="filter-box">
-
-      <div class="filter-header">
-        <h3>Filters</h3>
-        <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
-      </div>
-
-      <!-- SPECIES -->
-      <div class="filter-section">
-        <p>Species</p>
-        <div class="filters">
-          <button class="filter-btn active" data-group="species">All</button>
-          <button class="filter-btn" data-group="species">Dogs</button>
-          <button class="filter-btn" data-group="species">Cats</button>
+    <!-- NAVBAR (Brandon)-->
+    <header id="mainNavbar" class="navbar px-4 py-3 d-flex align-items-center justify-content-between">
+        <div class="logo d-flex align-items-center gap-2">
+            <span class="brand-badge">
+                <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
+            </span>
+            <span class="brand-name">Fortuna Tails</span>
         </div>
-      </div>
 
-      <!-- AGE -->
-      <div class="filter-section">
-        <p>Age</p>
-        <div class="filters">
-          <button class="filter-btn active" data-group="age">All</button>
-          <button class="filter-btn" data-group="age">Puppy / Kitten</button>
-          <button class="filter-btn" data-group="age">Young</button>
-          <button class="filter-btn" data-group="age">Adult</button>
+
+
+
+        <div class="search-wrapper">
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search Pets">
+            </div>
+
+            <div class="filter-icon" id="openFiltersModal">
+                <i class="fa-solid fa-sliders"></i>
+            </div>
         </div>
-      </div>
 
-      <!-- SIZE -->
-      <div class="filter-section">
-        <p>Size</p>
-        <div class="filters">
-          <button class="filter-btn active" data-group="size">All</button>
-          <button class="filter-btn" data-group="size">Small</button>
-          <button class="filter-btn" data-group="size">Medium</button>
-          <button class="filter-btn" data-group="size">Large</button>
+        <div class="nav-icons d-flex align-items-center gap-4">
+            <i class="fa-regular fa-user" id="registrationPage"></i>
+            <i class="fa-solid fa-bars" id="menuBtn"></i>
         </div>
-      </div>
+    </header>
 
-      <!-- ACTIONS -->
-      <div class="filter-actions">
-        <button class="reset-btn">Reset</button>
-        <button class="show-btn">Show Results</button>
-      </div>
+    <!-- SEARCH FILTER MODAL -->
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-box">
 
-    </div>
-  </div>
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
+            </div>
 
-  <!-- DASHBOARD MENU -->
-  <div id="overlay" class="overlay hidden"></div>
+            <!-- SPECIES -->
+            <div class="filter-section">
+                <p>Species</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-group="species">All</button>
+                    <button class="filter-btn" data-group="species">Dogs</button>
+                    <button class="filter-btn" data-group="species">Cats</button>
+                </div>
+            </div>
 
-  <div id="dashPanel" class="dash-panel hidden">
-    <div class="dash-head">
-      <div class="dash-brand">
-        <span class="brand-badge">
-          <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
-        </span>
-        
-        <span class="brand-name">Fortuna Tails</span>
-      </div>
-      <button class="position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" id="closeBtn" type="button">✕</button>
+            <!-- AGE -->
+            <div class="filter-section">
+                <p>Age</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-group="age">All</button>
+                    <button class="filter-btn" data-group="age">Puppy / Kitten</button>
+                    <button class="filter-btn" data-group="age">Young</button>
+                    <button class="filter-btn" data-group="age">Adult</button>
+                </div>
+            </div>
+
+            <!-- SIZE -->
+            <div class="filter-section">
+                <p>Size</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-group="size">All</button>
+                    <button class="filter-btn" data-group="size">Small</button>
+                    <button class="filter-btn" data-group="size">Medium</button>
+                    <button class="filter-btn" data-group="size">Large</button>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="filter-actions">
+                <button class="reset-btn">Reset</button>
+                <button class="show-btn">Show Results</button>
+            </div>
+
+        </div>
     </div>
 
-    <nav class="dash-links">
-      <button class="dash-link active" type="button" data-page="gallery">
-        <i class="fa-solid fa-user-group"></i> Pet Gallery
-      </button>
+    <!-- adoption meeting modal -->
+    <div class="filter-modal" id="adoptionModal">
+        <div class="filter-box">
 
-      <button class="dash-link" type="button" data-page="dashboard">
-        <i class="fa-solid fa-table-columns"></i> Dashboard
-      </button>
+            <div class="filter-header">
+                <h3>Meetings</h3>
+                <i class="fa-solid fa-xmark" id="closeAdoptionsModal"></i>
+            </div>
 
-      <button class="dash-link" type="button" data-page="inventory">
-        <i class="fa-solid fa-bone"></i> Pet Inventory
-      </button>
 
-      <button class="dash-link" type="button" data-page="adoptions">
-        <i class="fa-regular fa-heart"></i> Adoptions
-      </button>
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="meetingsContainer">
 
-      <div class="dash-divider"></div>
+                <!-- Meeting Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
 
-      <button class="dash-link" type="button" data-page="settings">
-        <i class="fa-solid fa-gear"></i> Settings
-      </button>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title mb-1">
+                                <i class="bi bi-heart me-2"></i>
+                                Meet Bella
+                            </h5>
 
-      <button class="dash-link logout" type="button" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    </nav>
-  </div>
+                        </div>
 
-  <!-- PAGE Pet Gallery (brandon) -->
-  <section class="page is-active" data-page="gallery">
+                        <p class="mb-1">
+                            <i class="bi bi-calendar-event me-2"></i>
+                            June 14 • 2:00 PM
+                        </p>
 
-    <!-- HERO CAROUSEL -->
-<section class="hero">
-  <div id="fortunaCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <p class="mb-1">
+                            <i class="bi bi-paw me-2"></i>
+                            Animal: Dog
+                        </p>
 
-    <!-- Indicators -->
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="0" class="active"></button>
-      <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="1"></button>
-      <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="2"></button>
+                        <p class="mb-2">
+                            <i class="bi bi-tag me-2"></i>
+                            Breed: Golden Retriever
+                        </p>
+
+                        <button class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash me-1"></i>
+                            Delete
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Another Meeting -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title mb-1">
+                                <i class="bi bi-heart me-2"></i>
+                                Meet Luna
+                            </h5>
+
+                        </div>
+
+                        <p class="mb-1">
+                            <i class="bi bi-calendar-event me-2"></i>
+                            June 16 • 11:30 AM
+                        </p>
+
+                        <p class="mb-1">
+                            <i class="bi bi-paw me-2"></i>
+                            Animal: Cat
+                        </p>
+
+                        <p class="mb-2">
+                            <i class="bi bi-tag me-2"></i>
+                            Breed: Siamese
+                        </p>
+
+                        <button class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash me-1"></i>
+                            Delete
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- Slides -->
-    <div class="carousel-inner">
+    <!-- DASHBOARD MENU -->
+    <div id="overlay" class="overlay hidden"></div>
 
-      <div class="carousel-item active">
-        <img src="images/c1.jpg"
-             class="d-block w-100 carousel-img" alt="Dog">
-        <div class="carousel-caption">
-          <h1 class="fw-bold">Find a Forever Friend</h1>
-          <p>Give a rescue pet a second chance at happiness.</p>
-        </div>
-      </div>
+    <div id="dashPanel" class="dash-panel hidden">
+        <div class="dash-head">
+            <div class="dash-brand">
+                <span class="brand-badge">
+                    <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
+                </span>
 
-      <div class="carousel-item">
-        <img src="images/c2.jpg"
-             class="d-block w-100 carousel-img" alt="Dog">
-        <div class="carousel-caption">
-          <h1 class="fw-bold">Adopt. Love. Repeat.</h1>
-          <p>Your new best friend is waiting for you.</p>
-        </div>
-      </div>
-
-      <div class="carousel-item">
-        <img src="images/c3.jpeg"
-             class="d-block w-100 carousel-img" alt="Cat">
-        <div class="carousel-caption">
-          <h1 class="fw-bold">Fortuna Favors the Kind</h1>
-          <p>Open your heart. Change a life.</p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
-
-  </div>
-</section>
-
-
-    <!-- CONTENT -->
-    <section class="py-5">
-      <div class="container">
-
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-          <h2 class="fw-bold m-0">Available for Adoption</h2>
-
-          <div class="filters d-flex gap-2">
-            <button class="filter-btn active" type="button">All Pets</button>
-            <button class="filter-btn" type="button">Dogs</button>
-            <button class="filter-btn" type="button">Cats</button>
-          </div>
+                <span class="brand-name">Fortuna Tails</span>
+            </div>
+            <button class="position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" id="closeBtn" type="button">✕</button>
         </div>
 
-        <!-- PET CARDS (Bootstrap Grid by brandon) -->
-        <div class="row g-4">
-
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="pet-card h-100">
-              <img class="pet-img buddy"
-                src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60"
-                alt="dog">
-              <div class="info">
-                <h3>Buddy</h3>
-                <p>2 years • Dog</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="pet-card h-100">
-              <img class="pet-img luna"
-                src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60"
-                alt="dog">
-              <div class="info">
-                <h3>Luna</h3>
-                <p>1 year • Dog</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="pet-card h-100">
-              <img class="pet-img milo"
-                src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60"
-                alt="dog">
-              <div class="info">
-                <h3>Milo</h3>
-                <p>3 years • Dog</p>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="pet-card">
-              <img class="pet-img max"
-                src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60"
-                alt="Max">
-              <div class="info">
-                <h3>Max</h3>
-                <p>4 years • Dog</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-4">
-            <div class="pet-card">
-              <img class="pet-img"
-                src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60"
-                alt="Cat">
-              <div class="info">
-                <h3>Nala</h3>
-                <p>2 years • Cat</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-4">
-            <div class="pet-card">
-              <img class="pet-img"
-                src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60"
-                alt="Dog">
-              <div class="info">
-                <h3>Rocky</h3>
-                <p>3 years • Dog</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  </section>
-
-  <!-- PAGE Dashboard (Brandon)-->
-  <section class="page" data-page="dashboard">
-    <section class="hero text-center">
-      <div class="container py-4">
-
-        <!-- Breadcrumb -->
-        <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
-          <i class="fa-solid fa-house"></i>
-          <span>/</span>
-          <span class="fw-semibold">Dashboard</span>
-        </div>
-
-        <!-- Header -->
-        <div class="mb-4">
-          <h2 class="fw-bold mb-1">Your Overview</h2>
-          <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
-        </div>
-
-        <!-- Stat cards -->
-        <div class="row g-3 mb-4">
-          <div class="col-12 col-md-6 col-lg-3">
-            <div class="dash-stat card border-0 border-start border-4 border-danger shadow-sm">
-              <div class="card-body d-flex align-items-center">
-                <div class="dash-big-icon text-danger">
-                  <i class="bi bi-heart-fill"></i>
-                </div>
-                <div class="ms-5">
-                  <div class="text-muted small fw-semibold">Saved Pets</div>
-                  <div class="fs-4 fw-bold">6</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-
-          <div class="col-12 col-md-6 col-lg-3">
-            <div class="dash-stat card border-0 border-start border-4 border-primary shadow-sm">
-              <div class="card-body d-flex align-items-center">
-          
-                <div class="dash-big-icon text-primary">
-                  <i class="bi bi-send-fill"></i>
-                </div>
-          
-                <div class="ms-5">
-                  <div class="text-muted small fw-semibold">Applications</div>
-                  <div class="fs-4 fw-bold">2</div>
-                </div>
-          
-              </div>
-            </div>
-          </div>
-          
-
-          <div class="col-12 col-md-6 col-lg-3">
-            <div class="dash-stat card border-0 border-start border-4 border-success shadow-sm">
-              <div class="card-body d-flex align-items-center">
-          
-                <div class="dash-big-icon text-success">
-                  <i class="bi bi-calendar-check-fill"></i>
-                </div>
-          
-                <div class="ms-5">
-                  <div class="text-muted small fw-semibold">Visits Booked</div>
-                  <div class="fs-4 fw-bold">1</div>
-                </div>
-          
-              </div>
-            </div>
-          </div>
-          
-
-          <div class="col-12 col-md-6 col-lg-3">
-            <div class="dash-stat card border-0 border-start border-4 border-info shadow-sm">
-              <div class="card-body d-flex align-items-center">
-          
-                <div class="dash-big-icon text-info">
-                  <i class="bi bi-bell-fill"></i>
-                </div>
-          
-                <div class="ms-5">
-                  <div class="text-muted small fw-semibold">Alerts</div>
-                  <div class="fs-4 fw-bold">3</div>
-                </div>
-          
-              </div>
-            </div>
-          </div>
-          
-        </div>
-    </section>
-
-    <!-- Main panels -->
-      <div class="row g-3">
-
-        <!-- Recent Activity (transparent card) -->
-                 
-          <div class="col-12 col-lg-6">
-            <div class="card activity-card">
-              <div class="card-body">
-                <h5 class="fw-bold mb-3">Recent Activity</h5>
-
-                <div class="dash-item d-flex align-items-start gap-3">
-                  <div class="dash-dot bg-warning"></div>
-                  <div>
-                    <div class="fw-semibold">You saved “Max” to favourites</div>
-                    <div class="text-muted small">Today • 10:42</div>
-                  </div>
-                </div>
-
-                <div class="dash-item d-flex align-items-start gap-3">
-                  <div class="dash-dot bg-primary"></div>
-                  <div>
-                    <div class="fw-semibold">Application submitted for “Buddy”</div>
-                    <div class="text-muted small">Yesterday • 18:12</div>
-                  </div>
-                </div>
-
-                <div class="dash-item d-flex align-items-start gap-3">
-                  <div class="dash-dot bg-success"></div>
-                  <div>
-                    <div class="fw-semibold">Visit booked (Saturday)</div>
-                    <div class="text-muted small">2 days ago • 13:05</div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-
-        <!-- Preferences (plain content) -->
-        <div class="col-12 col-lg-5">
-          <div class="preferences h-100" style="margin-top: 30px;">
-            <h5 class="fw-bold mb-3">Your Preferences</h5>
-
-            <div class="mb-3">
-              <div class="d-flex justify-content-between small fw-semibold">
-                <span>Dogs</span><span class="text-muted">70%</span>
-              </div>
-              <div class="progress" style="height:10px;">
-                <div class="progress-bar bg-primary" style="width:70%"></div>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <div class="d-flex justify-content-between small fw-semibold">
-                <span>Cats</span><span class="text-muted">25%</span>
-              </div>
-              <div class="progress" style="height:10px;">
-                <div class="progress-bar bg-danger" style="width:25%"></div>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <div class="d-flex justify-content-between small fw-semibold">
-                <span>Other</span><span class="text-muted">5%</span>
-              </div>
-              <div class="progress" style="height:10px;">
-                <div class="progress-bar bg-warning" style="width:5%"></div>
-              </div>
-            </div>
-
-            <div class="p-3 rounded-4 dash-callout">
-              <div class="fw-bold mb-1">Tip</div>
-              <div class="text-muted small mb-0">
-                Save pets to compare them later, then submit one application when you’re ready.
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- PAGE Inventory (brandon) -->
-  <section class="page" data-page="inventory">
-    <section class="py-5">
-      <div class="container">
-        <h2 class="fw-bold">Pet Inventory</h2>
-        <p>Manage pets.</p>
-      </div>
-    </section>
-  </section>
-
-  <!-- PAGE Adoptions (Brandon) -->
-  <section class="page" data-page="adoptions">
-    <section class="py-5">
-      <div class="container">
-        <h2 class="fw-bold">Adoptions</h2>
-        <p>Adoption requests.</p>
-      </div>
-    </section>
-  </section>
-
-  <!-- PAGE Settings (Brandon) -->
-  <section class="page" data-page="settings">
-    <section class="py-5">
-      <div class="container">
-        <h2 class="fw-bold">Settings</h2>
-        <p>Account / preferences.</p>
-      </div>
-    </section>
-  </section>
-
-  
-  <!-- Registration Page -->
-<!-- Registration Page -->
-<section class="page" data-page="registration">
-  <div class="register-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
-
-    <!-- Close Button -->
-    <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3"
-      type="button">✕</button>
-
-    <div class="card register-card p-0 overflow-hidden">
-
-      <div class="row g-0">
-
-        <!-- LEFT SIDE -->
-        <div class="col-md-5 register-left d-flex flex-column justify-content-center align-items-center text-center p-4">
-          <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo mb-3">
-          <h3 class="fw-bold">Join Fortuna Tails</h3>
-          <p class="small text-muted">
-            Create your account and start managing your shelter.
-          </p>
-        </div>
-
-        <!-- RIGHT SIDE -->
-        <div class="col-md-7 p-4">
-
-          <form>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Full Name</label>
-              <input type="text" class="form-control form-control-sm" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Email</label>
-              <input type="email" class="form-control form-control-sm" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Password</label>
-              <input type="password" class="form-control form-control-sm" required>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Confirm Password</label>
-              <input type="password" class="form-control form-control-sm" required>
-            </div>
-
-            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">
-              Create Account
+        <nav class="dash-links">
+            <button class="dash-link active" type="button" data-page="gallery">
+                <i class="fa-solid fa-user-group"></i> Pet Gallery
             </button>
-          </form>
 
-          <p class="small mt-3 mb-0 text-center">
-            Already have an account?
-            <span id="loginBtn" class="fw-bold text-warning text-decoration-underline"
-              style="cursor:pointer;">Sign In</span>
-          </p>
+            <button class="dash-link" type="button" data-page="dashboard">
+                <i class="fa-solid fa-table-columns"></i> Dashboard
+            </button>
 
-        </div>
+            <button class="dash-link" type="button" data-page="inventory">
+                <i class="fa-solid fa-bone"></i> Pet Inventory
+            </button>
 
-      </div>
+            <button class="dash-link" type="button" data-page="adoptions">
+                <i class="fa-regular fa-heart"></i> Adoptions
+            </button>
+
+            <div class="dash-divider"></div>
+
+            <button class="dash-link" type="button" data-page="settings">
+                <i class="fa-solid fa-gear"></i> Settings
+            </button>
+
+            <button class="dash-link logout" type="button" id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </nav>
     </div>
 
-  </div>
-</section>
+    <!-- PAGE Pet Gallery (brandon) -->
+    <section class="page is-active" data-page="gallery">
+
+        <!-- HERO CAROUSEL -->
+        <section class="hero">
+            <div id="fortunaCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="2"></button>
+                </div>
+
+                <!-- Slides -->
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <img src="images/c1.jpg"
+                             class="d-block w-100 carousel-img" alt="Dog">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Find a Forever Friend</h1>
+                            <p>Give a rescue pet a second chance at happiness.</p>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="images/c2.jpg"
+                             class="d-block w-100 carousel-img" alt="Dog">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Adopt. Love. Repeat.</h1>
+                            <p>Your new best friend is waiting for you.</p>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="images/c3.jpeg"
+                             class="d-block w-100 carousel-img" alt="Cat">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Fortuna Favors the Kind</h1>
+                            <p>Open your heart. Change a life.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+        </section>
 
 
- 
-  <!-- LOGIN PAGE -->
-  <section class="page" data-page="login">
-    <div class="login-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
-  
-      <!-- Close button  -->
-      <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" type="button">✕</button>
-  
-      <div class="card login-card p-4 p-md-5 text-center">
-        <!-- Logo -->
-        <div class="mb-3">
-          <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo">
-        </div>
-  
-        <!-- Header -->
-        <h3 class="fw-bold mb-2">Sign In</h3>
-        <p class="text-muted mb-4">Manage your shelter account</p>
-  
-        <!-- Form -->
-        <form>
-          <div class="mb-3 text-start"> 
-            <label class="form-label fw-semibold mb-1">Email</label>
-            <input type="email" class="form-control form-control-sm" placeholder="username@gmail.com" required>
-          </div>
-  
-          <div class="mb-3 text-start">
-            <label class="form-label fw-semibold mb-1">Password</label>
-            <input type="password" class="form-control form-control-sm" placeholder="••••••••" required>
-          </div>
-  
-          <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3">Sign In</button>
-        </form>
-  
-        <!-- Divider -->
-        <hr class="my-3">
-  
-        <!-- Register -->
-        <p class="mb-0 small">
-          Don't have an account?
-          <span id="goToRegister" class="fw-bold text-warning text-decoration-underline" style="cursor:pointer;">Register</span>
-        </p>
-      </div>
-  
-    </div>
-  </section>
-  
+        <!-- CONTENT -->
+        <section class="py-5">
+            <div class="container">
+
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                    <h2 class="fw-bold m-0">Available for Adoption</h2>
+
+                    <div class="filters d-flex gap-2">
+                        <button class="filter-btn active" type="button">All Pets</button>
+                        <button class="filter-btn" type="button">Dogs</button>
+                        <button class="filter-btn" type="button">Cats</button>
+                    </div>
+                </div>
+
+                <!-- PET CARDS (Bootstrap Grid by brandon) -->
+                <div class="row g-4">
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="pet-card h-100">
+                            <img class="pet-img buddy"
+                                 src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60"
+                                 alt="dog">
+                            <div class="info">
+                                <h3>Buddy</h3>
+                                <p>2 years • Dog</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="pet-card h-100">
+                            <img class="pet-img luna"
+                                 src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60"
+                                 alt="dog">
+                            <div class="info">
+                                <h3>Luna</h3>
+                                <p>1 year • Dog</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="pet-card h-100">
+                            <img class="pet-img milo"
+                                 src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60"
+                                 alt="dog">
+                            <div class="info">
+                                <h3>Milo</h3>
+                                <p>3 years • Dog</p>
+                            </div>
+                        </div>
+                    </div>
 
 
-  <!-- PAGE Search Results -->
-  <section class="page" data-page="results">
-    <section class="py-5">
-      <div class="container text-center">
-        <h2 class="fw-bold">Results</h2>
-        <p class="text-muted">Filtered results will appear here.</p>
-      </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="pet-card">
+                            <img class="pet-img max"
+                                 src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60"
+                                 alt="Max">
+                            <div class="info">
+                                <h3>Max</h3>
+                                <p>4 years • Dog</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="pet-card">
+                            <img class="pet-img"
+                                 src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60"
+                                 alt="Cat">
+                            <div class="info">
+                                <h3>Nala</h3>
+                                <p>2 years • Cat</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="pet-card">
+                            <img class="pet-img"
+                                 src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60"
+                                 alt="Dog">
+                            <div class="info">
+                                <h3>Rocky</h3>
+                                <p>3 years • Dog</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
     </section>
-  </section>
 
-  <!-- Bootstrap link -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PAGE Dashboard (Brandon)-->
+    <section class="page" data-page="dashboard">
+        <section class="hero text-center">
+            <div class="container py-4">
+
+                <!-- Breadcrumb -->
+                <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
+                    <i class="fa-solid fa-house"></i>
+                    <span>/</span>
+                    <span class="fw-semibold">Dashboard</span>
+                </div>
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1">Your Overview</h2>
+                    <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
+                </div>
+
+                <!-- Stat cards -->
+                <div class="row g-3 mb-4 justify-content-center">
+
+                    
 
 
-  <script src="main.js"></script>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="dash-stat card border-0 border-start border-4 border-primary shadow-sm " >
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="dash-big-icon text-primary">
+                                    <i class="bi bi-send-fill"></i>
+                                </div>
+
+                                <div class="ms-5">
+                                    <div class="text-muted small fw-semibold">Applications</div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="dash-stat card border-0 border-start border-4 border-success shadow-sm" id="openAdoptionsModal" style="cursor:pointer;">
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="dash-big-icon text-success">
+                                    <i class="bi bi-calendar-check-fill"></i>
+                                </div>
+
+                                <div class="ms-5">
+                                    <div class="text-muted small fw-semibold">Adoption Meeting</div>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="dash-stat card border-0 border-start border-4 border-info shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="dash-big-icon text-info">
+                                    <i class="bi bi-bell-fill"></i>
+                                </div>
+
+                                <div class="ms-5">
+                                    <div class="text-muted small fw-semibold">Alerts</div>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Main panels -->
+        <div class="row g-3">
+
+            <!-- Recent Activity (transparent card) -->
+
+            <div class="col-12 col-lg-6">
+                <div class="card activity-card">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Recent Activity</h5>
+
+                        <div class="dash-item d-flex align-items-start gap-3">
+                            <div class="dash-dot bg-warning"></div>
+                            <div>
+                                <div class="fw-semibold">You saved “Max” to favourites</div>
+                                <div class="text-muted small">Today • 10:42</div>
+                            </div>
+                        </div>
+
+                        <div class="dash-item d-flex align-items-start gap-3">
+                            <div class="dash-dot bg-primary"></div>
+                            <div>
+                                <div class="fw-semibold">Application submitted for “Buddy”</div>
+                                <div class="text-muted small">Yesterday • 18:12</div>
+                            </div>
+                        </div>
+
+                        <div class="dash-item d-flex align-items-start gap-3">
+                            <div class="dash-dot bg-success"></div>
+                            <div>
+                                <div class="fw-semibold">Visit booked (Saturday)</div>
+                                <div class="text-muted small">2 days ago • 13:05</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Preferences (plain content) -->
+            <div class="col-12 col-lg-5">
+                <div class="preferences h-100" style="margin-top: 30px;">
+                    <h5 class="fw-bold mb-3">Your Preferences</h5>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small fw-semibold">
+                            <span>Dogs</span><span class="text-muted">70%</span>
+                        </div>
+                        <div class="progress" style="height:10px;">
+                            <div class="progress-bar bg-primary" style="width:70%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small fw-semibold">
+                            <span>Cats</span><span class="text-muted">25%</span>
+                        </div>
+                        <div class="progress" style="height:10px;">
+                            <div class="progress-bar bg-danger" style="width:25%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between small fw-semibold">
+                            <span>Other</span><span class="text-muted">5%</span>
+                        </div>
+                        <div class="progress" style="height:10px;">
+                            <div class="progress-bar bg-warning" style="width:5%"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-4 dash-callout">
+                        <div class="fw-bold mb-1">Tip</div>
+                        <div class="text-muted small mb-0">
+                            Save pets to compare them later, then submit one application when you’re ready.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+    </section>
+
+
+    <!-- PAGE Inventory (brandon) -->
+    <section class="page" data-page="inventory">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Pet Inventory</h2>
+                <p>Manage pets.</p>
+            </div>
+        </section>
+    </section>
+
+    <!-- PAGE Adoptions (Brandon) -->
+    <section class="page" data-page="adoptions">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Adoptions</h2>
+                <p>Adoption requests.</p>
+            </div>
+        </section>
+    </section>
+
+    <!-- PAGE Settings (Brandon) -->
+    <section class="page" data-page="settings">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Settings</h2>
+                <p>Account / preferences.</p>
+            </div>
+        </section>
+    </section>
+
+
+    <!-- Registration Page -->
+    <!-- Registration Page -->
+    <section class="page" data-page="registration">
+        <div class="register-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
+
+            <!-- Close Button -->
+            <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3"
+                    type="button">
+                ✕
+            </button>
+
+            <div class="card register-card p-0 overflow-hidden">
+
+                <div class="row g-0">
+
+                    <!-- LEFT SIDE -->
+                    <div class="col-md-5 register-left d-flex flex-column justify-content-center align-items-center text-center p-4">
+                        <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo mb-3">
+                        <h3 class="fw-bold">Join Fortuna Tails</h3>
+                        <p class="small text-muted">
+                            Create your account and start managing your shelter.
+                        </p>
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="col-md-7 p-4">
+
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                <input type="text" class="form-control form-control-sm" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" class="form-control form-control-sm" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Password</label>
+                                <input type="password" class="form-control form-control-sm" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Confirm Password</label>
+                                <input type="password" class="form-control form-control-sm" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">
+                                Create Account
+                            </button>
+                        </form>
+
+                        <p class="small mt-3 mb-0 text-center">
+                            Already have an account?
+                            <span id="loginBtn" class="fw-bold text-warning text-decoration-underline"
+                                  style="cursor:pointer;">Sign In</span>
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- LOGIN PAGE -->
+    <section class="page" data-page="login">
+        <div class="login-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
+
+            <!-- Close button  -->
+            <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" type="button">✕</button>
+
+            <div class="card login-card p-4 p-md-5 text-center">
+                <!-- Logo -->
+                <div class="mb-3">
+                    <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo">
+                </div>
+
+                <!-- Header -->
+                <h3 class="fw-bold mb-2">Sign In</h3>
+                <p class="text-muted mb-4">Manage your shelter account</p>
+
+                <!-- Form -->
+                <form>
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-semibold mb-1">Email</label>
+                        <input type="email" class="form-control form-control-sm" placeholder="username@gmail.com" required>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-semibold mb-1">Password</label>
+                        <input type="password" class="form-control form-control-sm" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3">Sign In</button>
+                </form>
+
+                <!-- Divider -->
+                <hr class="my-3">
+
+                <!-- Register -->
+                <p class="mb-0 small">
+                    Don't have an account?
+                    <span id="goToRegister" class="fw-bold text-warning text-decoration-underline" style="cursor:pointer;">Register</span>
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- PAGE Search Results -->
+    <section class="page" data-page="results">
+        <section class="py-5">
+            <div class="container text-center">
+                <h2 class="fw-bold">Results</h2>
+                <p class="text-muted">Filtered results will appear here.</p>
+            </div>
+        </section>
+    </section>
+
+    <!-- Bootstrap link -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="main.js"></script>
 </body>
 
 </html>
