@@ -51,15 +51,13 @@ namespace backend.Controllers
         }
 
         [HttpGet("adoptionMeetings/{userId}")]
-        public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(string userId)
+        public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
         {
             var meetings = await _context.Meetings
                 .Where(m => m.UserId == userId)
                 .Include(m => m.Pet)
                 .ToListAsync();
 
-            if (!meetings.Any())
-                return NotFound("No meetings found for this user.");
 
             return Ok(meetings);
         }
@@ -70,8 +68,7 @@ namespace backend.Controllers
         {
             var meeting = await _context.Meetings.FindAsync(meetingId);
 
-            if (meeting == null)
-                return NotFound("Meeting not found.");
+
 
             _context.Meetings.Remove(meeting);
             await _context.SaveChangesAsync();
