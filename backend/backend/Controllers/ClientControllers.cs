@@ -27,7 +27,7 @@ namespace backend.Controllers
             if (client == null)
             {
                 //return a message if it is empty
-                return BadRequest("Client data is required");
+                return BadRequest(new {message="Client data is required"});
             }
 
             //variable for checking if a username already is in use
@@ -36,7 +36,7 @@ namespace backend.Controllers
             //check if exist is equal to true
             if (exist)
             {
-                return BadRequest("Username already exists.");
+                return BadRequest(new {message = "Username already exists."});
             }
             
 

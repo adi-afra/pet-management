@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:63342") // your frontend URL
+        policy.WithOrigins("http://localhost:63343") // match your frontend port
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -36,12 +36,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
-app.UseDefaultFiles();   
+// ------------------- Middleware -------------------
+app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseCors("AllowFrontend");   
+// Apply the CORS policy here
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

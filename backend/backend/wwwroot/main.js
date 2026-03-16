@@ -399,11 +399,11 @@ registerForm?.addEventListener("click" ,async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
-    
-    
+
+
     if (!res.ok) {
-      const error = await res.json();
-      alert("Registration failed: " + error);
+      const errorData = await res.json();
+      alert("Registration failed: " + errorData.message);
       return;
     }
 
