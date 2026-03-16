@@ -159,7 +159,7 @@ filterModal?.addEventListener("click", (e) => {
 });
 
 
-function makeMeetingCard(name, datee, timee, animall, breedd) {
+function makeMeetingCard(meeting) {
 
     // main card
     const card = document.createElement("div");
@@ -179,11 +179,14 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
     heartIcon.className = "bi bi-heart me-2";
 
     title.appendChild(heartIcon);
-    title.appendChild(document.createTextNode("Meet " + name));
+    title.appendChild(document.createTextNode("Meet " + meeting.pet.name));
 
     headerDiv.appendChild(title);
 
     // date/time
+    const meetingDate = new Date(meeting.date);
+    const formattedDate = meetingDate.toLocaleDateString();
+
     const date = document.createElement("p");
     date.className = "mb-1";
 
@@ -192,7 +195,7 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
 
     date.appendChild(calendarIcon);
     date.appendChild(
-        document.createTextNode(`${datee} • ${timee}`)
+        document.createTextNode(formattedDate)
     );
 
     // animal
@@ -204,7 +207,7 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
 
     animal.appendChild(pawIcon);
     animal.appendChild(
-        document.createTextNode("Animal: " + animall)
+        document.createTextNode("Animal: " + meeting.pet.animalType)
     );
 
     // breed
@@ -216,7 +219,7 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
 
     breed.appendChild(tagIcon);
     breed.appendChild(
-        document.createTextNode("Breed: " + breedd)
+        document.createTextNode("Breed: " + meeting.pet.breed)
     );
 
     // delete button
@@ -229,18 +232,30 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
     deleteButton.appendChild(trashIcon);
     deleteButton.appendChild(document.createTextNode("Delete"));
 
-    /* 
-    // delete functionality
-    deleteButton.addEventListener("click", () => {
-        console.log("Deleting meeting:", meetingObj.id);
+    // DELETE API CALL
+    deleteButton.addEventListener("click", async () => {
 
-        card.remove();
+        try {
 
-        // later you could call:
-        // deleteMeeting(meetingObj.id)
+            const response = await fetch(
+                `https://localhost:7013/api/Clients/adoptionMeetings/${meeting.id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Delete failed");
+                return;
+            }
+
+            // remove card from UI
+            card.remove();
+
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
+        }
     });
-
-    */
     
 
     // assembling the card
@@ -255,8 +270,36 @@ function makeMeetingCard(name, datee, timee, animall, breedd) {
     return card;
 }
 
+//calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
-    document.getElementById("meetingsContainer").appendChild(makeMeetingCard("jack", "25 jan", "16:00", "dog", "german"));
+
+    const userId = "2"; // whatever your logged-in user id is
+
+    try {
+
+        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("failed");
+        }
+
+
+        const meetings = await response.json();
+
+        const container = document.getElementById("meetingsContainer");
+
+        console.log(meetings);
+
+        container.innerHTML = "";
+
+        meetings.forEach(meeting => {
+            const card = makeMeetingCard(meeting);
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error("Error deleting meeting:", error);
+    }
+
 }
 
 

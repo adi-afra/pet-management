@@ -11,7 +11,7 @@ namespace backend.classes
 		public Dog(string id, string name, int age, string breed)
 		
             //calling the parent constructor 
-            : base(id, name, age, "Dog", breed) 
+            : base(id, name, age, breed) 
 		{ 
 			
 		}

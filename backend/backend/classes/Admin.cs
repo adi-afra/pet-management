@@ -26,7 +26,6 @@ namespace backend.classes
 
         public void ChangeName(Pet pet, string newName) { pet.SetName(newName); }
         public void ChangeAge(Pet pet, int newAge) { pet.SetAge(newAge); }
-        public void ChangeKind(Pet pet, string newKind) { pet.SetKind(newKind); }
         public void ChangeBreed(Pet pet, string newBreed) { pet.SetBreed(newBreed); }
     }
 }

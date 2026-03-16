@@ -10,7 +10,7 @@ namespace backend.classes
 		protected Cat() {} //Empty constructor for EF
 		
 		public Cat(string id, string name, int age, string breed)
-			: base(id, name, age, "Cat", breed)
+			: base(id, name, age, breed)
 		{
 			
 		}
