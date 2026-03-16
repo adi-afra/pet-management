@@ -7,7 +7,8 @@ namespace backend.classes
     public abstract class User
     {
         //properties
-        public string Id { get; private set;}
+
+        public int Id { get; private set;}
         public string Username { get; private set; }
         public string Password { get; private set; }
 
@@ -16,9 +17,9 @@ namespace backend.classes
         
         protected User() {} //empty constructor for EF
         
-        protected User(string id, string username, string password)
+        protected User(string username, string password)
         {
-            Id = ValidateString(id, nameof(id));
+            Id = GenerateId();  // assign ID here
             Username = ValidateString(username, nameof(username));
             Password = ValidateString(password, nameof(password));
         }
@@ -44,6 +45,13 @@ namespace backend.classes
             return value;
         }
 
+        private static int _lastId = 0; // static counter for simplicity
+        private static int GenerateId()
+        {
+            _lastId++;
+            return _lastId;
+        }
+        
         //each derived class must define its role
         public abstract string getRole();
 

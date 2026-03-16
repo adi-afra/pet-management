@@ -9,8 +9,8 @@ namespace backend.classes
         protected Admin() {} //Empty constructor for EF
         
         //constructor for Admin which adds a new field for their role
-        public Admin(string id, string username, string password) : 
-            base(id, username, password)
+        public Admin (string username, string password) : 
+            base(username, password)
         {
         }
 
@@ -22,7 +22,7 @@ namespace backend.classes
 
         //methods to change different fields of an instance of a Pet
 
-        public void ChnageId(Pet pet, string newId) { pet.SetId(newId); }
+        
 
         public void ChangeName(Pet pet, string newName) { pet.SetName(newName); }
         public void ChangeAge(Pet pet, int newAge) { pet.SetAge(newAge); }
