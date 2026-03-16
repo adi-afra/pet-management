@@ -13,8 +13,8 @@ namespace backend.classes
 		
 		protected Client() {} //empty constructor for EF
 		
-		public Client(string id, string username, string password)
-			: base(id, username, password)
+		public Client( string username, string password)
+			: base(username, password)
 		{
 			Meetings = new List<Meeting>();
 		}

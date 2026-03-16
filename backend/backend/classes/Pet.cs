@@ -10,7 +10,9 @@ namespace backend.classes
         //all the fields are public so the children classes can see them (C# is like this) with public getters
 
         //properties with private setters to protect data integrity
-        public string Id { get; private set; }
+        
+
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public int Age { get; private set; }
         public string Kind { get; private set; }
@@ -23,9 +25,9 @@ namespace backend.classes
         
         protected Pet() {} //Empty constructor for EF
         
-        public Pet(string id, string name, int age, string kind, string breed)
+        public Pet( string name, int age, string kind, string breed)
         {
-            Id = ValidateString(id, nameof(id));
+            Id = GenerateId();
             Name = ValidateString(name, nameof(name));
             Kind = ValidateString(kind, nameof(kind));
             Breed = ValidateString(breed, nameof(breed));
@@ -60,7 +62,7 @@ namespace backend.classes
         public void SetName(string name) => Name = ValidateString(name, nameof(name));
         public void SetKind(string kind) => Kind = ValidateString(kind, nameof(kind));
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
-        public void SetId(string id) => Id = ValidateString(id, nameof(id));
+        
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)
@@ -76,5 +78,13 @@ namespace backend.classes
         {
             Meetings.Remove(meeting);
         }
+        
+        private static int _lastId = 0; // static counter for simplicity
+        private static int GenerateId()
+        {
+            _lastId++;
+            return _lastId;
+        }
     }
+    
 }

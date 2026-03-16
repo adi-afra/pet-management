@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace backend.classes
 {
     //represents a scheduled meeting between a client and a pet
@@ -10,19 +11,21 @@ namespace backend.classes
 		public DateTime Date { get; private set; }
         //using Pet class as a data type so we wouldnt need verification
         public Pet Pet { get; private set; }
-        public string PetId { get; private set; }  // EF Foreign Key
-        public string UserId { get; private set; }
+        public int PetId { get; private set; }  // EF Foreign Key
+        public int UserId { get; private set; }
 
 
         protected Meeting() {} //Empty constructor for EF
 
-		public Meeting(DateTime date, Pet pet, string userId)
+		public Meeting(DateTime date, Pet pet, int userId)
 		{
             //checking if any of the attributes is null, then throw an error
             //setting up the attributes with values
+
+            Id = GenerateId();
             Date = date;
-            Pet = pet ?? throw new ArgumentNullException(nameof(pet),"pet argument can not be empty");
-            UserId = userId ?? throw new ArgumentNullException(nameof(userId),"user Id can not be empty");
+            Pet = pet ?? throw new ArgumentNullException(nameof(pet));
+            UserId = userId;
             PetId = pet.Id;
         }
 
@@ -44,17 +47,12 @@ namespace backend.classes
             Pet = pet;
         }
 
-        protected void SetUserId(string id)
+        private static int _lastId = 0; // static counter for simplicity
+        private static int GenerateId()
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentNullException("user Id can not be empty");
-            }
-
-            UserId = id;
+            _lastId++;
+            return _lastId;
         }
-
-
 
 	}
 }

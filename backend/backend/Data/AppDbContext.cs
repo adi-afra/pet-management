@@ -24,6 +24,18 @@ namespace backend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedOnAdd(); // tells EF: let the database generate the ID
+
+            modelBuilder.Entity<Pet>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Meeting>()
+                .Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             // ----- Configure inheritance -----
 

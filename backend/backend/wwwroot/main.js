@@ -215,5 +215,32 @@ showResultsBtn?.addEventListener("click", () => {
 });
 
 
+const registerForm = document.getElementById("submit");
+registerForm?.addEventListener("click" ,async (e) => {
+  e.preventDefault();
 
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("http://localhost:5212/api/Clients/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    
+    
+    if (!res.ok) {
+      const error = await res.json();
+      alert("Registration failed: " + error);
+      return;
+    }
+
+    alert("Registration successful!");
+    showPage("login"); // redirect to login
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  }
+});
 
