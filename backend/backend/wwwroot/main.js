@@ -273,7 +273,7 @@ function makeMeetingCard(meeting) {
 //calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
 
-    const userId = "2"; // whatever your logged-in user id is
+    const userId = 2; // whatever your logged-in user id is
 
     try {
 
@@ -287,7 +287,6 @@ async function showMeetings() {
 
         const container = document.getElementById("meetingsContainer");
 
-        console.log(meetings);
 
         container.innerHTML = "";
 
@@ -297,7 +296,7 @@ async function showMeetings() {
         });
 
     } catch (error) {
-        console.error("Error deleting meeting:", error);
+        console.error("Error show meeting:", error);
     }
 
 }
