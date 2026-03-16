@@ -49,5 +49,34 @@ namespace backend.Controllers
             //return a successful message
             return Ok(client);
         }
+
+        [HttpGet("adoptionMeetings/{userId}")]
+        public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(string userId)
+        {
+            var meetings = await _context.Meetings
+                .Where(m => m.UserId == userId)
+                .Include(m => m.Pet)
+                .ToListAsync();
+
+            if (!meetings.Any())
+                return NotFound("No meetings found for this user.");
+
+            return Ok(meetings);
+        }
+
+        // DELETE: api/clients/adoptionMeetings/5
+        [HttpDelete("adoptionMeetings/{meetingId}")]
+        public async Task<IActionResult> DeleteMeeting(int meetingId)
+        {
+            var meeting = await _context.Meetings.FindAsync(meetingId);
+
+            if (meeting == null)
+                return NotFound("Meeting not found.");
+
+            _context.Meetings.Remove(meeting);
+            await _context.SaveChangesAsync();
+
+            return NoContent(); // 204 success
+        }
     }
 }

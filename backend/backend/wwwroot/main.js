@@ -159,6 +159,177 @@ filterModal?.addEventListener("click", (e) => {
 });
 
 
+function makeMeetingCard(meeting) {
+
+    // main card
+    const card = document.createElement("div");
+    card.className = "card shadow-sm";
+
+    const cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+
+    // header section
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "d-flex justify-content-between";
+
+    const title = document.createElement("h5");
+    title.className = "card-title mb-1";
+
+    const heartIcon = document.createElement("i");
+    heartIcon.className = "bi bi-heart me-2";
+
+    title.appendChild(heartIcon);
+    title.appendChild(document.createTextNode("Meet " + meeting.pet.name));
+
+    headerDiv.appendChild(title);
+
+    // date/time
+    const meetingDate = new Date(meeting.date);
+    const formattedDate = meetingDate.toLocaleDateString();
+
+    const date = document.createElement("p");
+    date.className = "mb-1";
+
+    const calendarIcon = document.createElement("i");
+    calendarIcon.className = "bi bi-calendar-event me-2";
+
+    date.appendChild(calendarIcon);
+    date.appendChild(
+        document.createTextNode(formattedDate)
+    );
+
+    // animal
+    const animal = document.createElement("p");
+    animal.className = "mb-1";
+
+    const pawIcon = document.createElement("i");
+    pawIcon.className = "bi bi-paw me-2";
+
+    animal.appendChild(pawIcon);
+    animal.appendChild(
+        document.createTextNode("Animal: " + meeting.pet.animalType)
+    );
+
+    // breed
+    const breed = document.createElement("p");
+    breed.className = "mb-2";
+
+    const tagIcon = document.createElement("i");
+    tagIcon.className = "bi bi-tag me-2";
+
+    breed.appendChild(tagIcon);
+    breed.appendChild(
+        document.createTextNode("Breed: " + meeting.pet.breed)
+    );
+
+    // delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn btn-danger btn-sm";
+
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "bi bi-trash me-1";
+
+    deleteButton.appendChild(trashIcon);
+    deleteButton.appendChild(document.createTextNode("Delete"));
+
+    // DELETE API CALL
+    deleteButton.addEventListener("click", async () => {
+
+        try {
+
+            const response = await fetch(
+                `https://localhost:7013/api/Clients/adoptionMeetings/${meeting.id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Delete failed");
+                return;
+            }
+
+            // remove card from UI
+            card.remove();
+
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
+        }
+    });
+    
+
+    // assembling the card
+    cardBody.appendChild(headerDiv);
+    cardBody.appendChild(date);
+    cardBody.appendChild(animal);
+    cardBody.appendChild(breed);
+    cardBody.appendChild(deleteButton);
+
+    card.appendChild(cardBody);
+
+    return card;
+}
+
+//calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
+async function showMeetings() {
+
+    const userId = "2"; // whatever your logged-in user id is
+
+    try {
+
+        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("failed");
+        }
+
+
+        const meetings = await response.json();
+
+        const container = document.getElementById("meetingsContainer");
+
+        console.log(meetings);
+
+        container.innerHTML = "";
+
+        meetings.forEach(meeting => {
+            const card = makeMeetingCard(meeting);
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error("Error deleting meeting:", error);
+    }
+
+}
+
+
+// Adoption modal open/close
+const adoptionModal = document.getElementById("adoptionModal");
+const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
+const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
+
+
+// Open filter modal
+openAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "flex";
+    showMeetings();
+});
+
+
+// Close filter modal
+closeAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "none";
+});
+
+
+// Click outside to close
+adoptionModal?.addEventListener("click", (e) => {
+    if (e.target === adoptionModal) {
+        adoptionModal.style.display = "none";
+    }
+});
+
+
 
 //Filter button logic
 

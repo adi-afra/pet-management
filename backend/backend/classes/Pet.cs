@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 
 namespace backend.classes
@@ -15,21 +17,24 @@ namespace backend.classes
         public int Id { get; private set; }
         public string Name { get; private set; }
         public int Age { get; private set; }
-        public string Kind { get; private set; }
         public string Breed { get; private set; }
 
+        //to bring the discriminator here
+        [NotMapped]
+        public string AnimalType => GetType().Name;
+
         //list of meetings associated with this pet
+        [JsonIgnore]
         public List<Meeting> Meetings { get; private set; } = new List<Meeting>();
 
         //constructor with all the fields as parameters, and validation for age and null or empty strings
         
         protected Pet() {} //Empty constructor for EF
         
-        public Pet( string name, int age, string kind, string breed)
+        public Pet( string name, int age, string breed)
         {
             Id = GenerateId();
             Name = ValidateString(name, nameof(name));
-            Kind = ValidateString(kind, nameof(kind));
             Breed = ValidateString(breed, nameof(breed));
 
             if (age < 0)
@@ -60,7 +65,6 @@ namespace backend.classes
         }
 
         public void SetName(string name) => Name = ValidateString(name, nameof(name));
-        public void SetKind(string kind) => Kind = ValidateString(kind, nameof(kind));
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
         
 
