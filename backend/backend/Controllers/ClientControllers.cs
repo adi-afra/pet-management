@@ -46,6 +46,8 @@ namespace backend.Controllers
             }
         }
 
+        
+        
         [HttpGet("adoptionMeetings/{userId}")]
         public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
         {
@@ -58,6 +60,8 @@ namespace backend.Controllers
             return Ok(meetings);
         }
 
+        
+        
         // DELETE: api/clients/adoptionMeetings/5
         [HttpDelete("adoptionMeetings/{meetingId}")]
         public async Task<IActionResult> DeleteMeeting(int meetingId)
@@ -71,5 +75,37 @@ namespace backend.Controllers
 
             return NoContent(); // 204 success
         }
+        
+        
+        //api for deleting surrender meeting
+        [HttpDelete("surrenderMeeting/{meetingId}")]
+        public async Task<IActionResult> DeleteSurrenderMeeting(int meetingId)
+        {
+            // Find the meeting in the database
+            var meeting = await _context.Meetings
+                .Include(m => m.Pet)
+                .FirstOrDefaultAsync(m => m.Id == meetingId);
+
+            //check if the meeting is empty
+            if (meeting == null)
+                return NotFound($"Meeting with Id {meetingId} not found.");
+
+            //check that it's actually a surrender meeting
+            if (meeting.Type != MeetingType.Surrender)
+                return BadRequest("Cannot delete a meeting that is not a surrender meeting.");
+
+            // Remove potential pet if it has no other purpose
+            if (meeting.Pet.Status == PetStatus.Potential)
+            {
+                _context.Pets.Remove(meeting.Pet);
+            }
+
+            _context.Meetings.Remove(meeting);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        
     }
 }

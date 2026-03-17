@@ -18,7 +18,7 @@ namespace backend.classes
         public string Name { get; private set; }
         public int Age { get; private set; }
         public string Breed { get; private set; }
-
+        public PetStatus Status { get; private set; }
         //to bring the discriminator here
         [NotMapped]
         public string AnimalType => GetType().Name;
@@ -41,6 +41,8 @@ namespace backend.classes
 
             Age = age;
             Meetings = new List<Meeting>();
+            
+            Status = PetStatus.Registered; //setting the default status as registered
         }
 
         //validation helper
@@ -65,7 +67,8 @@ namespace backend.classes
 
         public void SetName(string name) => Name = ValidateString(name, nameof(name));
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
-        
+
+        public void SetStatus(PetStatus status) => Status = status;
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)
@@ -75,6 +78,7 @@ namespace backend.classes
 
             Meetings.Add(meeting);
         }
+        
 
         //removes a meeting from the pet
         public void RemoveMeeting(Meeting meeting)
