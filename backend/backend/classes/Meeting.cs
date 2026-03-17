@@ -21,8 +21,7 @@ namespace backend.classes
 		{
             //checking if any of the attributes is null, then throw an error
             //setting up the attributes with values
-
-            Id = GenerateId();
+            
             Date = date;
             Pet = pet ?? throw new ArgumentNullException(nameof(pet));
             UserId = userId;
@@ -46,13 +45,7 @@ namespace backend.classes
 
             Pet = pet;
         }
-
-        private static int _lastId = 0; // static counter for simplicity
-        private static int GenerateId()
-        {
-            _lastId++;
-            return _lastId;
-        }
+        
 
 	}
 }

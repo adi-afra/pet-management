@@ -33,7 +33,6 @@ namespace backend.classes
         
         public Pet( string name, int age, string breed)
         {
-            Id = GenerateId();
             Name = ValidateString(name, nameof(name));
             Breed = ValidateString(breed, nameof(breed));
 
@@ -83,12 +82,6 @@ namespace backend.classes
             Meetings.Remove(meeting);
         }
         
-        private static int _lastId = 0; // static counter for simplicity
-        private static int GenerateId()
-        {
-            _lastId++;
-            return _lastId;
-        }
     }
     
 }

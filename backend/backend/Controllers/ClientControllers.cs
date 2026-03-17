@@ -23,31 +23,27 @@ namespace backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> CreateClient([FromBody] Client client)
         {
-            //check if the client object is empty
             if (client == null)
+                return BadRequest(new { message = "Client data is required." });
+
+            try
             {
-                //return a message if it is empty
-                return BadRequest(new {message="Client data is required"});
-            }
+                // Check username
+                bool exist = await _context.Clients.AnyAsync(c => c.Username == client.Username);
+                if (exist)
+                    return BadRequest(new { message = "Username already exists." });
 
-            //variable for checking if a username already is in use
-            bool exist = await _context.Clients.AnyAsync(c => c.Username == client.Username);
-            
-            //check if exist is equal to true
-            if (exist)
+                _context.Clients.Add(client);
+                await _context.SaveChangesAsync();
+
+                // Return JSON object with message and client
+                return Ok(new { message = "Registration successful!", client });
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new {message = "Username already exists."});
+                // Return JSON even on server error
+                return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
             }
-            
-
-            //add the new client to the database
-            _context.Clients.Add(client);
-            
-            //save the changes
-            await _context.SaveChangesAsync();
-
-            //return a successful message
-            return Ok(client);
         }
 
         [HttpGet("adoptionMeetings/{userId}")]
