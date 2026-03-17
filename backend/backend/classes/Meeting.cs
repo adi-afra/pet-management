@@ -12,12 +12,15 @@ namespace backend.classes
         //using Pet class as a data type so we wouldnt need verification
         public Pet Pet { get; private set; }
         public int PetId { get; private set; }  // EF Foreign Key
-        public int UserId { get; private set; }
+        public int UserId { get; private set; } //EF Foreign key 
+    
+        public MeetingType Type { get; private set; } //Meeting type
 
-
+        
+        
         protected Meeting() {} //Empty constructor for EF
 
-		public Meeting(DateTime date, Pet pet, int userId)
+		public Meeting(DateTime date, Pet pet, int userId, MeetingType type)
 		{
             //checking if any of the attributes is null, then throw an error
             //setting up the attributes with values
@@ -26,6 +29,7 @@ namespace backend.classes
             Pet = pet ?? throw new ArgumentNullException(nameof(pet));
             UserId = userId;
             PetId = pet.Id;
+            Type = type;
         }
 
 
