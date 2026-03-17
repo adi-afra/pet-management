@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98b9c2dd-7db2-4f37-8aad-ca96ae776530" name="Changes" comment="" />
+    <list default="true" id="98b9c2dd-7db2-4f37-8aad-ca96ae776530" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/backend/test/PetTest/AllTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/test/PetTest/AllTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/test/PetTest/PetTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/test/PetTest/PetTest.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/test/PetTest/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/test/PetTest/TestPet.cs" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,19 +15,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="3AR4uPkgXuwPNQFLdQhm0ZLkg5x" />
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "back-fab-test",
-    "last_opened_file_path": "/Users/fabasshir"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;back-fab-test&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fabasshir&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="98b9c2dd-7db2-4f37-8aad-ca96ae776530" name="Changes" comment="" />
