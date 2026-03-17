@@ -15,7 +15,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:63343") // match your frontend port
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -26,6 +27,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add Swagger for API testing
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Add these before builder.Build()
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 
 var app = builder.Build();
 
@@ -42,8 +52,12 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.UseRouting();
+
 // Apply the CORS policy here
 app.UseCors("AllowFrontend");
+
+app.UseSession();
 
 app.UseAuthorization();
 
