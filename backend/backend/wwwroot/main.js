@@ -1,3 +1,5 @@
+const API_BASE = "http://localhost:5235/api";
+
 
 // Filters (to keep active button)
 const filterButtons = document.querySelectorAll(".filter-btn");
@@ -77,10 +79,10 @@ dashLinks.forEach((btn) => {
 
 
 //show registration page
-const registrationBtn = document.getElementById("registrationPage");
-registrationBtn?.addEventListener("click", () => {
-  showPage("registration");
-  closeDash(); 
+const navRegistrationBtn = document.getElementById("registrationPage");
+navRegistrationBtn?.addEventListener("click", () => {
+    showPage("registration");
+    closeDash();
 });
 
 //switches from register to login
@@ -103,15 +105,6 @@ document.querySelectorAll(".backToHome").forEach(btn => {
     showPage("gallery");
   });
 });
-
-// Logout (demo, still needs work)
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    alert("Logged out (demo)");
-    closeDash();
-  });
-}
 
 
 
@@ -238,9 +231,10 @@ function makeMeetingCard(meeting) {
         try {
 
             const response = await fetch(
-                `https://localhost:7013/api/Clients/adoptionMeetings/${meeting.id}`,
+                `${API_BASE}/Clients/adoptionMeetings/${meeting.id}`,
                 {
-                    method: "DELETE"
+                    method: "DELETE",
+                    credentials: "include"
                 }
             );
 
@@ -272,33 +266,38 @@ function makeMeetingCard(meeting) {
 
 //calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
+    const container = document.getElementById("meetingsContainer");
+    container.innerHTML = "<p class='text-center'>Loading meetings...</p>"; // UI feedback
 
-    const userId = 2; // whatever your logged-in user id is
-
-    try {
-
-        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
-        if (!response.ok) {
-            console.error("failed");
-        }
-
-
-        const meetings = await response.json();
-
-        const container = document.getElementById("meetingsContainer");
-
-
-        container.innerHTML = "";
-
-        meetings.forEach(meeting => {
-            const card = makeMeetingCard(meeting);
-            container.appendChild(card);
-        });
-
-    } catch (error) {
-        console.error("Error show meeting:", error);
+    const userId = await getUserId();
+    if (!userId) {
+        alert("Please log in to see your meetings.");
+        showPage("login");
+        return;
     }
 
+    try {
+        const response = await fetch(`${API_BASE}/Clients/adoptionMeetings/${userId}`, {
+            credentials: "include"
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch meetings");
+
+        const meetings = await response.json();
+        container.innerHTML = ""; // Clear loader
+
+        if (meetings.length === 0) {
+            container.innerHTML = "<p class='text-muted text-center'>No meetings scheduled yet.</p>";
+            return;
+        }
+
+        meetings.forEach(meeting => {
+            container.appendChild(makeMeetingCard(meeting));
+        });
+    } catch (error) {
+        container.innerHTML = "<p class='text-danger'>Error loading meetings.</p>";
+        console.error(error);
+    }
 }
 
 
@@ -308,24 +307,15 @@ const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
 const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
 
 
-// Open filter modal
-openAdoptionsBtn?.addEventListener("click", () => {
-    adoptionModal.style.display = "flex";
-    showMeetings();
+document.getElementById("statCardMeetings").addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "flex";
+    showMeetings(); // Your function to fetch and display data
 });
 
 
-// Close filter modal
-closeAdoptionsBtn?.addEventListener("click", () => {
-    adoptionModal.style.display = "none";
-});
-
-
-// Click outside to close
-adoptionModal?.addEventListener("click", (e) => {
-    if (e.target === adoptionModal) {
-        adoptionModal.style.display = "none";
-    }
+// Close the modal
+document.getElementById("closeMeetingsModal").addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "none";
 });
 
 
@@ -385,32 +375,129 @@ showResultsBtn?.addEventListener("click", () => {
 });
 
 
-const registerForm = document.getElementById("submit");
-registerForm?.addEventListener("click" ,async (e) => {
-  e.preventDefault();
+// ------------------------------
+// FRONTEND REGISTER / LOGIN API
+// ------------------------------ 
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+// --- REGISTER ---
+const registerBtn = document.getElementById("registerBtn");
+registerBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:5212/api/Clients/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+    const fullName = document.getElementById("regFullName").value;
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+    const confirmPassword = document.getElementById("regConfirmPassword").value;
 
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      alert("Registration failed: " + errorData.message);
-      return;
+    if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
     }
 
-    alert("Registration successful!");
-    showPage("login"); // redirect to login
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong!");
-  }
+    try {
+        const res = await fetch(`${API_BASE}/clients/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include", // important for sessions
+            body: JSON.stringify({ Username: email, Password: password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert("Registration failed: " + (data.message || "Unknown error"));
+            return;
+        }
+
+        alert("Registration successful!");
+        showPage("login");
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
 });
+
+// --- LOGIN ---
+const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+loginSubmitBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ Username: email, Password: password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert("Login failed: " + (data.message || "Invalid credentials"));
+            return;
+        }
+
+        alert("Login successful!");
+        showPage("gallery"); 
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
+});
+
+// --- LOGOUT API ---
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn?.addEventListener("click", async () => {
+    try {
+        const res = await fetch(`${API_BASE}/clients/logout`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        if (!res.ok) {
+            alert("Logout failed");
+            return;
+        }
+
+        alert("Logged out successfully");
+        showPage("login");
+        closeDash();
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
+});
+
+
+async function checkLogin() {
+    try {
+        const res = await fetch(`${API_BASE}/auth/status`, {
+            credentials: "include"
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        console.log("Logged in as:", data.username);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// checks is a user is  logged in when page loads
+checkLogin();
+
+async function getUserId() {
+    const res = await fetch(`${API_BASE}/auth/status`, {
+        credentials: "include"
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data.id;
+}
 

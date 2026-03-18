@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.classes
 {
@@ -9,17 +11,18 @@ namespace backend.classes
         //properties
 
         public int Id { get; private set;}
-        public string Username { get; private set; }
-        public string Password { get; private set; }
+        public string Username { get; private set; } = string.Empty;
+
+        [JsonIgnore]
+        public string Password { get; private set; } = string.Empty;
 
 
         //constructor with validation
-        
+
         protected User() {} //empty constructor for EF
         
         protected User(string username, string password)
         {
-            Id = GenerateId();  // assign ID here
             Username = ValidateString(username, nameof(username));
             Password = ValidateString(password, nameof(password));
         }
@@ -45,12 +48,6 @@ namespace backend.classes
             return value;
         }
 
-        private static int _lastId = 0; // static counter for simplicity
-        private static int GenerateId()
-        {
-            _lastId++;
-            return _lastId;
-        }
         
         //each derived class must define its role
         public abstract string getRole();

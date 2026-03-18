@@ -3,41 +3,27 @@ using System.Collections.Generic;
 
 namespace backend.classes
 {
-	//represents a client who can book meetings with pets
-	public class Client : User
-	{
-		// List field to store client's meetings
-		public List<Meeting> Meetings { get; private set; }
+    public class Client : User
+    {
+        // Initialize list 
+        public List<Meeting> Meetings { get; private set; } = new List<Meeting>();
 
-		// Constructor
-		
-		protected Client() {} //empty constructor for EF
-		
-		public Client( string username, string password)
-			: base(username, password)
-		{
-			Meetings = new List<Meeting>();
-		}
+        // Empty constructor for EF
+        public Client() : base() { }
 
-		// Override getRole to return client
-		public override string getRole()
-		{
-			return "Client";
-		}
+        public Client(string username, string password) : base(username, password)
+        {
+        }
 
-		// Method to create a meeting object with the current id and adds it to the client's and
-		//pet's meeting lists
-		public void CreateMeeting(DateTime date, Pet pet)
-		{
-			if (pet == null)
-			{
-				throw new ArgumentNullException(nameof(pet), "Pet cannot be empty");
-			}
+        public override string getRole() => "Client";
 
-			Meeting meeting = new Meeting(date, pet, this.Id);
+        public void CreateMeeting(DateTime date, Pet pet)
+        {
+            if (pet == null) throw new ArgumentNullException(nameof(pet));
 
-			Meetings.Add(meeting);
-			pet.AddMeeting(meeting);
-		}
-	}
+            Meeting meeting = new Meeting(date, pet, this.Id);
+            Meetings.Add(meeting);
+            pet.AddMeeting(meeting);
+        }
+    }
 }

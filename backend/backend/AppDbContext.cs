@@ -1,5 +1,5 @@
+using backend.classes;
 using Microsoft.EntityFrameworkCore;
-using backend.classes;  // your entity classes
 
 namespace backend.Data
 {
@@ -10,48 +10,42 @@ namespace backend.Data
         {
         }
 
-        // DbSets for all your entities
-        public DbSet<User> Users { get; set; }        // Base class for Admin + Client
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Admin> Admins { get; set; }
+        // --- DbSets for all entities ---
+        public DbSet<User> Users { get; set; }           // Base class for Admin + Client
+        public DbSet<Client> Clients { get; set; }       // Specific type for convenience
+        public DbSet<Admin> Admins { get; set; }         // Specific type for convenience
 
-        public DbSet<Pet> Pets { get; set; }          // Base class for Dog + Cat
+        public DbSet<Pet> Pets { get; set; }             // Base class for Dog + Cat
         public DbSet<Dog> Dogs { get; set; }
         public DbSet<Cat> Cats { get; set; }
 
         public DbSet<Meeting> Meetings { get; set; }
+        public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-            modelBuilder.Entity<User>()
-                .Property(u => u.Id)
-                .ValueGeneratedOnAdd(); // tells EF: let the database generate the ID
 
-            modelBuilder.Entity<Pet>()
-                .Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            // --- Configure ID generation ---
+            modelBuilder.Entity<User>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Pet>().Property(p => p.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Meeting>().Property(m => m.Id).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Meeting>()
-                .Property(m => m.Id)
-                .ValueGeneratedOnAdd();
+            // --- Configure inheritance ---
 
-            // ----- Configure inheritance -----
-
-            // User inheritance (Client/Admin)
+            // Users: Client & Admin
             modelBuilder.Entity<User>()
                 .HasDiscriminator<string>("Discriminator")
                 .HasValue<Client>("Client")
                 .HasValue<Admin>("Admin");
 
-            // Pet inheritance (Dog/Cat)
+            // Pets: Dog & Cat
             modelBuilder.Entity<Pet>()
                 .HasDiscriminator<string>("Discriminator")
                 .HasValue<Dog>("Dog")
                 .HasValue<Cat>("Cat");
 
-            // ----- Configure relationships -----
+            // --- Configure relationships ---
 
             // Client 1 -> * Meetings
             modelBuilder.Entity<Client>()

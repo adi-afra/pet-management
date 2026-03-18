@@ -1,7 +1,8 @@
-using backend.Data;
 using backend.classes;
+using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static backend.Controllers.AuthController;
 
 namespace backend.Controllers
 {
@@ -17,37 +18,35 @@ namespace backend.Controllers
         {
             _context = context;
         }
-        
+
+        // DTO for receiving registration data
+        public class RegisterClientDto
+        {
+            public string Username { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+        }
 
         // POST: api/clients
         [HttpPost("register")]
-        public async Task<IActionResult> CreateClient([FromBody] Client client)
+        public async Task<IActionResult> CreateClient([FromBody] RegisterClientDto dto)
         {
-            //check if the client object is empty
-            if (client == null)
-            {
-                //return a message if it is empty
-                return BadRequest(new {message="Client data is required"});
-            }
+            //Check if the client data is empty
+            if (dto == null) return BadRequest(new { message = "Data required" });
 
-            //variable for checking if a username already is in use
-            bool exist = await _context.Clients.AnyAsync(c => c.Username == client.Username);
-            
-            //check if exist is equal to true
-            if (exist)
-            {
-                return BadRequest(new {message = "Username already exists."});
-            }
-            
+            //Check username
+            bool exists = await _context.Users.OfType<Client>()
+                .AnyAsync(c => c.Username == dto.Username);
 
-            //add the new client to the database
-            _context.Clients.Add(client);
+            if (exists) return BadRequest(new { message = "Username already exists" });
+
             
-            //save the changes
+            var client = new Client(dto.Username, dto.Password);
+
+            _context.Users.Add(client);
             await _context.SaveChangesAsync();
 
-            //return a successful message
-            return Ok(client);
+            // Return JSON object with message and client
+            return Ok(new { message = "Registration successful!", client });
         }
 
         [HttpGet("adoptionMeetings/{userId}")]
@@ -67,13 +66,24 @@ namespace backend.Controllers
         public async Task<IActionResult> DeleteMeeting(int meetingId)
         {
             var meeting = await _context.Meetings.FindAsync(meetingId);
-
-
+            if (meeting == null)
+                return NotFound(new { message = "Meeting not found" });
 
             _context.Meetings.Remove(meeting);
             await _context.SaveChangesAsync();
 
-            return NoContent(); // 204 success
+            return NoContent(); //204 success
+        }
+
+
+        // DELETE: api/clients/logout
+        [HttpDelete("logout")]
+        public IActionResult Logout()
+        {
+            // Clear all session data
+            HttpContext.Session.Clear();
+
+            return Ok(new { message = "Logged out successfully" });
         }
     }
 }
