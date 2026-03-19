@@ -238,7 +238,7 @@ function makeMeetingCard(meeting) {
         try {
 
             const response = await fetch(
-                `https://localhost:7013/api/Clients/adoptionMeetings/${meeting.id}`,
+                `http://localhost:5212/api/Clients/adoptionMeetings/${meeting.id}`,
                 {
                     method: "DELETE"
                 }
@@ -256,7 +256,7 @@ function makeMeetingCard(meeting) {
             console.error("Error deleting meeting:", error);
         }
     });
-    
+
 
     // assembling the card
     cardBody.appendChild(headerDiv);
@@ -277,7 +277,7 @@ async function showMeetings() {
 
     try {
 
-        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
+        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`);
         if (!response.ok) {
             console.error("failed");
         }
@@ -308,6 +308,9 @@ const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
 const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
 
 
+
+
+
 // Open filter modal
 openAdoptionsBtn?.addEventListener("click", () => {
     adoptionModal.style.display = "flex";
@@ -330,8 +333,8 @@ adoptionModal?.addEventListener("click", (e) => {
 
 
 
-//Filter button logic
 
+//Filter button logic
 
 //Ensure only one filter button is active per secton
 filterModal?.querySelectorAll(".filter-btn").forEach((button) => {
@@ -414,3 +417,149 @@ registerForm?.addEventListener("click" ,async (e) => {
   }
 });
 
+// ----- SURRENDER MEETINGS MODAL -----
+
+// Grab the modal and buttons
+const surrenderModal = document.getElementById("surrenderModal");
+const openSurrendersBtn = document.getElementById("openSurrendersModal");
+const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
+const surrenderContainer = document.getElementById("surrendersContainer"); // container inside modal
+
+// Function to create a surrender card (similar to makeMeetingCard)
+function makeSurrenderCard(surrender) {
+    const card = document.createElement("div");
+    card.className = "card shadow-sm";
+
+    const cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+
+    // Header
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "d-flex justify-content-between";
+
+    const title = document.createElement("h5");
+    title.className = "card-title mb-1";
+
+    const alertIcon = document.createElement("i");
+    alertIcon.className = "bi bi-exclamation-circle me-2";
+
+    title.appendChild(alertIcon);
+    title.appendChild(document.createTextNode("Surrender: " + surrender.pet.name));
+
+    headerDiv.appendChild(title);
+
+    // Date requested
+    const requestDate = new Date(surrender.date);
+    const formattedDate = requestDate.toLocaleDateString();
+
+    const date = document.createElement("p");
+    date.className = "mb-1";
+
+    const calendarIcon = document.createElement("i");
+    calendarIcon.className = "bi bi-calendar-event me-2";
+
+    date.appendChild(calendarIcon);
+    date.appendChild(document.createTextNode(formattedDate));
+
+    // Animal type
+    const animal = document.createElement("p");
+    animal.className = "mb-1";
+
+    const pawIcon = document.createElement("i");
+    pawIcon.className = "bi bi-paw me-2";
+
+    animal.appendChild(pawIcon);
+    animal.appendChild(document.createTextNode("Animal: " + surrender.pet.animalType));
+
+    // Breed
+    const breed = document.createElement("p");
+    breed.className = "mb-2";
+
+    const tagIcon = document.createElement("i");
+    tagIcon.className = "bi bi-tag me-2";
+
+    breed.appendChild(tagIcon);
+    breed.appendChild(document.createTextNode("Breed: " + surrender.pet.breed));
+
+    // Delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn btn-danger btn-sm";
+
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "bi bi-trash me-1";
+
+    deleteButton.appendChild(trashIcon);
+    deleteButton.appendChild(document.createTextNode("Delete"));
+
+    deleteButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:5212/api/Clients/surrenderMeetings/${surrender.id}`,
+                { method: "DELETE" }
+            );
+            if (!response.ok) {
+                console.error("Delete failed");
+                return;
+            }
+            card.remove();
+        } catch (error) {
+            console.error("Error deleting surrender meeting:", error);
+        }
+    });
+
+    // Assemble card
+    cardBody.appendChild(headerDiv);
+    cardBody.appendChild(date);
+    cardBody.appendChild(animal);
+    cardBody.appendChild(breed);
+    cardBody.appendChild(deleteButton);
+    card.appendChild(cardBody);
+
+    return card;
+}
+
+// Function to fetch and show surrender meetings
+async function showSurrenders() {
+    const userId = 2; // replace with logged-in user id
+
+    try {
+        const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("Failed to fetch surrender meetings");
+            return;
+        }
+
+        const surrenders = await response.json();
+
+        surrenderContainer.innerHTML = "";
+
+        surrenders.forEach(surrender => {
+            const card = makeSurrenderCard(surrender);
+            surrenderContainer.appendChild(card);
+        });
+
+        // Optionally update the dashboard count dynamically
+        openSurrendersBtn.querySelector(".fs-4").textContent = surrenders.length;
+
+    } catch (error) {
+        console.error("Error showing surrender meetings:", error);
+    }
+}
+
+// Open modal
+openSurrendersBtn?.addEventListener("click", () => {
+    surrenderModal.style.display = "flex";
+    showSurrenders();
+});
+
+// Close modal
+closeSurrendersBtn?.addEventListener("click", () => {
+    surrenderModal.style.display = "none";
+});
+
+// Click outside to close
+surrenderModal?.addEventListener("click", (e) => {
+    if (e.target === surrenderModal) {
+        surrenderModal.style.display = "none";
+    }
+});
