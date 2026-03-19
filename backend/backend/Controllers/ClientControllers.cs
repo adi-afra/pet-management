@@ -106,6 +106,17 @@ namespace backend.Controllers
             return NoContent();
         }
         
-        
+        // GET: api/Clients/surrenderMeetings/{userId}
+        [HttpGet("surrenderMeetings/{userId}")]
+        public async Task<ActionResult<IEnumerable<Meeting>>> GetSurrenderMeetings(int userId)
+        {
+            var meetings = await _context.Meetings
+                .Where(m => m.UserId == userId && m.Type == MeetingType.Surrender)
+                .Include(m => m.Pet)
+                .ToListAsync();
+
+
+            return Ok(meetings);
+        }
     }
 }
