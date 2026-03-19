@@ -9,7 +9,7 @@ namespace backend.classes
         public List<Meeting> Meetings { get; private set; } = new List<Meeting>();
 
         // Empty constructor for EF
-        public Client() : base() { }
+        private Client() : base() { }
 
         public Client(string username, string password) : base(username, password)
         {

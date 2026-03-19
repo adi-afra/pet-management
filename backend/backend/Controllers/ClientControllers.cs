@@ -28,25 +28,29 @@ namespace backend.Controllers
 
         // POST: api/clients
         [HttpPost("register")]
-        public async Task<IActionResult> CreateClient([FromBody] RegisterClientDto dto)
+        public async Task<IActionResult> CreateClient([FromBody] Client client)
         {
-            //Check if the client data is empty
-            if (dto == null) return BadRequest(new { message = "Data required" });
+            if (client == null)
+                return BadRequest(new { message = "Client data is required." });
 
-            //Check username
-            bool exists = await _context.Users.OfType<Client>()
-                .AnyAsync(c => c.Username == dto.Username);
+            try
+            {
+                // Check username
+                bool exist = await _context.Clients.AnyAsync(c => c.Username == client.Username);
+                if (exist)
+                    return BadRequest(new { message = "Username already exists." });
 
-            if (exists) return BadRequest(new { message = "Username already exists" });
+                _context.Clients.Add(client);
+                await _context.SaveChangesAsync();
 
-            
-            var client = new Client(dto.Username, dto.Password);
-
-            _context.Users.Add(client);
-            await _context.SaveChangesAsync();
-
-            // Return JSON object with message and client
-            return Ok(new { message = "Registration successful!", client });
+                // Return JSON object with message and client
+                return Ok(new { message = "Registration successful!", client });
+            }
+            catch (Exception ex)
+            {
+                // Return JSON even on server error
+                return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
+            }
         }
 
         [HttpGet("adoptionMeetings/{userId}")]

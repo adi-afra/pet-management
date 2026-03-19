@@ -12,8 +12,6 @@ namespace backend.classes
 
         public int Id { get; private set;}
         public string Username { get; private set; } = string.Empty;
-
-        [JsonIgnore]
         public string Password { get; private set; } = string.Empty;
 
 
