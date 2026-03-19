@@ -18,13 +18,6 @@ namespace backend.Controllers
             _context = context;
         }
 
-        // DTO for login
-        public class LoginDto
-        {
-            public string? Username { get; set; }  // nullable for validation
-            public string? Password { get; set; }
-        }
-
         // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Client loginData)
