@@ -238,7 +238,7 @@ function makeMeetingCard(meeting) {
         try {
 
             const response = await fetch(
-                `https://localhost:7013/api/Clients/adoptionMeetings/${meeting.id}`,
+                `/api/Clients/adoptionMeetings/${meeting.id}`,
                 {
                     method: "DELETE"
                 }
@@ -277,7 +277,7 @@ async function showMeetings() {
 
     try {
 
-        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
+        const response = await fetch(`/api/Clients/adoptionMeetings/${userId}`);
         if (!response.ok) {
             console.error("failed");
         }
@@ -393,7 +393,7 @@ registerForm?.addEventListener("click" ,async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    const res = await fetch("http://localhost:5212/api/Clients/register", {
+    const res = await fetch("/api/Clients/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -408,6 +408,36 @@ registerForm?.addEventListener("click" ,async (e) => {
 
     alert("Registration successful!");
     showPage("login"); // redirect to login
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  }
+});
+
+
+// Login
+const loginButton = document.getElementById("loginSubmit");
+loginButton?.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("loginUsername").value;
+  const password = document.getElementById("loginPassword").value;
+
+  try {
+    const res = await fetch("/api/Clients/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert("Login failed: " + errorData.message);
+      return;
+    }
+
+    alert("Login successful!");
+    showPage("dashboard");
   } catch (err) {
     console.error(err);
     alert("Something went wrong!");
