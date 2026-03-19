@@ -27,16 +27,15 @@ namespace backend.Controllers
 
         // POST: api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] Client loginData)
         {
-            if (loginDto == null || string.IsNullOrWhiteSpace(loginDto.Username) || string.IsNullOrWhiteSpace(loginDto.Password))
+            if (loginData == null || string.IsNullOrWhiteSpace(loginData.Username) || string.IsNullOrWhiteSpace(loginData.Password))
                 return BadRequest(new { message = "Login data is required" });
 
-            // Find user (Client or Admin)
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+                .FirstOrDefaultAsync(u => u.Username == loginData.Username);
 
-            if (user == null || user.Password != loginDto.Password)
+            if (user == null || user.Password != loginData.Password)
                 return Unauthorized(new { message = "Invalid username or password" });
 
             // Login successful: store info in session
