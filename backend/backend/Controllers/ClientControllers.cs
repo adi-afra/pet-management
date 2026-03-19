@@ -52,7 +52,7 @@ namespace backend.Controllers
         public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
         {
             var meetings = await _context.Meetings
-                .Where(m => m.UserId == userId)
+                .Where(m => m.UserId == userId && m.Type == MeetingType.Adoption)
                 .Include(m => m.Pet)
                 .ToListAsync();
 
@@ -68,7 +68,9 @@ namespace backend.Controllers
         {
             var meeting = await _context.Meetings.FindAsync(meetingId);
 
-
+            //check if the meeting is empty
+            if (meeting == null)
+                return NotFound($"Meeting with Id {meetingId} not found.");
 
             _context.Meetings.Remove(meeting);
             await _context.SaveChangesAsync();
@@ -78,7 +80,7 @@ namespace backend.Controllers
         
         
         //api for deleting surrender meeting
-        [HttpDelete("surrenderMeeting/{meetingId}")]
+        [HttpDelete("surrenderMeetings/{meetingId}")]
         public async Task<IActionResult> DeleteSurrenderMeeting(int meetingId)
         {
             // Find the meeting in the database
