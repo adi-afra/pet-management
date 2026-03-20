@@ -2,6 +2,7 @@ using backend.Data;
 using backend.classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace backend.Controllers
 {
@@ -120,5 +121,69 @@ namespace backend.Controllers
 
             return Ok(meetings);
         }
+
+        // POST: api/clients
+        [HttpPost("surrenderMeetings")]
+        public async Task<IActionResult> CreateSurrender([FromBody] JsonElement data)
+        {
+            
+            try
+            {
+                //  Validate required fields
+                if (!data.TryGetProperty("animalType", out var animalTypeProp))
+                    return BadRequest(new { message = "animalType is required" });
+
+                var animalTypeString = animalTypeProp.GetString();
+
+                //  Convert string → enum
+                if (!Enum.TryParse<PetType>(animalTypeString, true, out var petType))
+                    return BadRequest("Invalid animal type");
+
+                // 🐾 Create correct object using switch
+                Pet pet = petType switch
+                {
+                    PetType.Dog => new Dog
+                    (
+                        data.GetProperty("name").GetString(),
+                        data.GetProperty("age").GetInt32(),
+                        data.GetProperty("breed").GetString()
+                    ),
+
+                    PetType.Cat => new Cat
+                    (
+                        data.GetProperty("name").GetString(),
+                        data.GetProperty("age").GetInt32(),
+                        data.GetProperty("breed").GetString()
+                    ),
+
+                    _ => throw new Exception("Invalid animal type")
+                };
+
+                //setting the satus as potenial
+                pet.SetStatus(PetStatus.Potential);
+
+                //  Create meeting
+                var meeting = new Meeting
+                (
+                    data.GetProperty("date").GetDateTime(),
+                    pet,
+                    data.GetProperty("userId").GetInt16(),
+                    MeetingType.Surrender 
+                );
+
+                //  Save to DB
+                _context.Pets.Add(pet);
+                _context.Meetings.Add(meeting);
+                _context.SaveChanges();
+
+                return Ok(new { message = "Surrender meeting created successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return JSON even on server error
+                return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
+            }
+        }
+
     }
 }

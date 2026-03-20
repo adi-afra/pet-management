@@ -479,11 +479,73 @@ async function showSurrenders() {
             const card = makeMeetingCard(surrender);
             surrenderContainer.appendChild(card);
         });
+        addSurrenderMeetingButton.classList.remove("d-none");
 
 
     } catch (error) {
         console.error("Error showing surrender meetings:", error);
     }
+}
+
+async function addSurrenders() {
+    //getting all the values from the entry fields 
+    const petName = document.getElementById("petName").value.trim();
+    const petAge = document.getElementById("petAge").value.trim();
+    const petBreed = document.getElementById("petBreed").value.trim();
+    const petType = document.getElementById("petType").value.trim();
+    const meetingDateValue = document.getElementById("meetingDate").value.trim();
+    //getting the message <p>
+    const formMessage = document.getElementById("formMessage");
+
+    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "") {
+        formMessage.textContent = "all fields must be filled";
+        return
+    } else if (Number(petAge) < 0) {
+        formMessage.textContent = "Age cannot be negative";
+        return;
+    }
+
+    // Check meeting date
+    const meetingDate = new Date(meetingDateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (meetingDate <= today) {
+        formMessage.textContent = "Meeting date must be after today";
+        return;
+    }
+
+    formMessage.textContent = "";
+
+    const userId = 3; // replace with logged-in user id
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "name": petName,
+                "age": Number(petAge),
+                "breed": petBreed,
+                "date": meetingDate,
+                "userId": userId,
+                "animalType": petType
+            })
+        });
+
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            console.log("adding meeting failed: " + errorData.message);
+            return;
+        }
+
+        showSurrenders();
+        
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
+
 }
 
 function createMeetingForm() {
@@ -505,6 +567,7 @@ function createMeetingForm() {
     ageInput.type = "number";
     ageInput.className = "form-control";
     ageInput.placeholder = "Age";
+    ageInput.min = "";
 
     //  Breed
     const breedInput = document.createElement("input");
@@ -524,6 +587,11 @@ function createMeetingForm() {
         typeSelect.appendChild(option);
     });
 
+    //  Date
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.className = "form-control";
+
     //  Submit button
     const submitBtn = document.createElement("button");
     submitBtn.className = "btn btn-success mt-2";
@@ -534,23 +602,25 @@ function createMeetingForm() {
     closeBtn.className = "btn btn-secondary mt-2";
     closeBtn.textContent = "Close";
 
-    /*
+    // Create a <p> element for errors
+    const messageParagraph = document.createElement("p");  
+    messageParagraph.className = "text-danger"; 
+    messageParagraph.textContent = "";  
+
+    //adding IDs to all the entry fields
+    nameInput.id = "petName";
+    ageInput.id = "petAge";
+    breedInput.id = "petBreed";
+    typeSelect.id = "petType";
+    dateInput.id = "meetingDate";
+    messageParagraph.id = "formMessage"; 
+
+    
     //  Submit logic
-    submitBtn.addEventListener("click", () => {
-        const data = {
-            name: nameInput.value,
-            age: ageInput.value,
-            breed: breedInput.value,
-            animalType: typeSelect.value
-        };
-
-        console.log("Form data:", data);
-
-        if (onSubmit) {
-            onSubmit(data);
-        }
+    submitBtn.addEventListener("click", async () => {
+        addSurrenders();
     });
-    */
+    
 
     //  Close logic
     closeBtn.addEventListener("click", async () => {
@@ -562,10 +632,12 @@ function createMeetingForm() {
     // assemble form
     formBody.appendChild(nameInput);
     formBody.appendChild(ageInput);
+    formBody.appendChild(dateInput);
     formBody.appendChild(breedInput);
     formBody.appendChild(typeSelect);
     formBody.appendChild(submitBtn);
     formBody.appendChild(closeBtn);
+    formBody.appendChild(messageParagraph);
 
     formCard.appendChild(formBody);
 
@@ -575,6 +647,7 @@ function createMeetingForm() {
 // Open modal
 openSurrendersBtn?.addEventListener("click", () => {
     surrenderModal.style.display = "flex";
+    addSurrenderMeetingButton.classList.remove("d-none");
     showSurrenders();
 });
 
