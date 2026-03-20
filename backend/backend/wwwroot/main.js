@@ -398,7 +398,7 @@ registerBtn?.addEventListener("click", async (e) => {
         const res = await fetch(`${API_BASE}/clients/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include", // important for sessions
+            credentials: "include",
             body: JSON.stringify({ Username: email, Password: password })
         });
 
@@ -411,60 +411,6 @@ registerBtn?.addEventListener("click", async (e) => {
 
         alert("Registration successful!");
         showPage("login");
-    } catch (err) {
-        console.error(err);
-        alert("Something went wrong!");
-    }
-});
-
-// --- LOGIN ---
-const loginSubmitBtn = document.getElementById("loginSubmitBtn");
-loginSubmitBtn?.addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ Username: email, Password: password })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            alert("Login failed: " + (data.message || "Invalid credentials"));
-            return;
-        }
-
-        alert("Login successful!");
-        showPage("gallery"); 
-    } catch (err) {
-        console.error(err);
-        alert("Something went wrong!");
-    }
-});
-
-// --- LOGOUT API ---
-const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn?.addEventListener("click", async () => {
-    try {
-        const res = await fetch(`${API_BASE}/clients/logout`, {
-            method: "DELETE",
-            credentials: "include"
-        });
-
-        if (!res.ok) {
-            alert("Logout failed");
-            return;
-        }
-
-        alert("Logged out successfully");
-        showPage("login");
-        closeDash();
     } catch (err) {
         console.error(err);
         alert("Something went wrong!");
@@ -501,3 +447,11 @@ async function getUserId() {
     return data.id;
 }
 
+function convertFileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result); // This is the Base64 string
+        reader.onerror = error => reject(error);
+    });
+}

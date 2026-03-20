@@ -18,32 +18,6 @@ namespace backend.Controllers
             _context = context;
         }
 
-        // POST: api/auth/login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Client loginData)
-        {
-            if (loginData == null || string.IsNullOrWhiteSpace(loginData.Username) || string.IsNullOrWhiteSpace(loginData.Password))
-                return BadRequest(new { message = "Login data is required" });
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == loginData.Username);
-
-            if (user == null || user.Password != loginData.Password)
-                return Unauthorized(new { message = "Invalid username or password" });
-
-            // Login successful: store info in session
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("Role", user.getRole());
-            HttpContext.Session.SetString("Username", user.Username);
-
-            return Ok(new
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Role = user.getRole()
-            });
-        }
-
 
         [HttpGet("status")]
         public IActionResult CheckLoginStatus()

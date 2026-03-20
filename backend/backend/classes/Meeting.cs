@@ -11,7 +11,7 @@ namespace backend.classes
 		public DateTime Date { get; private set; }
         //using Pet class as a data type so we wouldnt need verification
         public Pet Pet { get; private set; }
-        public int PetId { get; private set; }  // EF Foreign Key
+        public int PetId { get; private set; }  
         public int UserId { get; private set; }
 
 

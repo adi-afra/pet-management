@@ -18,6 +18,7 @@ namespace backend.classes
         public string Name { get; private set; }
         public int Age { get; private set; }
         public string Breed { get; private set; }
+        public string? Image { get; set; }
 
         //to bring the discriminator here
         [NotMapped]

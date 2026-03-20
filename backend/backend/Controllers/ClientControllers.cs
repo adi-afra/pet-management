@@ -2,7 +2,6 @@ using backend.classes;
 using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static backend.Controllers.AuthController;
 
 namespace backend.Controllers
 {
@@ -17,13 +16,6 @@ namespace backend.Controllers
         public ClientsController(AppDbContext context)
         {
             _context = context;
-        }
-
-        // DTO for receiving registration data
-        public class RegisterClientDto
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
         }
 
         // POST: api/clients
@@ -77,17 +69,6 @@ namespace backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent(); //204 success
-        }
-
-
-        // DELETE: api/clients/logout
-        [HttpDelete("logout")]
-        public IActionResult Logout()
-        {
-            // Clear all session data
-            HttpContext.Session.Clear();
-
-            return Ok(new { message = "Logged out successfully" });
         }
     }
 }
