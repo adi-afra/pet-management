@@ -35,13 +35,14 @@ namespace backend.Controllers
             if (string.IsNullOrEmpty(query))
                 return BadRequest("Search query required");
 
-            query = query.ToLower();
+            var q = query.ToLower();
 
             var pets = await _context.Pets
                 .Where(p =>
-                    p.Name.ToLower().Contains(query) ||
-                    p.AnimalType.ToLower().Contains(query) ||
-                    p.Breed.ToLower().Contains(query)
+                    (p.Name != null && p.Name.ToLower().Contains(q)) ||
+                    (p.Breed != null && p.Breed.ToLower().Contains(q)) ||
+                    // This is the magic line that searches the hidden "Discriminator" column
+                    EF.Property<string>(p, "Discriminator").ToLower().Contains(q)
                 )
                 .ToListAsync();
 
