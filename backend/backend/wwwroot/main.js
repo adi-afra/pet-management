@@ -1,17 +1,4 @@
 
-// Filters (to keep active button)
-const filterButtons = document.querySelectorAll(".filter-btn");
-
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    filterButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
-  });
-});
-
-
-
-
 // Dashboard dropdown (open/close)
 
 const menuBtn = document.getElementById("menuBtn");
@@ -112,26 +99,6 @@ if (logoutBtn) {
     closeDash();
   });
 }
-
-
-
-
-//Search input handling (show results after searching in the box)
-const searchInput = document.querySelector('.search input');
-
-searchInput?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const query = searchInput.value.trim();
-    if (query !== "") {
-      showPage("results");
-      
-      //Close the filter modal if it is open
-      filterModal.style.display = "none"; 
-    }
-  }
-});
-
-
 
 // Filter modal open/close
 const filterModal = document.getElementById("filterModal");
@@ -409,18 +376,6 @@ resetBtn?.addEventListener("click", () => {
 });
 
 
-
-// Show results and close modal
-const showResultsBtn = document.querySelector(".filter-actions .show-btn");
-showResultsBtn?.addEventListener("click", () => {
-  // Navigate to results page
-  showPage("results");
-
-  // Close filter modal
-  filterModal.style.display = "none";
-});
-
-
 const registerForm = document.getElementById("submit");
 registerForm?.addEventListener("click" ,async (e) => {
   e.preventDefault();
@@ -669,4 +624,101 @@ addSurrenderMeetingButton?.addEventListener("click", () => {
     createMeetingForm();
     addSurrenderMeetingButton.classList.add("d-none");
 
+});
+
+const PETS_API_BASE = "/api/Pets";
+
+function renderPets(pets, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error("Missing container:", containerId);
+        return;
+    }
+
+    if (!pets || pets.length === 0) {
+        container.innerHTML = `<div class="col-12"><p class="text-center">No pets found.</p></div>`;
+        return;
+    }
+
+    container.innerHTML = pets.map(pet => `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="pet-card h-100">
+                <div class="info">
+                    <h3>${pet.name}</h3>
+                    <p>${pet.age} years • ${pet.animalType}</p>
+                    <p>${pet.breed}</p>
+                    <p>Status: ${pet.status}</p>
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
+async function loadAllPets() {
+    const res = await fetch(PETS_API_BASE);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function loadDogs() {
+    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Dog`);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function loadCats() {
+    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Cat`);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function searchPets() {
+    const input = document.getElementById("searchInput");
+    const breed = input.value.trim();
+
+    const url = breed
+        ? `${PETS_API_BASE}/filter?breed=${encodeURIComponent(breed)}`
+        : PETS_API_BASE;
+
+    const res = await fetch(url);
+    const pets = await res.json();
+
+    renderPets(pets, "resultsGallery");
+    showPage("results");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const galleryAllBtn = document.getElementById("galleryAllBtn");
+    const galleryDogsBtn = document.getElementById("galleryDogsBtn");
+    const galleryCatsBtn = document.getElementById("galleryCatsBtn");
+    const searchInput = document.getElementById("searchInput");
+
+    console.log("galleryAllBtn:", galleryAllBtn);
+    console.log("galleryDogsBtn:", galleryDogsBtn);
+    console.log("galleryCatsBtn:", galleryCatsBtn);
+    console.log("searchInput:", searchInput);
+
+    galleryAllBtn?.addEventListener("click", () => {
+        console.log("All Pets clicked");
+        loadAllPets();
+    });
+
+    galleryDogsBtn?.addEventListener("click", () => {
+        console.log("Dogs clicked");
+        loadDogs();
+    });
+
+    galleryCatsBtn?.addEventListener("click", () => {
+        console.log("Cats clicked");
+        loadCats();
+    });
+
+    searchInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            console.log("Search Enter pressed");
+            searchPets();
+        }
+    });
+
+    loadAllPets();
 });
