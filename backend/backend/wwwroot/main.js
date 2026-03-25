@@ -686,11 +686,12 @@ function renderPets(pets, containerId) {
     container.innerHTML = pets.map(pet => `
         <div class="col-12 col-md-6 col-lg-4">
             <div class="pet-card h-100">
+                <img class="pet-img"
+                     src="${pet.imageUrl}"
+                     alt="${pet.name}">
                 <div class="info">
                     <h3>${pet.name}</h3>
-                    <p>${pet.age} years • ${pet.animalType}</p>
-                    <p>${pet.breed}</p>
-                    <p>Status: ${pet.status}</p>
+                    <p>${pet.age} years • ${pet.type}</p>
                 </div>
             </div>
         </div>
@@ -698,7 +699,7 @@ function renderPets(pets, containerId) {
 }
 
 async function loadAllPets() {
-    const res = await fetch(PETS_API_BASE);
+    const res = await fetch(`/api/Pets/pet`);
     const pets = await res.json();
     renderPets(pets, "petGallery");
 }
@@ -743,16 +744,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     galleryAllBtn?.addEventListener("click", () => {
         console.log("All Pets clicked");
+        galleryAllBtn.classList.add("active");
+        galleryDogsBtn.classList.remove("active");
+        galleryCatsBtn.classList.remove("active");
         loadAllPets();
     });
 
     galleryDogsBtn?.addEventListener("click", () => {
         console.log("Dogs clicked");
+        galleryAllBtn.classList.remove("active");
+        galleryDogsBtn.classList.add("active");
+        galleryCatsBtn.classList.remove("active");
         loadDogs();
     });
 
     galleryCatsBtn?.addEventListener("click", () => {
         console.log("Cats clicked");
+        galleryAllBtn.classList.remove("active");
+        galleryDogsBtn.classList.remove("active");
+        galleryCatsBtn.classList.add("active");
         loadCats();
     });
 
@@ -765,6 +775,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadAllPets();
 });
+
+/*
 const container = document.getElementById("petsContainer");
 
 async function loadPets() {
@@ -792,5 +804,5 @@ async function loadPets() {
         container.appendChild(card);
     });
 }
+*/
 
-loadPets();
