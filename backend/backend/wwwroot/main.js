@@ -281,7 +281,11 @@ async function showMeetings() {
             credentials: "include"
         });
 
-        if (!response.ok) throw new Error("Failed to fetch meetings");
+        const response = await fetch(`https://localhost:7013/api/Clients/adoptionMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("failed");
+        }
+
 
         const meetings = await response.json();
         container.innerHTML = ""; // Clear loader
@@ -455,3 +459,56 @@ function convertFileToBase64(file) {
         reader.onerror = error => reject(error);
     });
 }
+const API_BASE = "http://localhost:5212/api/Pet";
+
+async function loadPets() {
+  try {
+    const response = await fetch(API_BASE);
+    const data = await response.json();
+    console.log("Pets:", data);
+  } catch (error) {
+    console.error("Error loading pets:", error);
+  }
+}
+
+// call it when page loads
+loadPets();
+
+async function searchPets(query) {
+  try {
+    const response = await fetch(
+      `${API_BASE}/search?query=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+    console.log("Search results:", data);
+  } catch (error) {
+    console.error("Search error:", error);
+  }
+}
+
+// example call
+searchPets("dog");
+
+async function bookMeeting(meetingData) {
+  try {
+    const response = await fetch(`${API_BASE}/bookMeeting`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(meetingData),
+    });
+
+    const data = await response.json();
+    console.log("Meeting booked:", data);
+  } catch (error) {
+    console.error("Booking error:", error);
+  }
+}
+
+// example
+bookMeeting({
+  petId: 1,
+  date: "2026-03-20T10:00:00",
+});
+
