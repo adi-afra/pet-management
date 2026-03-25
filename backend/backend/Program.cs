@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:63342") // match your frontend port
+        policy.WithOrigins("http://localhost:63343") // match your frontend port
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

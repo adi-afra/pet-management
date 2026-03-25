@@ -28,7 +28,17 @@ namespace backend.Data
             modelBuilder.Entity<User>()
                 .Property(u => u.Id)
                 .ValueGeneratedOnAdd(); // tells EF: let the database generate the ID
+            
+            //email is required for each user
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
 
+            //emails must be unique
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();            
+            
             modelBuilder.Entity<Pet>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();

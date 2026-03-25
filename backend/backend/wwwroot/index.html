@@ -265,82 +265,7 @@
                 </div>
 
                 <!-- PET CARDS (Bootstrap Grid by brandon) -->
-                <div class="row g-4">
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="pet-card h-100">
-                            <img class="pet-img buddy"
-                                 src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1200&q=60"
-                                 alt="dog">
-                            <div class="info">
-                                <h3>Buddy</h3>
-                                <p>2 years • Dog</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="pet-card h-100">
-                            <img class="pet-img luna"
-                                 src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=60"
-                                 alt="dog">
-                            <div class="info">
-                                <h3>Luna</h3>
-                                <p>1 year • Dog</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="pet-card h-100">
-                            <img class="pet-img milo"
-                                 src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=1200&q=60"
-                                 alt="dog">
-                            <div class="info">
-                                <h3>Milo</h3>
-                                <p>3 years • Dog</p>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="pet-card">
-                            <img class="pet-img max"
-                                 src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=1200&q=60"
-                                 alt="Max">
-                            <div class="info">
-                                <h3>Max</h3>
-                                <p>4 years • Dog</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <div class="pet-card">
-                            <img class="pet-img"
-                                 src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=60"
-                                 alt="Cat">
-                            <div class="info">
-                                <h3>Nala</h3>
-                                <p>2 years • Cat</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <div class="pet-card">
-                            <img class="pet-img"
-                                 src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=1200&q=60"
-                                 alt="Dog">
-                            <div class="info">
-                                <h3>Rocky</h3>
-                                <p>3 years • Dog</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <div class="row g-4" id="petsContainer"></div>
             </div>
         </section>
     </section>
@@ -541,6 +466,7 @@
                     <div class="col-md-5 register-left d-flex flex-column justify-content-center align-items-center text-center p-4">
                         <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo mb-3">
                         <h3 class="fw-bold">Join Fortuna Tails</h3>
+                        <p id="response"></p>
                         <p class="small text-muted">
                             Create your account and start managing your shelter.
                         </p>
@@ -564,11 +490,7 @@
                                 <label class="form-label fw-semibold">Password</label>
                                 <input id="password" type="password" class="form-control form-control-sm" required>
                             </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Confirm Password</label>
-                                <input type="password" class="form-control form-control-sm" required>
-                            </div>
+                            
 
                             <button id="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">
                                 Create Account
