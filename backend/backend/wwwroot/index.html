@@ -42,7 +42,7 @@
         <div class="search-wrapper">
             <div class="search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search Pets">
+                <input id="searchInput" type="text" placeholder="Search Pets">
             </div>
 
             <div class="filter-icon" id="openFiltersModal">
@@ -258,17 +258,18 @@
                     <h2 class="fw-bold m-0">Available for Adoption</h2>
 
                     <div class="filters d-flex gap-2">
-                        <button class="filter-btn active" type="button">All Pets</button>
-                        <button class="filter-btn" type="button">Dogs</button>
-                        <button class="filter-btn" type="button">Cats</button>
-                    </div>
+                    <button id="galleryAllBtn" class="filter-btn active" type="button">All Pets</button>
+                    <button id="galleryDogsBtn" class="filter-btn" type="button">Dogs</button>
+                    <button id="galleryCatsBtn" class="filter-btn" type="button">Cats</button>
+                </div>
                 </div>
 
-                <!-- PET CARDS (Bootstrap Grid by brandon) -->
-                <div class="row g-4" id="petsContainer"></div>
-            </div>
-        </section>
+        <!-- PET CARDS (loaded by JavaScript) -->
+        <div id="petGallery" class="row g-4"></div>
+
+        </div>
     </section>
+</section>
 
     <!-- PAGE Dashboard (Brandon)-->
     <section class="page" data-page="dashboard">
@@ -563,9 +564,13 @@
     <!-- PAGE Search Results -->
     <section class="page" data-page="results">
         <section class="py-5">
-            <div class="container text-center">
-                <h2 class="fw-bold">Results</h2>
-                <p class="text-muted">Filtered results will appear here.</p>
+            <div class="container">
+                <h2 class="fw-bold text-center">Results</h2>
+                <p class="text-muted text-center">Filtered results will appear here.</p>
+    
+                
+                <div id="resultsGallery" class="row g-4 mt-2"></div>
+    
             </div>
         </section>
     </section>
