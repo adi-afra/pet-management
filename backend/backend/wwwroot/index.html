@@ -42,7 +42,7 @@
         <div class="search-wrapper">
             <div class="search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search Pets">
+                <input name="searchPets" type="text" placeholder="Search Pets">
             </div>
 
             <div class="filter-icon" id="openFiltersModal">
@@ -107,12 +107,12 @@
     </div>
 
     <!-- adoption meeting modal -->
-    <div class="filter-modal" id="adoptionModal">
+    <div class="filter-modal" id="adoptionMeetingsModal">
         <div class="filter-box">
 
             <div class="filter-header">
                 <h3>Meetings</h3>
-                <i class="fa-solid fa-xmark" id="closeAdoptionsModal"></i>
+                <i class="fa-solid fa-xmark" id="closeMeetingsModal"></i>
             </div>
 
 
@@ -310,7 +310,7 @@
 
 
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="dash-stat card border-0 border-start border-4 border-success shadow-sm" id="openAdoptionsModal" style="cursor: pointer;">
+                        <div class="dash-stat card border-0 border-start border-4 border-success shadow-sm" id="statCardMeetings" style="cursor: pointer;">
                             <div class="card-body d-flex align-items-center">
 
                                 <div class="dash-big-icon text-success">
@@ -328,6 +328,7 @@
 
 
                 </div>
+            </div>
         </section>
 
         <!-- Main panels -->
@@ -412,7 +413,7 @@
 
         </div>
 
-        </div>
+        
     </section>
 
 
@@ -448,7 +449,6 @@
 
 
     <!-- Registration Page -->
-    <!-- Registration Page -->
     <section class="page" data-page="registration">
         <div class="register-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
 
@@ -479,27 +479,33 @@
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Full Name</label>
                                 <input id="username" type="text" class="form-control form-control-sm" required>
+                                <label for="regFullName" class="form-label fw-semibold">Full Name</label>
+                                <input name="FullName" type="text" class="form-control form-control-sm" required id="regFullName">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Email</label>
-                                <input id="email" type="email" class="form-control form-control-sm" required>
+                                <label for="regEmail" class="form-label fw-semibold">Email</label>
+                                <input name="registerEmail" type="email" class="form-control form-control-sm" required id="regEmail">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Password</label>
-                                <input id="password" type="password" class="form-control form-control-sm" required>
+                                <label for="regPassword" class="form-label fw-semibold">Password</label>
+                                <input name="registerPassword" type="password" class="form-control form-control-sm" required id="regPassword">
                             </div>
-                            
 
-                            <button id="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2">
+                            <div class="mb-3">
+                                <label for="regConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                                <input name="registerConfirmPassword" type="password" class="form-control form-control-sm" required id="regConfirmPassword">
+                            </div>
+
+                            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2" id="registerBtn">
                                 Create Account
                             </button>
                         </form>
 
                         <p class="small mt-3 mb-0 text-center">
                             Already have an account?
-                            <span id="loginBtn" class="fw-bold text-warning text-decoration-underline"
+                            <span type="button" id="loginBtn" class="fw-bold text-warning text-decoration-underline"
                                   style="cursor:pointer;">Sign In</span>
                         </p>
 
@@ -533,16 +539,16 @@
                 <!-- Form -->
                 <form>
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-semibold mb-1">Email</label>
-                        <input type="email" class="form-control form-control-sm" placeholder="username@gmail.com" required>
+                        <label for="loginEmail" class="form-label fw-semibold mb-1">Email</label>
+                        <input name="loginEmail" type="email" class="form-control form-control-sm" placeholder="username@gmail.com" required id="loginEmail">
                     </div>
 
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-semibold mb-1">Password</label>
-                        <input type="password" class="form-control form-control-sm" placeholder="••••••••" required>
+                        <label for="loginPassword" class="form-label fw-semibold mb-1">Password</label>
+                        <input name="loginPassword" type="password" class="form-control form-control-sm" placeholder="••••••••" required id="loginPassword">
                     </div>
 
-                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3">Sign In</button>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3" id="loginSubmitBtn">Sign In</button>
                 </form>
 
                 <!-- Divider -->

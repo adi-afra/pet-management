@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 
 namespace backend.classes
@@ -12,11 +14,11 @@ namespace backend.classes
         public int Id { get; private set;}
         public string Username { get; private set; }
         public string Password { get; private set; }
-        
         public string Email { get; private set; }
 
+
         //constructor with validation
-        
+
         protected User() {} //empty constructor for EF
         
         protected User(string username, string password, string email)

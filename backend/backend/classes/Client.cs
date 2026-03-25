@@ -6,12 +6,12 @@ namespace backend.classes
 	//represents a client who can book meetings with pets
 	public class Client : User
 	{
-		// List field to store client's meetings
-		public List<Meeting> Meetings { get; private set; }
+        // List field to store client's meetings
+        public List<Meeting> Meetings { get; private set; } = new List<Meeting>();
 
-		// Constructor
-		
-		protected Client() {} //empty constructor for EF
+        // Constructor
+
+        protected Client() : base() {} //empty constructor for EF
 		
 		public Client( string username, string password,string email)
 			: base(username, password,email)
@@ -19,11 +19,7 @@ namespace backend.classes
 			Meetings = new List<Meeting>();
 		}
 
-		// Override getRole to return client
-		public override string getRole()
-		{
-			return "Client";
-		}
+        public override string getRole() => "Client";
 
 		// Method to create a meeting object with the current id and adds it to the client's and
 		//pet's meeting lists

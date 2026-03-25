@@ -1,5 +1,5 @@
-using backend.Data;
 using backend.classes;
+using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -18,7 +18,6 @@ namespace backend.Controllers
         {
             _context = context;
         }
-        
 
         // POST: api/clients
         [HttpPost("register")]

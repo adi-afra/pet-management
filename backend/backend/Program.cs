@@ -13,10 +13,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:63343") // match your frontend port
+        policy.WithOrigins("http://localhost:5235") // match your frontend port
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
+});
+
+
+builder.Services.AddDistributedMemoryCache(); // required for session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(1); // session lasts 1 hour
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
 // Configure EF Core with SQL Server (AWS RDS)
@@ -38,12 +50,14 @@ if (app.Environment.IsDevelopment())
 
 
 // ------------------- Middleware -------------------
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
 // Apply the CORS policy here
 app.UseCors("AllowFrontend");
+
+app.UseSession();
 
 app.UseAuthorization();
 
