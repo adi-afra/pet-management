@@ -1,5 +1,6 @@
 using System;
 
+
 namespace backend.classes
 {
 
@@ -11,39 +12,41 @@ namespace backend.classes
         public int Id { get; private set;}
         public string Username { get; private set; }
         public string Password { get; private set; }
-
+        
+        public string Email { get; private set; }
 
         //constructor with validation
         
         protected User() {} //empty constructor for EF
         
-        protected User(string username, string password)
+        protected User(string username, string password, string email)
         {
-            Username = ValidateString(username, nameof(username));
-            Password = ValidateString(password, nameof(password));
+            Username = username;
+            Password = password;
+            Email = email;
         }
 
-        //update username with validation
+        //setter for username
         public void setUsername(string username)
         {
-            Username = ValidateString(username, nameof(username));
+            Username = username;
         }
 
-        //update password with validation
+        //setter for password
         public void setPassword(string password)
         {
-            Password = ValidateString(password, nameof(password));
-        }
-
-        //helper method to avoid repeating validation logic
-        protected string ValidateString(string value, string paramName)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException($"{paramName} cannot be null or empty.");
-
-            return value;
+            Password = password;
         }
         
+        //setter for email
+        public void SetEmail(string email)
+        {
+            Email = email;
+        }
+
+        
+
+
         
         //each derived class must define its role
         public abstract string getRole();
