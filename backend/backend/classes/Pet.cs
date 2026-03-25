@@ -19,6 +19,8 @@ namespace backend.classes
         public int Age { get; private set; }
         public string Breed { get; private set; }
         public PetStatus Status { get; private set; }
+        public string ImageUrl { get; private set; }
+        
         //to bring the discriminator here
         [NotMapped]
         public string AnimalType => GetType().Name;
@@ -69,6 +71,8 @@ namespace backend.classes
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
 
         public void SetStatus(PetStatus status) => Status = status;
+
+        public void SetImageUrl(string imageUrl) => imageUrl = ValidateString(imageUrl, nameof(imageUrl));
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)

@@ -3,7 +3,7 @@ using backend.classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-
+using System.Text.RegularExpressions;
 namespace backend.Controllers
 {
     [ApiController]
@@ -27,22 +27,36 @@ namespace backend.Controllers
             if (client == null)
                 return BadRequest(new { message = "Client data is required." });
 
+            // --- Manual validation ---
+            if (string.IsNullOrWhiteSpace(client.Username))
+                return BadRequest(new { message = "Username is required." });
+
+            if (string.IsNullOrWhiteSpace(client.Password))
+                return BadRequest(new { message = "Password is required." });
+            
+            if (string.IsNullOrWhiteSpace(client.Email))
+                return BadRequest(new { message = "Email is required." });
+
+            if (string.IsNullOrWhiteSpace(client.Email) || 
+                !System.Text.RegularExpressions.Regex.IsMatch(client.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                return BadRequest(new { message = "Invalid email format." });
+            }
+
+            // Check username uniqueness
+            if (await _context.Clients.AnyAsync(c => c.Username == client.Username))
+                return BadRequest(new { message = "Username already exists." });
+
             try
             {
-                // Check username
-                bool exist = await _context.Clients.AnyAsync(c => c.Username == client.Username);
-                if (exist)
-                    return BadRequest(new { message = "Username already exists." });
-
                 _context.Clients.Add(client);
                 await _context.SaveChangesAsync();
 
-                // Return JSON object with message and client
                 return Ok(new { message = "Registration successful!", client });
             }
             catch (Exception ex)
             {
-                // Return JSON even on server error
+                // Only for unexpected runtime errors
                 return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
             }
         }

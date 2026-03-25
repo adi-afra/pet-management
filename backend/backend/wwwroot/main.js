@@ -426,27 +426,70 @@ registerForm?.addEventListener("click" ,async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("username").value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   try {
     const res = await fetch("http://localhost:5212/api/Clients/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, email })
     });
 
+      // Get the element where we display messages
+      const responseEl = document.getElementById("response");
 
-    if (!res.ok) {
+      // Try to read the backend response as JSON
       const errorData = await res.json();
-      alert("Registration failed: " + errorData.message);
-      return;
-    }
+    
+    // Check if the response from the backend was NOT successful
+    if (!res.ok) {
+        
+        // Default message in case backend doesn't provide one
+        let message = "registration unsuccessful";
 
-    alert("Registration successful!");
-    showPage("login"); // redirect to login
+        try {
+            // Use the backend message if available, otherwise fallback to default
+            message = errorData.message || message;
+        }
+        //incase of any unexpected error
+        catch (e) {}
+
+        // Show the error message to the user
+        responseEl.style.color = "red";
+        responseEl.innerText = message;
+        
+
+        // Clear the message automatically after 30 seconds
+        
+        setTimeout(() => {
+           responseEl.innerText = "";
+        }, 10000);
+        
+    }
+    
+    else{
+        //default message
+        let message = "registration successful";
+        
+        try{
+            message = errorData.message || message;
+        }
+        catch (e) {}
+        
+        responseEl.style.color = "Green";
+        responseEl.innerText = message;
+        
+        // Clear the message automatically after 30 seconds
+        setTimeout(() => {
+           responseEl.innerText = "";
+        }, 10000);
+        
+    }
+    
+   
   } catch (err) {
-    console.error(err);
-    alert("Something went wrong!");
+    console.log(err);
   }
 });
 
@@ -670,3 +713,33 @@ addSurrenderMeetingButton?.addEventListener("click", () => {
     addSurrenderMeetingButton.classList.add("d-none");
 
 });
+
+const container = document.getElementById("petsContainer");
+
+async function loadPets() {
+    const res = await fetch("http://localhost:5212/api/Pets/pet"); // adjust if needed
+    const pets = await res.json();
+
+    container.innerHTML = ""; // clear existing content
+
+    pets.forEach(pet => {
+        const card = document.createElement("div");
+        card.className = "col-12 col-md-6 col-lg-4";
+
+        card.innerHTML = `
+            <div class="pet-card h-100">
+                <img class="pet-img"
+                     src="${pet.imageUrl}"
+                     alt="${pet.name}">
+                <div class="info">
+                    <h3>${pet.name}</h3>
+                    <p>${pet.age} years • ${pet.type}</p>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+loadPets();

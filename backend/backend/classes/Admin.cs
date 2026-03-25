@@ -9,10 +9,12 @@ namespace backend.classes
         protected Admin() {} //Empty constructor for EF
         
         //constructor for Admin which adds a new field for their role
-        public Admin (string username, string password) : 
-            base(username, password)
+        public Admin(string username, string password, string email)
+            : base(username, password, email)
         {
         }
+            
+        
 
         //overriding the getRole method to return the role of the user
         public override string getRole()
@@ -21,9 +23,7 @@ namespace backend.classes
         }
 
         //methods to change different fields of an instance of a Pet
-
         
-
         public void ChangeName(Pet pet, string newName) { pet.SetName(newName); }
         public void ChangeAge(Pet pet, int newAge) { pet.SetAge(newAge); }
         public void ChangeBreed(Pet pet, string newBreed) { pet.SetBreed(newBreed); }
