@@ -143,6 +143,7 @@ namespace backend.Controllers
             
             try
             {
+                Console.WriteLine("Received JSON: " + data.GetRawText());
                 //  Validate required fields
                 if (!data.TryGetProperty("animalType", out var animalTypeProp))
                     return BadRequest(new { message = "animalType is required" });
@@ -153,7 +154,7 @@ namespace backend.Controllers
                 if (!Enum.TryParse<PetType>(animalTypeString, true, out var petType))
                     return BadRequest("Invalid animal type");
 
-                // 🐾 Create correct object using switch
+                // Create correct object using switch
                 Pet pet = petType switch
                 {
                     PetType.Dog => new Dog
@@ -181,7 +182,7 @@ namespace backend.Controllers
                 (
                     data.GetProperty("date").GetDateTime(),
                     pet,
-                    data.GetProperty("userId").GetInt16(),
+                    data.GetProperty("userId").GetInt32(),
                     MeetingType.Surrender 
                 );
 

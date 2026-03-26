@@ -492,6 +492,8 @@ async function addSurrenders() {
     const petBreed = document.getElementById("petBreed").value.trim();
     const petType = document.getElementById("petType").value.trim();
     const meetingDateValue = document.getElementById("meetingDate").value.trim();
+    
+    
     //getting the message <p>
     const formMessage = document.getElementById("formMessage");
 
@@ -515,7 +517,7 @@ async function addSurrenders() {
 
     formMessage.textContent = "";
 
-    const userId = 3; // replace with logged-in user id
+    const userId = 1; // replace with logged-in user id
     try {
         const res = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
             method: "POST",
@@ -616,6 +618,7 @@ function createMeetingForm() {
     
     //  Submit logic
     submitBtn.addEventListener("click", async () => {
+        console.log("clicked");
         addSurrenders();
     });
     
