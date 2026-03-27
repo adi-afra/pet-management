@@ -1,4 +1,5 @@
 using backend.classes;
+using Microsoft.AspNetCore.Http;
 using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,8 +61,82 @@ namespace backend.Controllers
             }
         }
 
-        
-        
+        // POST: api/clients/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest(new { message = "Username and password are required." });
+            }
+
+            var client = await _context.Clients
+                .SingleOrDefaultAsync(c => c.Username == request.Username && c.Password == request.Password);
+
+            if (client == null)
+            {
+                return Unauthorized(new { message = "Invalid username or password." });
+            }
+
+            // store authenticated user info in session
+            HttpContext.Session.SetInt32("UserId", client.Id);
+            HttpContext.Session.SetString("Username", client.Username);
+            HttpContext.Session.SetString("UserRole", client.getRole());
+
+            return Ok(new { message = "Logged in.", userId = client.Id, username = client.Username });
+        }
+
+        // GET: api/clients/login?username={username}&password={password}
+        [HttpGet("login")]
+        public async Task<IActionResult> Login([FromQuery] string username, [FromQuery] string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                return BadRequest(new { message = "Username and password are required." });
+            }
+
+            var client = await _context.Clients
+                .SingleOrDefaultAsync(c => c.Username == username && c.Password == password);
+
+            if (client == null)
+            {
+                return Unauthorized(new { message = "Invalid username or password." });
+            }
+
+            // store authenticated user info in session
+            HttpContext.Session.SetInt32("UserId", client.Id);
+            HttpContext.Session.SetString("Username", client.Username);
+            HttpContext.Session.SetString("UserRole", client.getRole());
+
+            return Ok(new { message = "Logged in.", userId = client.Id, username = client.Username });
+        }
+
+        public record LoginRequest(string Username, string Password);
+
+        // GET: api/clients/session
+        [HttpGet("session")]
+        public IActionResult GetSession()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var username = HttpContext.Session.GetString("Username");
+            var userRole = HttpContext.Session.GetString("UserRole");
+
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Not logged in." });
+            }
+
+            return Ok(new { userId, username, userRole });
+        }
+
+        // DELETE: api/clients/logout
+        [HttpDelete("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return NoContent();
+        }
+
         [HttpGet("adoptionMeetings/{userId}")]
         public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
         {

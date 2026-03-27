@@ -35,10 +35,11 @@ namespace backend.classes
         
         protected Pet() {} //Empty constructor for EF
         
-        public Pet( string name, int age, string breed)
+        public Pet( string name, int age, string breed, string status = "Available")
         {
             Name = ValidateString(name, nameof(name));
             Breed = ValidateString(breed, nameof(breed));
+            Status = ValidateString(status, nameof(status));
 
             if (age < 0)
                 throw new ArgumentException("Age cannot be negative.");

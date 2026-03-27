@@ -220,13 +220,27 @@ function makeMeetingCard(meeting) {
 
     // DELETE API CALL
     deleteButton.addEventListener("click", async () => {
-        if (meeting.type == 0) {
-            await deleteAdoptionMeeting(meeting.id);
-        } else {
-            await deleteSurrendeMeeting(meeting.id);
+
+        try {
+
+            const response = await fetch(
+                `/api/Clients/adoptionMeetings/${meeting.id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Delete failed");
+                return;
+            }
+
+            // remove card from UI
+            card.remove();
+
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
         }
-        // remove card from UI
-        card.remove();
     });
 
     // assembling the card
@@ -258,6 +272,7 @@ async function showMeetings() {
             credentials: "include"
         });
 
+        const response = await fetch(`/api/Clients/adoptionMeetings/${userId}`);
         if (!response.ok) {
             console.error("failed");
         }
@@ -384,6 +399,12 @@ async function bookMeeting(petId, date) {
             body: JSON.stringify(meetingData),
             credentials: "include"
         });
+  try {
+    const res = await fetch("/api/Clients/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
 
         if (response.ok) {
             alert("Meeting booked successfully!");
@@ -396,3 +417,48 @@ async function bookMeeting(petId, date) {
         console.error("Booking error:", err);
     }
 }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert("Registration failed: " + errorData.message);
+      return;
+    }
+
+    alert("Registration successful!");
+    showPage("login"); // redirect to login
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  }
+});
+
+
+// Login
+const loginButton = document.getElementById("loginSubmit");
+loginButton?.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("loginUsername").value;
+  const password = document.getElementById("loginPassword").value;
+
+  try {
+    const res = await fetch("/api/Clients/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert("Login failed: " + errorData.message);
+      return;
+    }
+
+    alert("Login successful!");
+    showPage("dashboard");
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  }
+});
+

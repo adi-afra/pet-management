@@ -50,6 +50,12 @@ namespace backend.classes
 
 
         
+        private static int GenerateId()
+        {
+            _lastId++;
+            return _lastId;
+        }
+        
         //each derived class must define its role
         public abstract string getRole();
 
