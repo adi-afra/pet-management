@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.classes;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 namespace backend.Controllers
 {
@@ -10,10 +12,12 @@ namespace backend.Controllers
     public class PetsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly string _storageConnectionString;
 
-        public PetsController(AppDbContext context)
+        public PetsController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
 
         // GET: api/pets
@@ -122,6 +126,41 @@ namespace backend.Controllers
                     detail = ex.Message
                 });
             }
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            //Validate file
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            if (!file.ContentType.StartsWith("image/"))
+                return BadRequest("Only image files allowed");
+
+            //Connect to Azure Blob Storage
+            var blobServiceClient = new BlobServiceClient(_storageConnectionString);
+
+            //Get container
+            var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
+
+            //Create container if not exists
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+            //Generate unique filename
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+
+            //Create blob reference
+            var blobClient = containerClient.GetBlobClient(fileName);
+
+            //Upload file
+            using (var stream = file.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, overwrite: true);
+            }
+
+            // 8. Return URL
+            return Ok(new { imageUrl = blobClient.Uri.AbsoluteUri });
         }
     }
 }

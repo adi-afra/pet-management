@@ -460,7 +460,7 @@ const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting")
 
 // Function to fetch and show surrender meetings
 async function showSurrenders() {
-    const userId = 3; // replace with logged-in user id
+    const userId = 1; // replace with logged-in user id
 
     try {
         const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
@@ -492,12 +492,16 @@ async function addSurrenders() {
     const petBreed = document.getElementById("petBreed").value.trim();
     const petType = document.getElementById("petType").value.trim();
     const meetingDateValue = document.getElementById("meetingDate").value.trim();
+    const petImageInput = document.getElementById("petImage");
+    const petImage = petImageInput.files[0];
+    
     
     
     //getting the message <p>
     const formMessage = document.getElementById("formMessage");
 
-    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "") {
+    //check if none of the fields are empty
+    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
         formMessage.textContent = "all fields must be filled";
         return
     } else if (Number(petAge) < 0) {
@@ -519,7 +523,26 @@ async function addSurrenders() {
 
     const userId = 1; // replace with logged-in user id
     try {
-        const res = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
+        //adding the image 
+        const formData = new FormData();
+        formData.append("file", petImage);
+
+        const res1 = await fetch("http://localhost:5212/api/Pets/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res1.ok) {
+            const errorData = await res1.json();
+            console.log("adding meeting failed: " + errorData.message);
+            return;
+        }
+
+        const uploadData = await res1.json();
+        const imageUrl = uploadData.imageUrl;
+        
+        // adding the new pet
+        const res2 = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -528,13 +551,14 @@ async function addSurrenders() {
                 "breed": petBreed,
                 "date": meetingDate,
                 "userId": userId,
-                "animalType": petType
+                "animalType": petType,
+                "imageUrl": imageUrl
             })
         });
 
 
-        if (!res.ok) {
-            const errorData = await res.json();
+        if (!res2.ok) {
+            const errorData = await res2.json();
             console.log("adding meeting failed: " + errorData.message);
             return;
         }
@@ -592,6 +616,21 @@ function createMeetingForm() {
     dateInput.type = "date";
     dateInput.className = "form-control";
 
+
+    // Image label 
+    const imageLabel = document.createElement("label");
+    imageLabel.className = "form-label";
+    imageLabel.textContent = "Upload Image";
+
+    // adding a image upload 
+    const imageInput = document.createElement("input");
+    imageInput.type = "file";
+    imageInput.className = "form-control";
+    imageInput.accept = "image/*";
+    imageInput.name = "file";
+
+    
+
     //  Submit button
     const submitBtn = document.createElement("button");
     submitBtn.className = "btn btn-success mt-2";
@@ -605,7 +644,7 @@ function createMeetingForm() {
     // Create a <p> element for errors
     const messageParagraph = document.createElement("p");  
     messageParagraph.className = "text-danger"; 
-    messageParagraph.textContent = "";  
+    messageParagraph.textContent = "";
 
     //adding IDs to all the entry fields
     nameInput.id = "petName";
@@ -613,12 +652,13 @@ function createMeetingForm() {
     breedInput.id = "petBreed";
     typeSelect.id = "petType";
     dateInput.id = "meetingDate";
-    messageParagraph.id = "formMessage"; 
+    messageParagraph.id = "formMessage";
+    imageInput.id = "petImage";
 
     
     //  Submit logic
     submitBtn.addEventListener("click", async () => {
-        console.log("clicked");
+        
         addSurrenders();
     });
     
@@ -636,6 +676,8 @@ function createMeetingForm() {
     formBody.appendChild(dateInput);
     formBody.appendChild(breedInput);
     formBody.appendChild(typeSelect);
+    formBody.appendChild(imageLabel);
+    formBody.appendChild(imageInput);
     formBody.appendChild(submitBtn);
     formBody.appendChild(closeBtn);
     formBody.appendChild(messageParagraph);
@@ -664,13 +706,7 @@ surrenderModal?.addEventListener("click", (e) => {
     }
 });
 
-// Open form
-addSurrenderMeetingButton?.addEventListener("click", () => {
-    surrenderContainer.innerHTML = "";
-    createMeetingForm();
-    addSurrenderMeetingButton.classList.add("d-none");
 
-});
 
 const PETS_API_BASE = "/api/Pets";
 
@@ -740,10 +776,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const galleryCatsBtn = document.getElementById("galleryCatsBtn");
     const searchInput = document.getElementById("searchInput");
 
-    console.log("galleryAllBtn:", galleryAllBtn);
-    console.log("galleryDogsBtn:", galleryDogsBtn);
-    console.log("galleryCatsBtn:", galleryCatsBtn);
-    console.log("searchInput:", searchInput);
 
     galleryAllBtn?.addEventListener("click", () => {
         console.log("All Pets clicked");
@@ -774,6 +806,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Search Enter pressed");
             searchPets();
         }
+    });
+
+    // Open meeting form logic form
+    addSurrenderMeetingButton?.addEventListener("click", () => {
+        surrenderContainer.innerHTML = "";
+        createMeetingForm();
+        addSurrenderMeetingButton.classList.add("d-none");
+
     });
 
     loadAllPets();

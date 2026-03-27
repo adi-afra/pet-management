@@ -4,19 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+
 namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ClientsController : ControllerBase
     {
-        //database context used to read CLient table
+        //database context used to read CLient table and the storage for pet images
         private readonly AppDbContext _context;
+        private readonly string _storageConnectionString;
 
         //giving my controler access to database through constructor
-        public ClientsController(AppDbContext context)
+        public ClientsController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
         
 
@@ -111,6 +116,23 @@ namespace backend.Controllers
             if (meeting.Type != MeetingType.Surrender)
                 return BadRequest("Cannot delete a meeting that is not a surrender meeting.");
 
+            if (!string.IsNullOrEmpty(meeting.Pet?.ImageUrl))
+            {
+                //Connect to Azure Blob Storage
+                var blobServiceClient = new BlobServiceClient(_storageConnectionString);
+
+                //Get container
+                var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
+
+                //extracting the file name from the string url we have 
+                var fileName = Path.GetFileName(new Uri(meeting.Pet.ImageUrl).LocalPath);
+
+                //getting the refrence from the blob
+                var blobImage = containerClient.GetBlobClient(fileName);
+
+                //deleting the image from the blob if it exist
+                await blobImage.DeleteIfExistsAsync();
+            }
             // Remove potential pet if it has no other purpose
             if (meeting.Pet.Status == PetStatus.Potential)
             {
@@ -161,14 +183,16 @@ namespace backend.Controllers
                     (
                         data.GetProperty("name").GetString(),
                         data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString()
+                        data.GetProperty("breed").GetString(),
+                        data.GetProperty("imageUrl").GetString()
                     ),
 
                     PetType.Cat => new Cat
                     (
                         data.GetProperty("name").GetString(),
                         data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString()
+                        data.GetProperty("breed").GetString(),
+                        data.GetProperty("imageUrl").GetString()
                     ),
 
                     _ => throw new Exception("Invalid animal type")
@@ -176,6 +200,7 @@ namespace backend.Controllers
 
                 //setting the satus as potenial
                 pet.SetStatus(PetStatus.Potential);
+
 
                 //  Create meeting
                 var meeting = new Meeting
