@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 namespace backend.classes
 {
     //abstract base class representing a pet in the shelter
+    [JsonDerivedType(typeof(Dog), typeDiscriminator: "Dog")]
+    [JsonDerivedType(typeof(Cat), typeDiscriminator: "Cat")]
     public abstract class Pet
     {
         //all the fields are public so the children classes can see them (C# is like this) with public getters
@@ -15,11 +17,11 @@ namespace backend.classes
         
 
         public int Id { get; private set; }
-        public string Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public int Age { get; private set; }
-        public string Breed { get; private set; }
+        public string Breed { get; private set; } = string.Empty;
         public PetStatus Status { get; private set; }
-        public string ImageUrl { get; private set; }
+        public string ImageUrl { get; private set; } = string.Empty;
         
         //to bring the discriminator here
         [NotMapped]
@@ -72,7 +74,7 @@ namespace backend.classes
 
         public void SetStatus(PetStatus status) => Status = status;
 
-        public void SetImageUrl(string imageUrl) => imageUrl = ValidateString(imageUrl, nameof(imageUrl));
+        public void SetImageUrl(string url) => ImageUrl = ValidateString(url, nameof(url));
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)

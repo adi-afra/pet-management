@@ -13,10 +13,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5235") // match your frontend port
+        policy.WithOrigins("http://localhost:5212", "http://127.0.0.1:5500") // Add your specific frontend port here
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowCredentials(); // Essential for the Session cookies to work
     });
 });
 
@@ -53,6 +53,8 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseRouting();  
 
 // Apply the CORS policy here
 app.UseCors("AllowFrontend");

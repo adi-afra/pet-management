@@ -18,60 +18,70 @@ namespace backend.Controllers
             _context = context;
         }
 
-        // GET: api/Pet/5
+        // GET: api/Pets/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Pet>> GetPetById(int id)
         {
             var pet = await _context.Pets.FindAsync(id);
-
-            if (pet == null)
-                return NotFound("Pet not found");
-
+            if (pet == null) return NotFound("Pet not found");
             return Ok(pet);
         }
 
-        // GET: api/Pet/search?query=dog
+        // GET: api/Pets/search?query=dog
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Pet>>> SearchPets(string query)
+        public async Task<ActionResult> SearchPets(string query)
         {
-            if (string.IsNullOrEmpty(query))
-                return BadRequest("Search query required");
-
-            var q = query.ToLower();
-
-            var pets = await _context.Pets
+            try
+            {
+                var pets = await _context.Pets
                     .Where(p => p.Status == PetStatus.Registered)
                     .Select(p => new
                     {
                         p.Id,
                         p.Name,
                         p.Age,
-                        Type = p.GetType().Name, // Dog or Cat
+                        p.Breed,
+                        Type = p.GetType().Name,
                         p.ImageUrl
                     })
-                .ToListAsync();
+                    .ToListAsync();
 
-            return Ok(pets);
-        }
+                // Optional: Filter list by query if needed
+                if (!string.IsNullOrEmpty(query))
+                {
+                    var q = query.ToLower();
+                    var filtered = pets.Where(p =>
+                        p.Name.ToLower().Contains(q) ||
+                        p.Breed.ToLower().Contains(q) ||
+                        p.Type.ToLower().Contains(q)
+                    ).ToList();
+                    return Ok(filtered);
+                }
+
+                return Ok(pets);
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(500, new { message = "Error retrieving pets", detail = ex.Message });
+            }
+        }
 
-        // POST: api/Pet/bookMeeting
+        // POST: api/Pets/bookMeeting
         [HttpPost("bookMeeting")]
         public async Task<IActionResult> BookMeeting([FromBody] Meeting meeting)
         {
-                    message = "Error retrieving pets",
-                    detail = ex.Message
-                });
+            if (meeting == null) return BadRequest("Meeting data required");
+
+            try
+            {
+                _context.Meetings.Add(meeting);
+                await _context.SaveChangesAsync();
+                return Ok(meeting);
             }
-            if (meeting == null)
-                return BadRequest("Meeting data required");
-
-            _context.Meetings.Add(meeting);
-            await _context.SaveChangesAsync();
-
-            return Ok(meeting);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to book meeting", detail = ex.Message });
+            }
         }
     }
 }

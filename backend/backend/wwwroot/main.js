@@ -152,7 +152,7 @@ async function deleteAdoptionMeeting(id) {
     }
 }
 
-async function deleteSurrendeMeeting(id) {
+async function deleteSurrenderMeeting(id) {
     try {
         const response = await fetch(
             `${API_BASE}/Clients/surrenderMeetings/${id}`,
@@ -280,7 +280,7 @@ async function showMeetings() {
 }
 
 async function getUserId() {
-    const res = await fetch(`${API_BASE}/auth/status`, {
+    const res = await fetch(`${API_BASE}/Auth/status`, {
         credentials: "include"
     });
     if (!res.ok) return null;
@@ -292,3 +292,107 @@ async function getUserId() {
 document.addEventListener("DOMContentLoaded", () => {
     showMeetings();
 });
+
+
+
+// Open Adoption Meetings from Dashboard
+document.getElementById("statCardMeetings")?.addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "flex";
+    showMeetings(); // Refresh the list when opening
+});
+
+// Open Surrender Modal from Dashboard
+document.getElementById("statCardSurrenders")?.addEventListener("click", () => {
+    document.getElementById("surrenderModal").style.display = "flex";
+});
+
+// Close logic for the new modals
+document.getElementById("closeMeetingsModal")?.addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "none";
+});
+
+document.getElementById("closeSurrendersModal")?.addEventListener("click", () => {
+    document.getElementById("surrenderModal").style.display = "none";
+});
+
+
+// Click outside to close for Meetings and Surrenders modals
+[document.getElementById("adoptionMeetingsModal"), document.getElementById("surrenderModal")].forEach(modal => {
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+
+
+
+async function loadPetGallery(query = "") {
+    const container = document.getElementById("petGalleryContainer"); // Ensure this ID exists in HTML
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/Pets/search?query=${query}`);
+        if (!response.ok) throw new Error("Failed to load pets");
+
+        const pets = await response.json();
+        container.innerHTML = ""; // Clear current pets
+
+        pets.forEach(pet => {
+            const petCard = document.createElement("div");
+            petCard.className = "pet-card";
+            petCard.innerHTML = `
+                <img src="${pet.imageUrl || 'default-pet.png'}" alt="${pet.name}">
+                <h3>${pet.name}</h3>
+                <p>${pet.breed} - ${pet.age} years old</p>
+                <button onclick="openBookingModal(${pet.id})">Book Meeting</button>
+            `;
+            container.appendChild(petCard);
+        });
+    } catch (error) {
+        console.error("Error loading gallery:", error);
+    }
+}
+
+
+
+
+
+async function bookMeeting(petId, date) {
+    const userId = await getUserId();
+    if (!userId) return alert("Please log in first!");
+
+    const meetingData = {
+        date: date,
+        userId: userId,
+        type: 0,
+        pet: {
+            // This "$type" must match the [JsonDerivedType] in your C# Pet class
+            "$type": petType, // e.g., "Dog" or "Cat"
+            "id": petId,
+            "name": petName,
+            "breed": petBreed,
+            "age": 0 // Placeholder
+        }
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/Pets/bookMeeting`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(meetingData),
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            alert("Meeting booked successfully!");
+            showMeetings(); // Refresh the list
+        } else {
+            const error = await response.json();
+            alert("Error: " + error.detail);
+        }
+    } catch (err) {
+        console.error("Booking error:", err);
+    }
+}
