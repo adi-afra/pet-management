@@ -33,7 +33,7 @@ namespace backend.classes
         
         protected Pet() {} //Empty constructor for EF
         
-        public Pet( string name, int age, string breed)
+        public Pet( string name, int age, string breed, string imageUrl)
         {
             Name = ValidateString(name, nameof(name));
             Breed = ValidateString(breed, nameof(breed));
@@ -45,6 +45,8 @@ namespace backend.classes
             Meetings = new List<Meeting>();
             
             Status = PetStatus.Registered; //setting the default status as registered
+
+            ImageUrl = imageUrl;
         }
 
         //validation helper
