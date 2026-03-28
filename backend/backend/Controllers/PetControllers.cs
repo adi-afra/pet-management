@@ -66,10 +66,9 @@ namespace backend.Controllers
         [HttpGet("filter")]
         public async Task<IActionResult> FilterPets(
             [FromQuery] string? animalType,
-            [FromQuery] string? breed,
             [FromQuery] int? minAge,
-            [FromQuery] int? maxAge,
-            [FromQuery] PetStatus? status)
+            [FromQuery] int? maxAge
+            )
         {
             IQueryable<Pet> query = _context.Pets;
 
@@ -87,10 +86,6 @@ namespace backend.Controllers
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(breed))
-                {
-                    query = query.Where(p => p.Breed.ToLower() == breed.ToLower());
-                }
 
                 if (minAge.HasValue)
                 {
@@ -100,11 +95,6 @@ namespace backend.Controllers
                 if (maxAge.HasValue)
                 {
                     query = query.Where(p => p.Age <= maxAge.Value);
-                }
-
-                if (status.HasValue)
-                {
-                    query = query.Where(p => p.Status == status.Value);
                 }
 
                 var pets = await query.Select(p => new
