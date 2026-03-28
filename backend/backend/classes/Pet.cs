@@ -17,9 +17,10 @@ namespace backend.classes
         public int Id { get; private set; }
         public string Name { get; private set; } = null!;
         public int Age { get; private set; }
-        public string Breed { get; private set; } = null!;
-        public string Status { get; private set; } = null!;
-
+        public string Breed { get; private set; }
+        public PetStatus Status { get; private set; }
+        public string ImageUrl { get; private set; }
+        
         //to bring the discriminator here
         [NotMapped]
         public string AnimalType => GetType().Name;
@@ -34,7 +35,6 @@ namespace backend.classes
         
         public Pet( string name, int age, string breed, string status = "Available")
         {
-            Id = GenerateId();
             Name = ValidateString(name, nameof(name));
             Breed = ValidateString(breed, nameof(breed));
             Status = ValidateString(status, nameof(status));
@@ -44,6 +44,8 @@ namespace backend.classes
 
             Age = age;
             Meetings = new List<Meeting>();
+            
+            Status = PetStatus.Registered; //setting the default status as registered
         }
 
         //validation helper
@@ -68,8 +70,10 @@ namespace backend.classes
 
         public void SetName(string name) => Name = ValidateString(name, nameof(name));
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
-        public void SetStatus(string status) => Status = ValidateString(status, nameof(status));
-        
+
+        public void SetStatus(PetStatus status) => Status = status;
+
+        public void SetImageUrl(string imageUrl) => imageUrl = ValidateString(imageUrl, nameof(imageUrl));
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)
@@ -79,6 +83,7 @@ namespace backend.classes
 
             Meetings.Add(meeting);
         }
+        
 
         //removes a meeting from the pet
         public void RemoveMeeting(Meeting meeting)
@@ -86,12 +91,6 @@ namespace backend.classes
             Meetings.Remove(meeting);
         }
         
-        private static int _lastId = 0; // static counter for simplicity
-        private static int GenerateId()
-        {
-            _lastId++;
-            return _lastId;
-        }
     }
     
 }

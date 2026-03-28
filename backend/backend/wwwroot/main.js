@@ -1,17 +1,4 @@
 
-// Filters (to keep active button)
-const filterButtons = document.querySelectorAll(".filter-btn");
-
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    filterButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
-  });
-});
-
-
-
-
 // Dashboard dropdown (open/close)
 
 const menuBtn = document.getElementById("menuBtn");
@@ -113,26 +100,6 @@ if (logoutBtn) {
   });
 }
 
-
-
-
-//Search input handling (show results after searching in the box)
-const searchInput = document.querySelector('.search input');
-
-searchInput?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const query = searchInput.value.trim();
-    if (query !== "") {
-      showPage("results");
-      
-      //Close the filter modal if it is open
-      filterModal.style.display = "none"; 
-    }
-  }
-});
-
-
-
 // Filter modal open/close
 const filterModal = document.getElementById("filterModal");
 const openFiltersBtn = document.getElementById("openFiltersModal");
@@ -158,6 +125,42 @@ filterModal?.addEventListener("click", (e) => {
   }
 });
 
+async function deleteAdoptionMeeting(id) {
+    try {
+
+        const response = await fetch(
+            `http://localhost:5212/api/Clients/adoptionMeetings/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (!response.ok) {
+            console.error("Delete failed");
+            return;
+        }
+
+    } catch (error) {
+        console.error("Error deleting meeting:", error);
+    }
+}
+
+async function deleteSurrendeMeeting(id) {
+    try {
+        const response = await fetch(
+            `http://localhost:5212/api/Clients/surrenderMeetings/${id}`,
+            { method: "DELETE" }
+        );
+        if (!response.ok) {
+            console.error("Delete failed");
+            return;
+        }
+        
+    } catch (error) {
+        console.error("Error deleting surrender meeting:", error);
+    }
+}
+
 
 function makeMeetingCard(meeting) {
 
@@ -179,7 +182,12 @@ function makeMeetingCard(meeting) {
     heartIcon.className = "bi bi-heart me-2";
 
     title.appendChild(heartIcon);
-    title.appendChild(document.createTextNode("Meet " + meeting.pet.name));
+    if (meeting.type == 0) {
+        title.appendChild(document.createTextNode("Meet " + meeting.pet.name));
+    } else {
+        title.appendChild(document.createTextNode("surrender " + meeting.pet.name));
+    }
+    
 
     headerDiv.appendChild(title);
 
@@ -232,31 +240,23 @@ function makeMeetingCard(meeting) {
     deleteButton.appendChild(trashIcon);
     deleteButton.appendChild(document.createTextNode("Delete"));
 
-    // DELETE API CALL
-    deleteButton.addEventListener("click", async () => {
-
-        try {
-
-            const response = await fetch(
-                `/api/Clients/adoptionMeetings/${meeting.id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-            if (!response.ok) {
-                console.error("Delete failed");
-                return;
-            }
-
+    if (meeting.type == 0) {
+        // DELETE API CALL
+        deleteButton.addEventListener("click", () => {
+            deleteAdoptionMeeting(meeting.id);
             // remove card from UI
             card.remove();
-
-        } catch (error) {
-            console.error("Error deleting meeting:", error);
-        }
-    });
+        });
+    } else {
+        // DELETE API CALL
+        deleteButton.addEventListener("click", () => {
+            deleteSurrendeMeeting(meeting.id);
+            // remove card from UI
+            card.remove();
+        });
+    }
     
+
 
     // assembling the card
     cardBody.appendChild(headerDiv);
@@ -273,11 +273,11 @@ function makeMeetingCard(meeting) {
 //calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
 
-    const userId = 2; // whatever your logged-in user id is
+    const userId = 3; // whatever your logged-in user id is
 
     try {
 
-        const response = await fetch(`/api/Clients/adoptionMeetings/${userId}`);
+        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`);
         if (!response.ok) {
             console.error("failed");
         }
@@ -308,14 +308,17 @@ const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
 const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
 
 
-// Open filter modal
+
+
+
+// Open adoption modal
 openAdoptionsBtn?.addEventListener("click", () => {
     adoptionModal.style.display = "flex";
     showMeetings();
 });
 
 
-// Close filter modal
+// Close adoption modal
 closeAdoptionsBtn?.addEventListener("click", () => {
     adoptionModal.style.display = "none";
 });
@@ -330,8 +333,8 @@ adoptionModal?.addEventListener("click", (e) => {
 
 
 
-//Filter button logic
 
+//Filter button logic
 
 //Ensure only one filter button is active per secton
 filterModal?.querySelectorAll(".filter-btn").forEach((button) => {
@@ -373,74 +376,436 @@ resetBtn?.addEventListener("click", () => {
 });
 
 
-
-// Show results and close modal
-const showResultsBtn = document.querySelector(".filter-actions .show-btn");
-showResultsBtn?.addEventListener("click", () => {
-  // Navigate to results page
-  showPage("results");
-
-  // Close filter modal
-  filterModal.style.display = "none";
-});
-
-
 const registerForm = document.getElementById("submit");
 registerForm?.addEventListener("click" ,async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("username").value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   try {
     const res = await fetch("/api/Clients/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, email })
     });
 
+      // Get the element where we display messages
+      const responseEl = document.getElementById("response");
 
-    if (!res.ok) {
+      // Try to read the backend response as JSON
       const errorData = await res.json();
-      alert("Registration failed: " + errorData.message);
-      return;
-    }
+    
+    // Check if the response from the backend was NOT successful
+    if (!res.ok) {
+        
+        // Default message in case backend doesn't provide one
+        let message = "registration unsuccessful";
 
-    alert("Registration successful!");
-    showPage("login"); // redirect to login
+        try {
+            // Use the backend message if available, otherwise fallback to default
+            message = errorData.message || message;
+        }
+        //incase of any unexpected error
+        catch (e) {}
+
+        // Show the error message to the user
+        responseEl.style.color = "red";
+        responseEl.innerText = message;
+        
+
+        // Clear the message automatically after 30 seconds
+        
+        setTimeout(() => {
+           responseEl.innerText = "";
+        }, 10000);
+        
+    }
+    
+    else{
+        //default message
+        let message = "registration successful";
+        
+        try{
+            message = errorData.message || message;
+        }
+        catch (e) {}
+        
+        responseEl.style.color = "Green";
+        responseEl.innerText = message;
+        
+        // Clear the message automatically after 30 seconds
+        setTimeout(() => {
+           responseEl.innerText = "";
+        }, 10000);
+        
+    }
+    
+   
   } catch (err) {
-    console.error(err);
-    alert("Something went wrong!");
+    console.log(err);
   }
 });
 
+// ----- SURRENDER MEETINGS MODAL -----
 
-// Login
-const loginButton = document.getElementById("loginSubmit");
-loginButton?.addEventListener("click", async (e) => {
-  e.preventDefault();
+// Grab the modal and buttons
+const surrenderModal = document.getElementById("surrenderModal");
+const openSurrendersBtn = document.getElementById("openSurrendersModal");
+const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
+const surrenderContainer = document.getElementById("surrendersContainer"); // container inside modal
+const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting");
 
-  const username = document.getElementById("loginUsername").value;
-  const password = document.getElementById("loginPassword").value;
 
-  try {
-    const res = await fetch("/api/Clients/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+// Function to fetch and show surrender meetings
+async function showSurrenders() {
+    const userId = 3; // replace with logged-in user id
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      alert("Login failed: " + errorData.message);
-      return;
+    try {
+        const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("Failed to fetch surrender meetings");
+            return;
+        }
+
+        const surrenders = await response.json();
+
+        surrenderContainer.innerHTML = "";
+
+        surrenders.forEach(surrender => {
+            const card = makeMeetingCard(surrender);
+            surrenderContainer.appendChild(card);
+        });
+        addSurrenderMeetingButton.classList.remove("d-none");
+
+
+    } catch (error) {
+        console.error("Error showing surrender meetings:", error);
+    }
+}
+
+async function addSurrenders() {
+    //getting all the values from the entry fields 
+    const petName = document.getElementById("petName").value.trim();
+    const petAge = document.getElementById("petAge").value.trim();
+    const petBreed = document.getElementById("petBreed").value.trim();
+    const petType = document.getElementById("petType").value.trim();
+    const meetingDateValue = document.getElementById("meetingDate").value.trim();
+    
+    
+    //getting the message <p>
+    const formMessage = document.getElementById("formMessage");
+
+    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "") {
+        formMessage.textContent = "all fields must be filled";
+        return
+    } else if (Number(petAge) < 0) {
+        formMessage.textContent = "Age cannot be negative";
+        return;
     }
 
-    alert("Login successful!");
-    showPage("dashboard");
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong!");
-  }
+    // Check meeting date
+    const meetingDate = new Date(meetingDateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (meetingDate <= today) {
+        formMessage.textContent = "Meeting date must be after today";
+        return;
+    }
+
+    formMessage.textContent = "";
+
+    const userId = 1; // replace with logged-in user id
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "name": petName,
+                "age": Number(petAge),
+                "breed": petBreed,
+                "date": meetingDate,
+                "userId": userId,
+                "animalType": petType
+            })
+        });
+
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            console.log("adding meeting failed: " + errorData.message);
+            return;
+        }
+
+        showSurrenders();
+        
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
+
+}
+
+function createMeetingForm() {
+
+    // main card
+    const formCard = document.createElement("div");
+    formCard.className = "card shadow-sm mt-3";
+
+    const formBody = document.createElement("div");
+    formBody.className = "card-body d-flex flex-column gap-2";
+
+    //  Name
+    const nameInput = document.createElement("input");
+    nameInput.className = "form-control";
+    nameInput.placeholder = "Pet Name";
+
+    //  Age
+    const ageInput = document.createElement("input");
+    ageInput.type = "number";
+    ageInput.className = "form-control";
+    ageInput.placeholder = "Age";
+    ageInput.min = "";
+
+    //  Breed
+    const breedInput = document.createElement("input");
+    breedInput.className = "form-control";
+    breedInput.placeholder = "Breed";
+
+    //  Animal Type Dropdown
+    const typeSelect = document.createElement("select");
+    typeSelect.className = "form-select";
+
+    const types = ["Dog", "Cat", "Rabbit", "Other"];
+
+    types.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type;
+        option.textContent = type;
+        typeSelect.appendChild(option);
+    });
+
+    //  Date
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.className = "form-control";
+
+    //  Submit button
+    const submitBtn = document.createElement("button");
+    submitBtn.className = "btn btn-success mt-2";
+    submitBtn.textContent = "Submit";
+
+    //  Close button
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "btn btn-secondary mt-2";
+    closeBtn.textContent = "Close";
+
+    // Create a <p> element for errors
+    const messageParagraph = document.createElement("p");  
+    messageParagraph.className = "text-danger"; 
+    messageParagraph.textContent = "";  
+
+    //adding IDs to all the entry fields
+    nameInput.id = "petName";
+    ageInput.id = "petAge";
+    breedInput.id = "petBreed";
+    typeSelect.id = "petType";
+    dateInput.id = "meetingDate";
+    messageParagraph.id = "formMessage"; 
+
+    
+    //  Submit logic
+    submitBtn.addEventListener("click", async () => {
+        console.log("clicked");
+        addSurrenders();
+    });
+    
+
+    //  Close logic
+    closeBtn.addEventListener("click", async () => {
+        formCard.remove();
+        addSurrenderMeetingButton.classList.remove("d-none");
+        showSurrenders();
+    });
+
+    // assemble form
+    formBody.appendChild(nameInput);
+    formBody.appendChild(ageInput);
+    formBody.appendChild(dateInput);
+    formBody.appendChild(breedInput);
+    formBody.appendChild(typeSelect);
+    formBody.appendChild(submitBtn);
+    formBody.appendChild(closeBtn);
+    formBody.appendChild(messageParagraph);
+
+    formCard.appendChild(formBody);
+
+    surrenderContainer.appendChild(formCard);
+}
+
+// Open modal
+openSurrendersBtn?.addEventListener("click", () => {
+    surrenderModal.style.display = "flex";
+    addSurrenderMeetingButton.classList.remove("d-none");
+    showSurrenders();
 });
+
+// Close modal
+closeSurrendersBtn?.addEventListener("click", () => {
+    surrenderModal.style.display = "none";
+});
+
+// Click outside to close
+surrenderModal?.addEventListener("click", (e) => {
+    if (e.target === surrenderModal) {
+        surrenderModal.style.display = "none";
+    }
+});
+
+// Open form
+addSurrenderMeetingButton?.addEventListener("click", () => {
+    surrenderContainer.innerHTML = "";
+    createMeetingForm();
+    addSurrenderMeetingButton.classList.add("d-none");
+
+});
+
+const PETS_API_BASE = "/api/Pets";
+
+function renderPets(pets, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error("Missing container:", containerId);
+        return;
+    }
+
+    if (!pets || pets.length === 0) {
+        container.innerHTML = `<div class="col-12"><p class="text-center">No pets found.</p></div>`;
+        return;
+    }
+
+    container.innerHTML = pets.map(pet => `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="pet-card h-100">
+                <img class="pet-img"
+                     src="${pet.imageUrl}"
+                     alt="${pet.name}">
+                <div class="info">
+                    <h3>${pet.name}</h3>
+                    <p>${pet.age} years • ${pet.type}</p>
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
+async function loadAllPets() {
+    const res = await fetch(`/api/Pets/pet`);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function loadDogs() {
+    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Dog`);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function loadCats() {
+    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Cat`);
+    const pets = await res.json();
+    renderPets(pets, "petGallery");
+}
+
+async function searchPets() {
+    const input = document.getElementById("searchInput");
+    const breed = input.value.trim();
+
+    const url = breed
+        ? `${PETS_API_BASE}/filter?breed=${encodeURIComponent(breed)}`
+        : PETS_API_BASE;
+
+    const res = await fetch(url);
+    const pets = await res.json();
+
+    renderPets(pets, "resultsGallery");
+    showPage("results");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const galleryAllBtn = document.getElementById("galleryAllBtn");
+    const galleryDogsBtn = document.getElementById("galleryDogsBtn");
+    const galleryCatsBtn = document.getElementById("galleryCatsBtn");
+    const searchInput = document.getElementById("searchInput");
+
+    console.log("galleryAllBtn:", galleryAllBtn);
+    console.log("galleryDogsBtn:", galleryDogsBtn);
+    console.log("galleryCatsBtn:", galleryCatsBtn);
+    console.log("searchInput:", searchInput);
+
+    galleryAllBtn?.addEventListener("click", () => {
+        console.log("All Pets clicked");
+        galleryAllBtn.classList.add("active");
+        galleryDogsBtn.classList.remove("active");
+        galleryCatsBtn.classList.remove("active");
+        loadAllPets();
+    });
+
+    galleryDogsBtn?.addEventListener("click", () => {
+        console.log("Dogs clicked");
+        galleryAllBtn.classList.remove("active");
+        galleryDogsBtn.classList.add("active");
+        galleryCatsBtn.classList.remove("active");
+        loadDogs();
+    });
+
+    galleryCatsBtn?.addEventListener("click", () => {
+        console.log("Cats clicked");
+        galleryAllBtn.classList.remove("active");
+        galleryDogsBtn.classList.remove("active");
+        galleryCatsBtn.classList.add("active");
+        loadCats();
+    });
+
+    searchInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            console.log("Search Enter pressed");
+            searchPets();
+        }
+    });
+
+    loadAllPets();
+});
+
+/*
+const container = document.getElementById("petsContainer");
+
+async function loadPets() {
+    const res = await fetch("http://localhost:5212/api/Pets/pet"); // adjust if needed
+    const pets = await res.json();
+
+    container.innerHTML = ""; // clear existing content
+
+    pets.forEach(pet => {
+        const card = document.createElement("div");
+        card.className = "col-12 col-md-6 col-lg-4";
+
+        card.innerHTML = `
+            <div class="pet-card h-100">
+                <img class="pet-img"
+                     src="${pet.imageUrl}"
+                     alt="${pet.name}">
+                <div class="info">
+                    <h3>${pet.name}</h3>
+                    <p>${pet.age} years • ${pet.type}</p>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+*/
 

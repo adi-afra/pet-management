@@ -13,8 +13,8 @@ namespace backend.classes
 		
 		protected Client() {} //empty constructor for EF
 		
-		public Client( string username, string password)
-			: base(username, password)
+		public Client( string username, string password,string email)
+			: base(username, password,email)
 		{
 			Meetings = new List<Meeting>();
 		}
@@ -34,8 +34,33 @@ namespace backend.classes
 				throw new ArgumentNullException(nameof(pet), "Pet cannot be empty");
 			}
 
-			Meeting meeting = new Meeting(date, pet, this.Id);
+			Meeting meeting = new Meeting(date, pet, this.Id, MeetingType.Adoption);
 
+			Meetings.Add(meeting);
+			pet.AddMeeting(meeting);
+		}
+
+		public void CreateSurrenderMeeting(DateTime date, string name, int age, string breed, PetType petType)
+		{
+			Pet pet;
+
+			if (petType == PetType.Dog)
+			{
+				pet = new Dog(name, age,breed);
+			}
+			else if (petType == PetType.Cat)
+			{
+				pet = new Cat(name, age,breed);
+			}
+			else
+			{
+				throw new ArgumentException("Invalid pet type");
+			}
+
+			Meeting meeting = new Meeting(date, pet, this.Id, MeetingType.Surrender);
+
+			pet.SetStatus(PetStatus.Potential);
+			
 			Meetings.Add(meeting);
 			pet.AddMeeting(meeting);
 		}
