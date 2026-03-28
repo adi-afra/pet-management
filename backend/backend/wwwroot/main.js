@@ -811,33 +811,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadAllPets();
 });
 
-/*
-const container = document.getElementById("petsContainer");
-
-async function loadPets() {
-    const res = await fetch("http://localhost:5212/api/Pets/pet"); // adjust if needed
-    const pets = await res.json();
-
-    container.innerHTML = ""; // clear existing content
-
-    pets.forEach(pet => {
-        const card = document.createElement("div");
-        card.className = "col-12 col-md-6 col-lg-4";
-
-        card.innerHTML = `
-            <div class="pet-card h-100">
-                <img class="pet-img"
-                     src="${pet.imageUrl}"
-                     alt="${pet.name}">
-                <div class="info">
-                    <h3>${pet.name}</h3>
-                    <p>${pet.age} years • ${pet.type}</p>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-*/
 
