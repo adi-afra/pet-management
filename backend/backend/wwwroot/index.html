@@ -45,9 +45,6 @@
                 <input id="searchInput" type="text" placeholder="Search Pets">
             </div>
 
-            <div class="filter-icon" id="openFiltersModal">
-                <i class="fa-solid fa-sliders"></i>
-            </div>
         </div>
 
         <div class="nav-icons d-flex align-items-center gap-4">
@@ -69,9 +66,9 @@
             <div class="filter-section">
                 <p>Species</p>
                 <div class="filters">
-                    <button class="filter-btn active" data-group="species">All</button>
-                    <button class="filter-btn" data-group="species">Dogs</button>
-                    <button class="filter-btn" data-group="species">Cats</button>
+                    <button class="filter-btn active" data-group="animalType">All</button>
+                    <button class="filter-btn" data-group="animalType" data-value="Dog">Dogs</button>
+                    <button class="filter-btn" data-group="animalType" data-value="Cat">Cats</button>
                 </div>
             </div>
 
@@ -80,27 +77,16 @@
                 <p>Age</p>
                 <div class="filters">
                     <button class="filter-btn active" data-group="age">All</button>
-                    <button class="filter-btn" data-group="age">Puppy / Kitten</button>
-                    <button class="filter-btn" data-group="age">Young</button>
-                    <button class="filter-btn" data-group="age">Adult</button>
-                </div>
-            </div>
-
-            <!-- SIZE -->
-            <div class="filter-section">
-                <p>Size</p>
-                <div class="filters">
-                    <button class="filter-btn active" data-group="size">All</button>
-                    <button class="filter-btn" data-group="size">Small</button>
-                    <button class="filter-btn" data-group="size">Medium</button>
-                    <button class="filter-btn" data-group="size">Large</button>
+                    <button class="filter-btn" data-group="age" data-min="0" data-max="1">Puppy / Kitten</button>
+                    <button class="filter-btn" data-group="age" data-min="1" data-max="5">Young</button>
+                    <button class="filter-btn" data-group="age" data-min="5">Adult</button>
                 </div>
             </div>
 
             <!-- ACTIONS -->
             <div class="filter-actions">
-                <button class="reset-btn">Reset</button>
-                <button class="show-btn">Show Results</button>
+                <button class="reset-btn" id="resetBtn">Reset</button>
+                <button class="show-btn" id="showFilterResultBtn">Show Results</button>
             </div>
 
         </div>
@@ -257,17 +243,16 @@
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
                     <h2 class="fw-bold m-0">Available for Adoption</h2>
 
-                    <div class="filters d-flex gap-2">
-                    <button id="galleryAllBtn" class="filter-btn active" type="button">All Pets</button>
-                    <button id="galleryDogsBtn" class="filter-btn" type="button">Dogs</button>
-                    <button id="galleryCatsBtn" class="filter-btn" type="button">Cats</button>
-                </div>
+                    <div class="filter-icon" id="openFiltersModal">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+
                 </div>
 
-        <!-- PET CARDS (loaded by JavaScript) -->
-        <div id="petGallery" class="row g-4"></div>
+    <!-- PET CARDS (loaded by JavaScript) -->
+                    <div id="petGallery" class="row g-4"></div>
 
-        </div>
+                </div>
     </section>
 </section>
 
@@ -329,6 +314,7 @@
 
 
                 </div>
+            </div>
         </section>
 
         <!-- Main panels -->

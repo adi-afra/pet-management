@@ -332,50 +332,6 @@ adoptionModal?.addEventListener("click", (e) => {
 });
 
 
-
-
-//Filter button logic
-
-//Ensure only one filter button is active per secton
-filterModal?.querySelectorAll(".filter-btn").forEach((button) => {
-  button.addEventListener(
-    "click",
-    (e) => {
-      // Stop the global filterButtons listener
-      e.stopImmediatePropagation();
-
-      const section = button.closest(".filter-section");
-      if (!section) return;
-
-      // Remove active state from all buttons in the same section
-      section.querySelectorAll(".filter-btn").forEach((btn) =>
-        btn.classList.remove("active")
-      );
-
-      //Activate the selected button
-      button.classList.add("active");
-    },
-    true // Capture phase so this runs first
-  );
-});
-
-
-
-// Reset filter to default state
-const resetBtn = document.querySelector(".filter-actions .reset-btn");
-resetBtn?.addEventListener("click", () => {
-  document.querySelectorAll(".filter-section").forEach((section) => {
-    const buttons = section.querySelectorAll(".filter-btn");
-
-    //Clear all active states
-    buttons.forEach((btn) => btn.classList.remove("active"));
-
-    //Set the first option (All) as default
-    buttons[0]?.classList.add("active");
-  });
-});
-
-
 const registerForm = document.getElementById("submit");
 registerForm?.addEventListener("click" ,async (e) => {
   e.preventDefault();
@@ -737,23 +693,71 @@ function renderPets(pets, containerId) {
     `).join("");
 }
 
+const filters = {};
+
+// Handle filter button clicks
+document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        const group = this.dataset.group;
+
+        // Remove active class from same group
+        document.querySelectorAll(`.filter-btn[data-group="${group}"]`)
+            .forEach(b => b.classList.remove("active"));
+
+        this.classList.add("active");
+
+        // Remove previous values
+        delete filters[group];
+        if (group === "age") {
+            delete filters.minAge;
+            delete filters.maxAge;
+        }
+
+        // If "All" clicked → do nothing (keeps filters empty)
+        if (!this.dataset.value && !this.dataset.min) return;
+
+        // Normal filters
+        if (this.dataset.value) {
+            filters[group] = this.dataset.value;
+        }
+
+        // Age filters
+        if (this.dataset.min) {
+            filters.minAge = this.dataset.min;
+        }
+
+        if (this.dataset.max) {
+            filters.maxAge = this.dataset.max;
+        }
+    });
+});
+
 async function loadAllPets() {
-    const res = await fetch(`/api/Pets/pet`);
-    const pets = await res.json();
-    renderPets(pets, "petGallery");
+    try {
+        const res = await fetch(`http://localhost:5212/api/Pets/pet`);
+        const pets = await res.json();
+        renderPets(pets, "petGallery");
+    } catch (error) {
+        console.error("Error fetching pets:", error);
+    }
 }
 
-async function loadDogs() {
-    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Dog`);
-    const pets = await res.json();
-    renderPets(pets, "petGallery");
+async function loadFilteredPets() {
+    
+    if (Object.keys(filters).length === 0) {
+        loadAllPets();
+        return;
+    }
+    try {
+        const queryString = new URLSearchParams(filters).toString();
+        const res = await fetch(`http://localhost:5212/api/Pets/filter?${queryString}`);
+        const pets = await res.json();
+        renderPets(pets, "petGallery");
+    } catch (error) {
+        console.error("Error fetching pets:", error);
+    }
 }
 
-async function loadCats() {
-    const res = await fetch(`${PETS_API_BASE}/filter?animalType=Cat`);
-    const pets = await res.json();
-    renderPets(pets, "petGallery");
-}
 
 async function searchPets() {
     const input = document.getElementById("searchInput");
@@ -771,41 +775,29 @@ async function searchPets() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const galleryAllBtn = document.getElementById("galleryAllBtn");
-    const galleryDogsBtn = document.getElementById("galleryDogsBtn");
-    const galleryCatsBtn = document.getElementById("galleryCatsBtn");
-    const searchInput = document.getElementById("searchInput");
+    const resetBtn = document.getElementById("resetBtn");
+    const showFilterResultBtn = document.getElementById("showFilterResultBtn");
 
-
-    galleryAllBtn?.addEventListener("click", () => {
-        console.log("All Pets clicked");
-        galleryAllBtn.classList.add("active");
-        galleryDogsBtn.classList.remove("active");
-        galleryCatsBtn.classList.remove("active");
-        loadAllPets();
-    });
-
-    galleryDogsBtn?.addEventListener("click", () => {
-        console.log("Dogs clicked");
-        galleryAllBtn.classList.remove("active");
-        galleryDogsBtn.classList.add("active");
-        galleryCatsBtn.classList.remove("active");
-        loadDogs();
-    });
-
-    galleryCatsBtn?.addEventListener("click", () => {
-        console.log("Cats clicked");
-        galleryAllBtn.classList.remove("active");
-        galleryDogsBtn.classList.remove("active");
-        galleryCatsBtn.classList.add("active");
-        loadCats();
-    });
-
-    searchInput?.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            console.log("Search Enter pressed");
-            searchPets();
+    resetBtn?.addEventListener("click", () => {
+        console.log("reset burron clicked");
+        // Clear filters object
+        for (let key in filters) {
+            delete filters[key];
         }
+
+        // Reset UI
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        // Re-activate all "All" buttons
+        document.querySelectorAll('.filter-btn:not([data-value]):not([data-min])')
+            .forEach(btn => btn.classList.add("active"));
+    });
+
+    showFilterResultBtn?.addEventListener("click", () => {
+        loadFilteredPets();
+        filterModal.style.display = "none";
     });
 
     // Open meeting form logic form
