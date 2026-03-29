@@ -5,27 +5,36 @@ using backend.classes;
 var builder = WebApplication.CreateBuilder(args);
 
 // ------------------- Configure Services -------------------
-
-// Add controllers
 builder.Services.AddControllers();
 
+// CORS with credentials
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:63343") // match your frontend port
+        policy.WithOrigins("http://localhost:63342") // your frontend
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials(); // 🔥 required for cookies/sessions
     });
 });
 
-// Configure EF Core with SQL Server (AWS RDS)
+// EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Swagger for API testing
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -36,15 +45,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-// ------------------- Middleware -------------------
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Apply the CORS policy here
+// ✅ Order matters here:
+app.UseRouting();       // Needed for session + endpoint routing
 app.UseCors("AllowFrontend");
 
+app.UseSession();       // Must be BEFORE MapControllers
 app.UseAuthorization();
 
 app.MapControllers();

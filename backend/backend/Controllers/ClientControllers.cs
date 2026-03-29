@@ -199,6 +199,67 @@ namespace backend.Controllers
                 return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
             }
         }
+        
+        
+        
+        // POST: api/clients/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] JsonElement data)
+        {
+            try
+            {
+                var username = data.GetProperty("username").GetString();
+                var password = data.GetProperty("password").GetString();
+
+                if (string.IsNullOrWhiteSpace(username))
+                    return BadRequest(new { message = "Username is required." });
+
+                if (string.IsNullOrWhiteSpace(password))
+                    return BadRequest(new { message = "Password is required." });
+
+                var client = await _context.Clients
+                    .FirstOrDefaultAsync(c => c.Username == username);
+
+                if (client == null || client.Password != password)
+                    return Unauthorized(new { message = "Invalid username or password." });
+
+                
+                HttpContext.Session.SetInt32("UserId", client.Id);
+                HttpContext.Session.SetString("Username", client.Username);
+                HttpContext.Session.SetString("UserRole", client.getRole());
+                
+                return Ok(new { message = "Login successful" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", detail = ex.Message });
+            }
+        }
+        
+        //Get method to see if a user is logged in
+        [HttpGet("session")]
+        public IActionResult GetCurrentUser()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var username = HttpContext.Session.GetString("Username");
+            var userRole = HttpContext.Session.GetString("UserRole");
+            
+            if (userId == null)
+                return Unauthorized(new { message = "Not logged in" });
+
+            return Ok(new { userId, username,userRole });
+        }
+        
+        //logging out
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Clear the session completely
+            HttpContext.Session.Clear();
+
+            // Return a success message
+            return Ok(new { message = "Logged out successfully." });
+        }
 
     }
 }
