@@ -294,9 +294,10 @@ function makeMeetingCard(meeting) {
 
 //calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
+    const session = await isUserLoggedIn();
+    const userId = session.user.userId;
 
-    const userId = 3; // whatever your logged-in user id is
-
+    console.log(userId);
     try {
 
         const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`);
@@ -442,7 +443,7 @@ async function showSurrenders() {
     const session = await isUserLoggedIn();
 
     
-    const userId = session.userId || 0;
+    const userId = session.user.userId || 0;
 
     try {
         const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
@@ -506,7 +507,9 @@ async function addSurrenders() {
 
     formMessage.textContent = "";
 
-    const userId = 1; // replace with logged-in user id
+    const session = await isUserLoggedIn();
+    
+    const userId = session.user.userId || 0; 
     try {
         //adding the image 
         const formData = new FormData();
@@ -709,16 +712,23 @@ function renderPets(pets, containerId) {
 
     container.innerHTML = pets.map(pet => `
         <div class="col-12 col-md-6 col-lg-4">
-            <div class="pet-card h-100">
-                <img class="pet-img"
-                     src="${pet.imageUrl}"
-                     alt="${pet.name}">
-                <div class="info">
-                    <h3>${pet.name}</h3>
-                    <p>${pet.age} years • ${pet.type}</p>
-                </div>
+        <div class="pet-card h-100 clickable-card"
+             data-id="${pet.id}"
+             data-name="${pet.name}"
+             data-age="${pet.age}"
+             data-breed="${pet.breed}"
+             data-image="${pet.imageUrl}">
+             
+            <img class="pet-img"
+                 src="${pet.imageUrl}"
+                 alt="${pet.name}">
+                 
+            <div class="info">
+                <h3>${pet.name}</h3>
+                <p>${pet.age} years • ${pet.type}</p>
             </div>
         </div>
+    </div>
     `).join("");
 }
 
@@ -911,8 +921,11 @@ async function isUserLoggedIn() {
         const data = await res.json();
 
         // Optional: check if userId exists
+        
         if (data.userId) {
+            
             return { loggedIn: true, user: data };
+            
         } else {
             return { loggedIn: false, user: null };
         }
@@ -944,6 +957,145 @@ logoutBTN?.addEventListener("click", async () => {
         console.error("Logout failed:", err);
     }
 });
+
+//adoption meeting
+document.getElementById("petGallery").addEventListener("click", (e) => {
+    const card = e.target.closest(".clickable-card");
+    if (!card) return;
+
+    const petData = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        age: card.dataset.age,
+        breed: card.dataset.breed,
+        image: card.dataset.image
+    };
+
+    console.log("Yes", petData);
+    openBookingModal(petData);
+});
+
+
+//modal logic for adopting
+const bookingModal = document.getElementById("bookingModal");
+
+let selectedPetId = null;
+
+function openBookingModal(pet) {
+    selectedPetId = pet.id;
+    
+    //image
+    document.getElementById("bookingPetImage").src = pet.image;
+    
+    //details
+    const details = document.getElementById("bookingPetDetails");
+    details.innerHTML = `
+        <h5>${pet.name}</h5>
+        <p>Age: ${pet.age}</p>
+        <p>Breed: ${pet.breed}</p>
+    `;
+
+    // reset previous state
+    document.getElementById("bookingDate").value = "";
+    document.getElementById("bookingMessage").innerText = "";
+    
+    bookingModal.style.display = "flex";
+}
+
+document.getElementById("closeBookingModal")?.addEventListener("click", () => {
+    bookingModal.style.display = "none";
+});
+
+//booking an adoption meeting
+async function bookAdoptionMeeting(userId, petId, date) {
+    try {
+        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+                body: JSON.stringify({
+                petId: Number(petId),
+                date: date // ISO string e.g., "2026-04-05T10:00:00"
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // show error message from server
+            document.getElementById("bookResponse").innerText = data.message || "Something went wrong";
+            document.getElementById("bookResponse").style.color = "Red";
+            setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 20000);
+            return false;
+        }
+
+        document.getElementById("bookResponse").innerText = data.message;
+        document.getElementById("bookResponse").style.color = "Green";
+        setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 20000);
+        console.log(data.meeting);
+        return true;
+
+    } catch (error) {
+        console.log('Error:', error);
+        document.getElementById("bookResponse").innerText = data.message;
+        document.getElementById("bookResponse").style.color = "Red";
+        setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 20000);
+        return false;
+    }
+}
+
+document.getElementById("confirmBooking").addEventListener("click", async () => {
+    const session = await isUserLoggedIn();
+    if (!session.loggedIn) {
+        document.getElementById("bookResponse").innerText = "You must be logged in!";
+        document.getElementById("bookResponse").style.color = "Red";
+        return;
+    }
+
+    const userId = session.user.userId;
+    const dateInput = document.getElementById("bookingDate").value;
+    
+
+    const date = new Date(dateInput).toISOString();
+    // Call your function
+
+    const success = await bookAdoptionMeeting(userId, selectedPetId, date);
+
+    // If booking succeeded, disable the button
+    if (success) {
+        const confirmBtn = document.getElementById("confirmBooking");
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Booked ✔"; // optional: show feedback
+    }
+})
+
+
+
+//showing the logged in user
+/*
+async function updateLoginStatus() {
+    const statusEl = document.getElementById("whoLogged");
+    const session = await isUserLoggedIn();
+
+    if (session.loggedIn) {
+        statusEl.innerText = `Logged in as ${session.user.username}`;
+    }
+}
+
+// Call this on page load
+document.addEventListener("DOMContentLoaded", updateLoginStatus);
+
+// Also call it after login/logout
+loginForm?.addEventListener("click", async () => {
+    updateLoginStatus();
+});
+
+logoutBTN?.addEventListener("click", () => {
+    updateLoginStatus();
+});
+*/
+
 
 /*
 const container = document.getElementById("petsContainer");

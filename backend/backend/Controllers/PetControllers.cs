@@ -28,12 +28,14 @@ namespace backend.Controllers
             {
                 var pets = await _context.Pets
                     .Where(p => p.Status == PetStatus.Registered)
+                    .AsNoTracking()
                     .Select(p => new
                     {
                         p.Id,
                         p.Name,
                         p.Age,
                         Type = p.GetType().Name, // Dog or Cat
+                        p.Breed,
                         p.ImageUrl
                     })
                     .ToListAsync();
