@@ -91,14 +91,7 @@ document.querySelectorAll(".backToHome").forEach(btn => {
   });
 });
 
-// Logout (demo, still needs work)
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    alert("Logged out (demo)");
-    closeDash();
-  });
-}
+
 
 // Filter modal open/close
 const filterModal = document.getElementById("filterModal");
@@ -124,6 +117,35 @@ filterModal?.addEventListener("click", (e) => {
     filterModal.style.display = "none";
   }
 });
+
+
+async function goToDashboard() {
+    const session = await isUserLoggedIn();
+
+    if (!session.loggedIn) {
+        // Show a message in your login page message container
+        const responseEl = document.getElementById("loginresponse");
+        if (responseEl) {
+            responseEl.style.color = "red";
+            responseEl.innerText = "You must log in to access the dashboard.";
+
+            // Clear the message after 10 seconds
+            setTimeout(() => { responseEl.innerText = ""; }, 10000);
+        }
+
+        // Switch to login page
+        showPage("login");
+        return;
+    }
+
+    // User is logged in → show dashboard
+    showPage("dashboard");
+}
+
+// Attach to dashboard button
+document.getElementById("dashboardBTN")?.addEventListener("click", goToDashboard);
+
+
 
 async function deleteAdoptionMeeting(id) {
     try {
@@ -416,7 +438,11 @@ const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting")
 
 // Function to fetch and show surrender meetings
 async function showSurrenders() {
-    const userId = 1; // replace with logged-in user id
+    
+    const session = await isUserLoggedIn();
+
+    
+    const userId = session.userId || 0;
 
     try {
         const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
@@ -442,6 +468,9 @@ async function showSurrenders() {
 }
 
 async function addSurrenders() {
+    
+    
+    
     //getting all the values from the entry fields 
     const petName = document.getElementById("petName").value.trim();
     const petAge = document.getElementById("petAge").value.trim();
@@ -811,4 +840,138 @@ document.addEventListener("DOMContentLoaded", () => {
     loadAllPets();
 });
 
+
+
+//Login 
+
+const loginForm = document.getElementById("loginsubmit"); // change to your button ID
+
+loginForm?.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    // Get input values and trim spaces/newlines
+    const username = document.getElementById("loginusername").value.trim();
+    const password = document.getElementById("loginpassword").value.trim();
+
+    // Element to show messages
+    const responseEl = document.getElementById("loginresponse");
+    
+
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            
+            // Show backend error message
+            responseEl.style.color = "red";
+            responseEl.innerText = data.message || "Login failed.";
+        } else {
+            
+            // Successful login
+            responseEl.style.color = "green";
+            responseEl.innerText = data.message || `Welcome, ${data.username}!`;
+            
+            //clearing the placeholders
+            document.getElementById("loginusername").value = "";
+            document.getElementById("loginpassword").value = "";
+        }
+
+        // Clear message after 10 seconds
+        setTimeout(() => { responseEl.innerText = ""; }, 10000);
+
+    } catch (err) { // ⚡ Make sure this is 'err', not 'e' if you reference 'err'
+        console.error("Login error:", err);
+        responseEl.style.color = "red";
+        responseEl.innerText = "Server error, please try again.";
+        setTimeout(() => { responseEl.innerText = ""; }, 10000);
+    }
+});
+
+
+// Reusable function to check if user is logged in
+async function isUserLoggedIn() {
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/session", {
+            method: "GET",
+            credentials: "include" // ⚡ important to include session cookie
+        });
+
+        if (!res.ok) {
+            // Unauthorized → user not logged in
+            return { loggedIn: false, user: null };
+        }
+
+        const data = await res.json();
+
+        // Optional: check if userId exists
+        if (data.userId) {
+            return { loggedIn: true, user: data };
+        } else {
+            return { loggedIn: false, user: null };
+        }
+
+    } catch (err) {
+        console.error("Error checking session:", err);
+        return { loggedIn: false, user: null };
+    }
+}
+
+//Logout
+const logoutBTN = document.getElementById("logoutBtn");
+
+logoutBTN?.addEventListener("click", async () => {
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+
+        const data = await res.json();
+        console.log(data.message);
+
+        // Redirect to login page
+        showPage("gallery");
+        
+
+    } catch (err) {
+        console.error("Logout failed:", err);
+    }
+});
+
+/*
+const container = document.getElementById("petsContainer");
+
+async function loadPets() {
+    const res = await fetch("http://localhost:5212/api/Pets/pet"); // adjust if needed
+    const pets = await res.json();
+
+    container.innerHTML = ""; // clear existing content
+
+    pets.forEach(pet => {
+        const card = document.createElement("div");
+        card.className = "col-12 col-md-6 col-lg-4";
+
+        card.innerHTML = `
+            <div class="pet-card h-100">
+                <img class="pet-img"
+                     src="${pet.imageUrl}"
+                     alt="${pet.name}">
+                <div class="info">
+                    <h3>${pet.name}</h3>
+                    <p>${pet.age} years • ${pet.type}</p>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+*/
 
