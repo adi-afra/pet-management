@@ -8,10 +8,10 @@ namespace backend.classes
         
         protected Dog() {} //Empty constructor for EF
         
-		public Dog( string name, int age, string breed)
+		public Dog( string name, int age, string breed, string imageUrl)
 		
             //calling the parent constructor 
-            : base(name, age, breed) 
+            : base(name, age, breed, imageUrl) 
 		{ 
 			
 		}

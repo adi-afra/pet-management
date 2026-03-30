@@ -40,17 +40,17 @@ namespace backend.classes
 			pet.AddMeeting(meeting);
 		}
 
-		public void CreateSurrenderMeeting(DateTime date, string name, int age, string breed, PetType petType)
+		public void CreateSurrenderMeeting(DateTime date, string name, int age, string breed, PetType petType, string imageUrl)
 		{
 			Pet pet;
 
 			if (petType == PetType.Dog)
 			{
-				pet = new Dog(name, age,breed);
+				pet = new Dog(name, age,breed, imageUrl);
 			}
 			else if (petType == PetType.Cat)
 			{
-				pet = new Cat(name, age,breed);
+				pet = new Cat(name, age,breed, imageUrl);
 			}
 			else
 			{
