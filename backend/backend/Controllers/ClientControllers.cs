@@ -66,7 +66,53 @@ namespace backend.Controllers
             }
         }
 
-        
+		//post method for creating an adoption meeting
+		[HttpPost("adoptionMeetings/{userId}")]
+		 public async Task<IActionResult> CreateAdoptionMeeting(int userId, [FromBody] JsonElement data)
+		{
+    		try
+    			{
+   					int petId = data.GetProperty("petId").GetInt32();
+
+        			if (!data.TryGetProperty("date", out var dateProp))
+            			return BadRequest(new { message = "date is required" });
+
+        			DateTime date = dateProp.GetDateTime();
+					
+					//check to see if the user selected past dates
+       				if (date.Date < DateTime.Today)
+            			return BadRequest(new { message = "You cannot book a meeting in the past." });
+
+
+					//fetching pet from the database
+					var pet = await _context.Pets.FindAsync(petId);
+					
+        			// Check if this pet already has an adoption meeting on the same date
+       				 bool alreadyBooked = await _context.Meetings
+            .				AnyAsync(m => m.PetId == petId 
+                           	&& m.Type == MeetingType.Adoption 
+                           	&& m.Date.Date == date.Date); // compare only the date part
+
+        			if (alreadyBooked)
+            				return BadRequest(new { message = "This pet already has an adoption meeting on the selected date." });
+
+
+        			// Create the adoption meeting
+        			var meeting = new Meeting(date, pet, userId, MeetingType.Adoption);
+
+        			_context.Meetings.Add(meeting);
+        			await _context.SaveChangesAsync();
+
+        			return Ok(new { message = "Adoption meeting created successfully", meeting });
+    			}
+    		catch (Exception ex)
+    		{
+       	 		return StatusCode(500, new { message = "Internal server error", detail = ex.Message });
+				
+    		}
+	}
+
+
         
         [HttpGet("adoptionMeetings/{userId}")]
         public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
@@ -285,6 +331,5 @@ namespace backend.Controllers
             // Return a success message
             return Ok(new { message = "Logged out successfully." });
         }
-
     }
 }

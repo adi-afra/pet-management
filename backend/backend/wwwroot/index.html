@@ -34,9 +34,10 @@
                 <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
             </span>
             <span class="brand-name">Fortuna Tails</span>
+            
         </div>
 
-
+        
 
 
         <div class="search-wrapper">
@@ -133,6 +134,45 @@
     </div>
 
 
+    <!-- modal for booking an adoption meeting in the main page  -->
+    <div class="filter-modal" id="bookingModal">
+        <div class="filter-box">
+
+            <!-- Header -->
+            <div class="filter-header">
+                <h3>Book Meeting</h3>
+                
+                <i class="fa-solid fa-xmark" id="closeBookingModal"></i>
+            </div>
+
+            <!-- Content -->
+            <div class="mt-3 d-flex flex-column gap-3">
+                <p id="bookResponse"></p>
+                <!-- 🐾 IMAGE -->
+                <img id="bookingPetImage"
+                     class="w-100 rounded"
+                     style="max-height:180px; object-fit:cover;">
+
+                <!-- 🐾 DETAILS -->
+                <div id="bookingPetDetails" class="text-start">
+                    <!-- filled dynamically -->
+                </div>
+
+                <!--  DATE -->
+                <input type="date" id="bookingDate" class="form-control">
+
+                <!-- ⚠MESSAGE -->
+                <p id="bookingMessage" class="text-danger"></p>
+
+                <!-- CONFIRM -->
+                <button class="btn btn-success" id="confirmBooking">
+                    Confirm Booking
+                </button>
+
+            </div>
+        </div>
+    </div>
+
     <!-- DASHBOARD MENU -->
     <div id="overlay" class="overlay hidden"></div>
 
@@ -168,7 +208,7 @@
             <div class="dash-divider"></div>
 
             <button class="dash-link" type="button" data-page="settings">
-                <i class="fa-solid fa-gear"></i> Settings
+                <i  class="fa-solid fa-gear"></i> Settings
             </button>
 
             <button class="dash-link logout" type="button" id="logoutBtn">
