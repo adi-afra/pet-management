@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
-{
+{/*
     [ApiController]
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
@@ -49,5 +49,5 @@ namespace backend.Controllers
     public class UpdatePetStatusRequest
     {
         public string? Status { get; set; }
-    }
+    }*/
 }

@@ -17,9 +17,9 @@ namespace backend.classes
         
 
         public int Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; private set; } 
         public int Age { get; private set; }
-        public string Breed { get; private set; } = string.Empty;
+        public string Breed { get; private set; } 
         public PetStatus Status { get; private set; }
         public string ImageUrl { get; private set; } = string.Empty;
         
@@ -37,13 +37,11 @@ namespace backend.classes
         
         public Pet( string name, int age, string breed, string status = "Available")
         {
-            Name = ValidateString(name, nameof(name));
-            Breed = ValidateString(breed, nameof(breed));
-            Status = ValidateString(status, nameof(status));
 
             if (age < 0)
                 throw new ArgumentException("Age cannot be negative.");
-
+            Name = name;
+            Breed = breed;
             Age = age;
             Meetings = new List<Meeting>();
             

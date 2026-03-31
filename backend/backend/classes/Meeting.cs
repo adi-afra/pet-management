@@ -41,7 +41,7 @@ namespace backend.classes
             Date = date;
         }
 
-        protected void SetPet(Pet pet)
+        public void SetPet(Pet pet)
         {
             if (pet == null)
             {
@@ -49,6 +49,7 @@ namespace backend.classes
             }
 
             Pet = pet;
+            this.PetId = pet.Id;
         }
         
 

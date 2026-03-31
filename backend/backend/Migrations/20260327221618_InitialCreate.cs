@@ -89,6 +89,32 @@ namespace backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SavedPets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    PetId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavedPets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavedPets_Pets_PetId",
+                        column: x => x.PetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SavedPets_Users_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Meetings_PetId",
                 table: "Meetings",
@@ -98,6 +124,16 @@ namespace backend.Migrations
                 name: "IX_Meetings_UserId",
                 table: "Meetings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavedPets_ClientId",
+                table: "SavedPets",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavedPets_PetId",
+                table: "SavedPets",
+                column: "PetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -114,6 +150,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Meetings");
+
+            migrationBuilder.DropTable(
+                name: "SavedPets");
 
             migrationBuilder.DropTable(
                 name: "Pets");

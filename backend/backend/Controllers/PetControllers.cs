@@ -1,9 +1,7 @@
-using backend.Data;
 using backend.classes;
+using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using backend.Data;
-using backend.classes;
 
 namespace backend.Controllers
 {
@@ -82,6 +80,82 @@ namespace backend.Controllers
             {
                 return StatusCode(500, new { message = "Failed to book meeting", detail = ex.Message });
             }
+        }
+
+        [HttpPut("bookPet/{id}")] // 'id' is the Pet's ID
+        public async Task<IActionResult> BookPet(int id, [FromBody] Meeting incomingMeeting)
+        {
+            // 1. Find the existing Pet in the database
+            // We 'Include' AdoptionMeetings so EF knows they are linked
+            var pet = await _context.Pets
+                .Include(p => p.Meetings)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pet == null) return NotFound("Pet not found");
+
+            // 2. Use your SetPet function to link the meeting to the 'Tracked' pet
+            incomingMeeting.SetPet(pet);
+
+            // 3. Update the Pet's status (e.g., Status 2 = Pending Adoption)
+            // pet.Status = 2; 
+
+            // 4. Add the meeting to the Pet's list
+            _context.Meetings.Add(incomingMeeting);
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Pet successfully booked for a meeting!" });
+        }
+
+        [HttpPost("savePet")]
+        public async Task<IActionResult> SavePet([FromBody] SavedRequest request)
+        {
+            // Check if the record already exists
+            var existingSave = await _context.SavedPets
+                .FirstOrDefaultAsync(s => s.ClientId == request.UserId && s.PetId == request.PetId);
+
+            if (existingSave != null)
+            {
+                // TOGGLE OFF: If it exists, remove it
+                _context.SavedPets.Remove(existingSave);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Pet unsaved", isSaved = false });
+            }
+
+            // TOGGLE ON: If it doesn't exist, add it
+            var savedPet = new SavedPet
+            {
+                ClientId = request.UserId,
+                PetId = request.PetId
+            };
+
+            _context.SavedPets.Add(savedPet);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Pet saved", isSaved = true });
+        }
+
+        [HttpGet("savedPets/{userId}")]
+        public async Task<IActionResult> GetSavedPets(int userId)
+        {
+            var saved = await _context.SavedPets
+                .Where(s => s.ClientId == userId)
+                .ToListAsync();
+
+            return Ok(saved);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
+        {
+            // This returns EVERY pet in the database
+            return await _context.Pets.ToListAsync();
+        }
+
+        // Simple helper class for the request body
+        public class SavedRequest
+        {
+            public int UserId { get; set; }
+            public int PetId { get; set; }
         }
     }
 }

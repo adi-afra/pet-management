@@ -21,6 +21,7 @@ namespace backend.Data
 
         public DbSet<Meeting> Meetings { get; set; }
         public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
+        public DbSet<SavedPet> SavedPets { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

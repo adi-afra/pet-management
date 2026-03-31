@@ -118,32 +118,65 @@
 
             <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="meetingsContainer">
                 <!-- Cards get injected here -->
-                
+
             </div>
 
         </div>
-       
+
     </div>
 
 
     <!-- surrender meeting modal -->
     <div class="filter-modal" id="surrenderModal">
-        <div class="filter-box">
+        <div class="filter-box" style="height: 650px;">
             <div class="filter-header">
-                <h3>Surrenders</h3>
+                <h3>Surrender a Pet</h3>
                 <i class="fa-solid fa-xmark" id="closeSurrendersModal"></i>
             </div>
-            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="surrendersContainer">
-                <!-- Cards get injected here -->
 
+            <div class="mt-3 p-2">
+                <div class="mb-2">
+                    <label class="small fw-bold">Animal Type</label>
+                    <select class="form-control form-control-sm" id="surrenderAnimalType">
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Pet Name</label>
+                    <input type="text" class="form-control form-control-sm" id="surrenderPetName" placeholder="e.g. Buddy">
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Breed</label>
+                    <input type="text" class="form-control form-control-sm" id="surrenderPetBreed" placeholder="e.g. Golden Retriever">
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Age</label>
+                    <input type="number" class="form-control form-control-sm" id="surrenderPetAge" value="0">
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Preferred Meeting Date</label>
+                    <input type="datetime-local" class="form-control form-control-sm" id="surrenderDate">
+                </div>
+
+                <div class="mb-2">
+                    <label class="small fw-bold">Pet Image URL</label>
+                    <input type="url" class="form-control form-control-sm" id="surrenderPetImageUrl" placeholder="https://example.com/photo.jpg">
+                </div>
             </div>
-            <div class="d-flex justify-content-center mt-4">
-                <button class="btn btn-primary shadow-sm" id="addSurrenderMeeting">
-                    <i class="bi bi-plus-lg me-1"></i>
-                    Add Meeting
+
+            <div class="d-flex justify-content-center mt-2">
+                <button class="btn btn-warning shadow-sm w-100 fw-bold" id="surrenderSubmitBtn">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Submit Surrender Request
                 </button>
             </div>
+
+            <hr>
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:200px;" id="surrendersContainer">
+            </div>
         </div>
+
     </div>
 
 
@@ -257,10 +290,10 @@
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
                     <h2 class="fw-bold m-0">Available for Adoption</h2>
 
-                    <div class="filters d-flex gap-2">
-                        <button class="filter-btn active" type="button">All Pets</button>
-                        <button class="filter-btn" type="button">Dogs</button>
-                        <button class="filter-btn" type="button">Cats</button>
+                    <div class="filter-container mb-4 text-center">
+                        <button class="btn btn-outline-dark filter-btn active" data-type="all">All Pets</button>
+                        <button class="btn btn-outline-dark filter-btn" data-type="Dog">Dogs</button>
+                        <button class="btn btn-outline-dark filter-btn" data-type="Cat">Cats</button>
                     </div>
                 </div>
 
@@ -290,18 +323,18 @@
 
                 <!-- Stat cards -->
                 <div class="row g-3 mb-4 justify-content-center">
-                    
+
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="dash-stat card border-0 border-start border-4 border-warning shadow-sm" id="statCardSurrenders" style="cursor: pointer;">
+                        <div class="dash-stat card border-0 border-start border-4 border-primary shadow-sm" id="statCardSurrenders" style="cursor: pointer;">
                             <div class="card-body d-flex align-items-center">
 
-                                <div class="dash-big-icon text-warning">
+                                <div class="dash-big-icon text-primary">
                                     <i class="bi bi-exclamation-circle-fill"></i>
                                 </div>
 
                                 <div class="ms-5">
                                     <div class="text-muted small fw-semibold">Surrenders Requested</div>
-                                    
+
                                 </div>
 
                             </div>
@@ -319,7 +352,7 @@
 
                                 <div class="ms-5">
                                     <div class="text-muted small fw-semibold">Visits Booked</div>
-                                    
+
                                 </div>
 
                             </div>
@@ -336,84 +369,33 @@
 
             <!-- Recent Activity (transparent card) -->
 
-            <div class="col-12 col-lg-6">
-                <div class="card activity-card">
+            <div class="col-12 col-lg-7">
+                <div class="card activity-card border-0 shadow-sm">
                     <div class="card-body">
-                        <h5 class="fw-bold mb-3">Recent Activity</h5>
+                        <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-heart me-2 text-primary"></i>Your Saved Pets</h5>
 
-                        <div class="dash-item d-flex align-items-start gap-3">
-                            <div class="dash-dot bg-warning"></div>
-                            <div>
-                                <div class="fw-semibold">You saved “Max” to favourites</div>
-                                <div class="text-muted small">Today • 10:42</div>
+                        <div id="savedPetsContainer" class="row g-3">
+                            <div class="col-12 text-center py-4">
                             </div>
                         </div>
-
-                        <div class="dash-item d-flex align-items-start gap-3">
-                            <div class="dash-dot bg-primary"></div>
-                            <div>
-                                <div class="fw-semibold">Application submitted for “Buddy”</div>
-                                <div class="text-muted small">Yesterday • 18:12</div>
-                            </div>
-                        </div>
-
-                        <div class="dash-item d-flex align-items-start gap-3">
-                            <div class="dash-dot bg-success"></div>
-                            <div>
-                                <div class="fw-semibold">Visit booked (Saturday)</div>
-                                <div class="text-muted small">2 days ago • 13:05</div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
 
 
             <!-- Preferences (plain content) -->
-            <div class="col-12 col-lg-5">
-                <div class="preferences h-100" style="margin-top: 30px;">
-                    <h5 class="fw-bold mb-3">Your Preferences</h5>
-
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small fw-semibold">
-                            <span>Dogs</span><span class="text-muted">70%</span>
-                        </div>
-                        <div class="progress" style="height:10px;">
-                            <div class="progress-bar bg-primary" style="width:70%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small fw-semibold">
-                            <span>Cats</span><span class="text-muted">25%</span>
-                        </div>
-                        <div class="progress" style="height:10px;">
-                            <div class="progress-bar bg-danger" style="width:25%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between small fw-semibold">
-                            <span>Other</span><span class="text-muted">5%</span>
-                        </div>
-                        <div class="progress" style="height:10px;">
-                            <div class="progress-bar bg-warning" style="width:5%"></div>
-                        </div>
-                    </div>
-
-                    <div class="p-3 rounded-4 dash-callout">
-                        <div class="fw-bold mb-1">Tip</div>
-                        <div class="text-muted small mb-0">
-                            Save pets to compare them later, then submit one application when you’re ready.
-                        </div>
-                    </div>
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 mb-4 p-3 text-center bg-light" style="margin-top: 110px; margin-left: 110px;">
+                    <h6 class="fw-bold mb-3">Need to surrender a pet?</h6>
+                    <button class="btn btn-primary rounded-pill w-100" id="openSurrenderFormBtn">
+                        <i class="bi bi-plus-lg me-2"></i>Create Surrender Request
+                    </button>
                 </div>
             </div>
 
         </div>
 
-        
+
     </section>
 
 
@@ -466,7 +448,6 @@
                     <div class="col-md-5 register-left d-flex flex-column justify-content-center align-items-center text-center p-4">
                         <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo mb-3">
                         <h3 class="fw-bold">Join Fortuna Tails</h3>
-                        <p id="response"></p>
                         <p class="small text-muted">
                             Create your account and start managing your shelter.
                         </p>
@@ -495,6 +476,8 @@
                                 <label for="regConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
                                 <input name="registerConfirmPassword" type="password" class="form-control form-control-sm" required id="regConfirmPassword">
                             </div>
+
+                            <p id="response" style="font-weight: bold;"></p>
 
                             <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2" id="registerBtn">
                                 Create Account
@@ -537,8 +520,8 @@
                 <!-- Form -->
                 <form>
                     <div class="mb-3 text-start">
-                        <label for="loginEmail" class="form-label fw-semibold mb-1">Email</label>
-                        <input name="loginEmail" type="email" class="form-control form-control-sm" placeholder="username@gmail.com" required id="loginEmail">
+                        <label for="loginEmail" class="form-label fw-semibold mb-1">Username</label>
+                        <input name="loginEmail" type="email" class="form-control form-control-sm" required id="loginEmail">
                     </div>
 
                     <div class="mb-3 text-start">
@@ -546,6 +529,7 @@
                         <input name="loginPassword" type="password" class="form-control form-control-sm" placeholder="••••••••" required id="loginPassword">
                     </div>
 
+                    <p id="loginResponse" style="font-weight: bold;"></p>
                     <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3" id="loginSubmitBtn">Sign In</button>
                 </form>
 
@@ -567,12 +551,55 @@
     <!-- PAGE Search Results -->
     <section class="page" data-page="results">
         <section class="py-5">
-            <div class="container text-center">
-                <h2 class="fw-bold">Results</h2>
-                <p class="text-muted">Filtered results will appear here.</p>
+            <div class="container">
+                <h2 class="fw-bold text-center mb-4">Results</h2>
+                <div class="row g-4" id="resultsContainer"></div>
             </div>
         </section>
     </section>
+
+    <div id="bookingModal" class="filter-modal" style="display:none;">
+        <div class="filter-box">
+            <div class="text-center mb-2">
+                <i class="bi bi-calendar-check text-warning" style="font-size: 2.5rem;"></i>
+                <h3 class="modal-title mt-2 fw-bold">Book a Meeting</h3>
+                <p class="text-muted small">Choose a time to meet your new friend</p>
+            </div>
+
+            <div class="form-group">
+                <label for="bookingDate" class="form-label fw-semibold">Date & Time</label>
+                <input type="datetime-local" id="bookingDate" class="form-control form-control-lg">
+            </div>
+
+            <div class="d-grid gap-2 mt-3">
+                <button id="confirmBookingBtn" class="btn btn-warning btn-lg rounded-pill fw-bold">
+                    Confirm Booking
+                </button>
+                <button type="button" class="btn btn-link text-secondary btn-sm"
+                        onclick="document.getElementById('bookingModal').style.display='none'">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Surrender Requests Modal -->
+    <div class="filter-modal" id="surrenderRequestsModal">
+        <div class="filter-box">
+
+            <div class="filter-header">
+                <h3>Surrender Requests</h3>
+                <i class="fa-solid fa-xmark" id="closeSurrendersRequestModal"></i>
+            </div>
+
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="surrendersRequestContainer">
+                <!-- Surrender cards or form go here -->
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- Bootstrap link -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
