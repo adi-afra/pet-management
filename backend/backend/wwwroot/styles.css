@@ -220,6 +220,10 @@ body { background: #fff; color: #0b1b2b; }
     cursor: pointer;
 }
 
+.active-filter {
+    background-color: #ffc107;
+}
+
 /* Icon inside filter button */
 .filter-icon i {
     font-size: 14px;

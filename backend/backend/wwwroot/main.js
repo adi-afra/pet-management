@@ -55,6 +55,21 @@ function showPage(pageName) {
   }
 }
 
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        console.log("Enter pressed!");
+
+        showPage("results");
+        
+    }
+});
+
+closeSearchResultBtn = document.getElementById("closeSearchResultBtn");
+closeSearchResultBtn?.addEventListener("click", () => {
+    showPage("gallery");
+    closeDash();
+});
+
 dashLinks.forEach((btn) => {
   btn.addEventListener("click", () => {
     showPage(btn.dataset.page);
@@ -95,15 +110,18 @@ document.querySelectorAll(".backToHome").forEach(btn => {
 
 // Filter modal open/close
 const filterModal = document.getElementById("filterModal");
-const openFiltersBtn = document.getElementById("openFiltersModal");
+const openFiltersBtn = document.querySelectorAll(".filter-icon");
+//const openFiltersBtn2 = document.getElementById("openFiltersModal2");
 const closeFiltersBtn = document.getElementById("closeFiltersModal");
 
 
 // Open filter modal
-openFiltersBtn?.addEventListener("click", () => {
-  filterModal.style.display = "flex";
-});
-
+openFiltersBtn ?.forEach(btn => {
+    btn.addEventListener("click", () => {
+        filterModal.style.display = "flex";
+    });
+}
+);
 
 // Close filter modal
 closeFiltersBtn?.addEventListener("click", () => {
@@ -784,10 +802,17 @@ async function loadAllPets() {
 async function loadFilteredPets() {
     
     if (Object.keys(filters).length === 0) {
+        openFiltersBtn.forEach(btn => {
+            btn.classList.toggle("active-filter")
+        });
+
         loadAllPets();
         return;
     }
     try {
+        openFiltersBtn.forEach(btn => {
+            btn.classList.toggle("active-filter")
+        });
         const queryString = new URLSearchParams(filters).toString();
         const res = await fetch(`http://localhost:5212/api/Pets/filter?${queryString}`);
         const pets = await res.json();
@@ -800,7 +825,7 @@ async function loadFilteredPets() {
 
 async function searchPets() {
     const input = document.getElementById("searchInput");
-    const breed = input.value.trim();
+    const searchValue = input.value.trim();
 
     const url = breed
         ? `${PETS_API_BASE}/filter?breed=${encodeURIComponent(breed)}`
