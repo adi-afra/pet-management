@@ -69,7 +69,8 @@ namespace backend.Controllers
         public async Task<IActionResult> FilterPets(
             [FromQuery] string? animalType,
             [FromQuery] int? minAge,
-            [FromQuery] int? maxAge
+            [FromQuery] int? maxAge,
+            [FromQuery] string? searchValue
             )
         {
             IQueryable<Pet> query = _context.Pets;
@@ -86,6 +87,11 @@ namespace backend.Controllers
                     {
                         query = query.Where(p => p is Cat);
                     }
+                }
+
+                if (!string.IsNullOrWhiteSpace(searchValue))
+                {
+                    query = query.Where(p => p.Breed.Contains(searchValue) || p.Name.Contains(searchValue));
                 }
 
 

@@ -55,28 +55,6 @@ function showPage(pageName) {
   }
 }
 
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        console.log("Enter pressed!");
-
-        showPage("results");
-        
-    }
-});
-
-closeSearchResultBtn = document.getElementById("closeSearchResultBtn");
-closeSearchResultBtn?.addEventListener("click", () => {
-    showPage("gallery");
-    closeDash();
-});
-
-dashLinks.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    showPage(btn.dataset.page);
-    closeDash();
-  });
-});
-
 
 //show registration page
 const registrationBtn = document.getElementById("registrationPage");
@@ -106,35 +84,6 @@ document.querySelectorAll(".backToHome").forEach(btn => {
   });
 });
 
-
-
-// Filter modal open/close
-const filterModal = document.getElementById("filterModal");
-const openFiltersBtn = document.querySelectorAll(".filter-icon");
-//const openFiltersBtn2 = document.getElementById("openFiltersModal2");
-const closeFiltersBtn = document.getElementById("closeFiltersModal");
-
-
-// Open filter modal
-openFiltersBtn ?.forEach(btn => {
-    btn.addEventListener("click", () => {
-        filterModal.style.display = "flex";
-    });
-}
-);
-
-// Close filter modal
-closeFiltersBtn?.addEventListener("click", () => {
-  filterModal.style.display = "none";
-});
-
-
-// Click outside to close
-filterModal?.addEventListener("click", (e) => {
-  if (e.target === filterModal) {
-    filterModal.style.display = "none";
-  }
-});
 
 
 async function goToDashboard() {
@@ -750,9 +699,77 @@ function renderPets(pets, containerId) {
     `).join("");
 }
 
-const filters = {};
+// function for updating all the filter buttons
+function syncFilterUI() {
 
-// Handle filter button clicks
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+
+        const group = btn.dataset.group;
+
+        // "All" buttons
+        if (!btn.dataset.value && !btn.dataset.min) {
+            if (
+                !tempFilters[group] &&
+                !(group === "age" && (tempFilters.minAge || tempFilters.maxAge))
+            ) {
+                btn.classList.add("active");
+            }
+        }
+
+        // Normal filters
+        if (btn.dataset.value && tempFilters[group] === btn.dataset.value) {
+            btn.classList.add("active");
+        }
+
+        // Age filters
+        if (
+            group === "age" &&
+            btn.dataset.min == tempFilters.minAge &&
+            btn.dataset.max == tempFilters.maxAge
+        ) {
+            btn.classList.add("active");
+        }
+    });
+}
+
+//holding filter and temp filter
+let tempFilters = {};
+let filters = {};
+// Filter modal open/close
+const filterModal = document.getElementById("filterModal");
+const openFiltersBtn = document.querySelectorAll(".filter-icon");
+//const openFiltersBtn2 = document.getElementById("openFiltersModal2");
+const closeFiltersBtn = document.getElementById("closeFiltersModal");
+
+
+// Open filter modal
+openFiltersBtn?.forEach(btn => {
+    btn.addEventListener("click", () => {
+        tempFilters = { ...filters }; // discard changes
+        filterModal.style.display = "flex";
+    });
+}
+);
+
+// Close filter modal
+closeFiltersBtn?.addEventListener("click", () => {
+    tempFilters = { ...filters }; // discard changes
+    syncFilterUI();
+    filterModal.style.display = "none";
+});
+
+
+// Click outside to close
+filterModal?.addEventListener("click", (e) => {
+    if (e.target === filterModal) {
+        tempFilters = { ...filters }; // discard changes
+        syncFilterUI();
+        filterModal.style.display = "none";
+    }
+});
+
+//handeling the clicks on filter buttons
 document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", function () {
         const group = this.dataset.group;
@@ -764,10 +781,10 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
         this.classList.add("active");
 
         // Remove previous values
-        delete filters[group];
+        delete tempFilters[group];
         if (group === "age") {
-            delete filters.minAge;
-            delete filters.maxAge;
+            delete tempFilters.minAge;
+            delete tempFilters.maxAge;
         }
 
         // If "All" clicked → do nothing (keeps filters empty)
@@ -775,68 +792,120 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 
         // Normal filters
         if (this.dataset.value) {
-            filters[group] = this.dataset.value;
+            tempFilters[group] = this.dataset.value;
         }
 
         // Age filters
         if (this.dataset.min) {
-            filters.minAge = this.dataset.min;
+            tempFilters.minAge = this.dataset.min;
         }
 
         if (this.dataset.max) {
-            filters.maxAge = this.dataset.max;
+            tempFilters.maxAge = this.dataset.max;
         }
     });
 });
 
-async function loadAllPets() {
+//function to load all the pets in a page
+async function loadAllPets(holder) {
     try {
         const res = await fetch(`http://localhost:5212/api/Pets/pet`);
         const pets = await res.json();
-        renderPets(pets, "petGallery");
+        renderPets(pets, holder);
     } catch (error) {
         console.error("Error fetching pets:", error);
     }
 }
 
-async function loadFilteredPets() {
-    
-    if (Object.keys(filters).length === 0) {
-        openFiltersBtn.forEach(btn => {
-            btn.classList.toggle("active-filter")
-        });
+//function to load filtered and searched pets in a page
+async function loadFilteredPets(holder) {
+    const hasSearch = filters.searchValue;
+    const hasRealFilters = Object.keys(filters).some(key => key !== "searchValue");
 
-        loadAllPets();
+    //control filter button appearance based on if they have done a search or a filter
+    if (hasRealFilters) {
+        console.log("real filer");
+        openFiltersBtn.forEach(btn => {
+            btn.classList.add("active-filter");
+        });
+    } else {
+        console.log("no real filter");
+        openFiltersBtn.forEach(btn => {
+            btn.classList.remove("active-filter");
+        });
+    }
+
+    // Only load ALL pets if there is nothing at all
+    if (!hasSearch && !hasRealFilters) {
+        console.log("calling add all pets");
+        //checking in which page we are
+        const activePage = document.querySelector(".page.is-active");
+        const pageName = activePage.dataset.page;
+        let container = ""
+        if (pageName === "results") {
+            container = "resultsGallery"
+        } else if (pageName === "gallery") {
+            container = "petGallery"
+        }
+        loadAllPets(container);
         return;
     }
+
     try {
-        openFiltersBtn.forEach(btn => {
-            btn.classList.toggle("active-filter")
-        });
         const queryString = new URLSearchParams(filters).toString();
         const res = await fetch(`http://localhost:5212/api/Pets/filter?${queryString}`);
         const pets = await res.json();
-        renderPets(pets, "petGallery");
+        console.log(pets);
+        renderPets(pets, holder);
     } catch (error) {
         console.error("Error fetching pets:", error);
     }
 }
+//seraching functionality 
+const searchInput = document.getElementById("searchInput");
 
+searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        console.log("Enter pressed");
 
-async function searchPets() {
-    const input = document.getElementById("searchInput");
-    const searchValue = input.value.trim();
+        const value = event.target.value.trim();
+        console.log("Search:", value);
 
-    const url = breed
-        ? `${PETS_API_BASE}/filter?breed=${encodeURIComponent(breed)}`
-        : PETS_API_BASE;
+        if (value === "") {
+            delete filters.searchValue;
+        } else {
+            filters.searchValue = value;
+        }
 
-    const res = await fetch(url);
-    const pets = await res.json();
+        console.log("Filters:", filters);
+        showPage("results");
+        loadFilteredPets("resultsGallery");
+    }
+});
 
-    renderPets(pets, "resultsGallery");
-    showPage("results");
-}
+closeSearchResultBtn = document.getElementById("closeSearchResultBtn");
+closeSearchResultBtn?.addEventListener("click", () => {
+
+    delete filters.searchValue;
+    if (Object.keys(filters).length === 0) {
+        openFiltersBtn.forEach(btn => {
+            btn.classList.remove("active-filter");
+        });
+    }
+
+    const searchValue = document.getElementById("searchInput").value = "";
+
+    showPage("gallery");
+    closeDash();
+});
+
+dashLinks.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        showPage(btn.dataset.page);
+        closeDash();
+    });
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = document.getElementById("resetBtn");
@@ -846,7 +915,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("reset burron clicked");
         // Clear filters object
         for (let key in filters) {
-            delete filters[key];
+            delete tempFilters[key];
         }
 
         // Reset UI
@@ -859,8 +928,19 @@ document.addEventListener("DOMContentLoaded", () => {
             .forEach(btn => btn.classList.add("active"));
     });
 
+    //logic for when show result button is clicked
     showFilterResultBtn?.addEventListener("click", () => {
-        loadFilteredPets();
+        //updating the filters list and finding if we are in result page or pet gallery
+        filters = { ...tempFilters };
+        const activePage = document.querySelector(".page.is-active");
+        const pageName = activePage.dataset.page;
+        let container = ""
+        if (pageName === "results") {
+            container = "resultsGallery"
+        } else if (pageName === "gallery") {
+            container = "petGallery"
+        }
+        loadFilteredPets(container);
         filterModal.style.display = "none";
     });
 
@@ -872,7 +952,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    loadAllPets();
+    loadAllPets("petGallery");
 });
 
 
@@ -1000,6 +1080,22 @@ document.getElementById("petGallery").addEventListener("click", (e) => {
     openBookingModal(petData);
 });
 
+//adoption meeting
+document.getElementById("resultsGallery").addEventListener("click", (e) => {
+    const card = e.target.closest(".clickable-card");
+    if (!card) return;
+
+    const petData = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        age: card.dataset.age,
+        breed: card.dataset.breed,
+        image: card.dataset.image
+    };
+
+    console.log("Yes", petData);
+    openBookingModal(petData);
+});
 
 //modal logic for adopting
 const bookingModal = document.getElementById("bookingModal");
