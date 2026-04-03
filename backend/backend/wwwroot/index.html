@@ -491,8 +491,8 @@
 
                         <form>
                             <div class="mb-3">
-                                <label for="regFullName" class="form-label fw-semibold">Full Name</label>
-                                <input name="FullName" type="text" class="form-control form-control-sm" required id="regFullName">
+                                <label for="regUsername" class="form-label fw-semibold">Username</label>
+                                <input name="regUsername" type="text" class="form-control form-control-sm" required id="regUsername">
                             </div>
 
                             <div class="mb-3">
@@ -504,15 +504,11 @@
                                 <label for="regPassword" class="form-label fw-semibold">Password</label>
                                 <input name="registerPassword" type="password" class="form-control form-control-sm" required id="regPassword">
                             </div>
-
-                            <div class="mb-3">
-                                <label for="regConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
-                                <input name="registerConfirmPassword" type="password" class="form-control form-control-sm" required id="regConfirmPassword">
-                            </div>
+                            
 
                             <p id="response" style="font-weight: bold;"></p>
 
-                            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-2" id="registerBtn">
+                            <button id="registerBTN" class="btn btn-warning w-100 fw-bold py-2 mt-2">
                                 Create Account
                             </button>
                         </form>

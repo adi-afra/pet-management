@@ -300,6 +300,86 @@ async function showMeetings() {
     }
 }
 
+//registeration
+const registerForm = document.getElementById("registerBTN");
+registerForm?.addEventListener("click" ,async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("regUsername").value;
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+
+    try {
+        const res = await fetch("http://localhost:5212/api/Clients/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password, email })
+        });
+
+        // Get the element where we display messages
+        const responseEl = document.getElementById("response");
+
+        // Try to read the backend response as JSON
+        const errorData = await res.json();
+
+        // Check if the response from the backend was NOT successful
+        if (!res.ok) {
+
+            // Default message in case backend doesn't provide one
+            let message = "registration unsuccessful";
+
+            try {
+                // Use the backend message if available, otherwise fallback to default
+                message = errorData.message || message;
+            }
+                //incase of any unexpected error
+            catch (e) {}
+
+            // Show the error message to the user
+            responseEl.style.color = "red";
+            responseEl.innerText = message;
+
+
+            // Clear the message automatically after 30 seconds
+
+            setTimeout(() => {
+                responseEl.innerText = "";
+            }, 10000);
+
+        }
+
+        else{
+            //default message
+            let message = "registration successful";
+
+            try{
+                message = errorData.message || message;
+            }
+            catch (e) {}
+            // Show the original message in green
+            responseEl.style.color = "green";
+            responseEl.innerText = message;
+
+            // After 5 seconds, show redirect message
+            setTimeout(() => {
+                responseEl.innerText = "Redirecting to login in 10 seconds...";
+
+                // After another 10 seconds, clear message and navigate to login
+                setTimeout(() => {
+                    responseEl.innerText = "";
+                    showPage("login");
+                }, 10000);
+
+            }, 5000);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+
+
+
 // Example formatDateTime function (same as booked meetings)
 function formatDateTime(dateStr) {
     const date = new Date(dateStr);
@@ -340,22 +420,7 @@ async function showMeetings() {
 }
 
 
-async function getUserId() {
-    try {
-        const response = await fetch(`${API_BASE}/Auth/status`, {
-            credentials: "include" 
-        });
 
-        if (response.ok) {
-            const data = await response.json();
-            return data.id; 
-        }
-        return null;
-    } catch (err) {
-        console.error("Auth check failed:", err);
-        return null;
-    }
-}
 
 // --- MODAL SELECTORS ---
 const surrenderModal = document.getElementById("surrenderModal");
