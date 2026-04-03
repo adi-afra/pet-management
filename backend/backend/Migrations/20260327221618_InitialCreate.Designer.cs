@@ -12,7 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
+<<<<<<<< HEAD:backend/backend/Migrations/20260327221618_InitialCreate.Designer.cs
     [Migration("20260327221618_InitialCreate")]
+========
+    [Migration("20260326153741_InitialCreate")]
+>>>>>>>> origin/ramtin-api2:backend/backend/Migrations/20260326153741_InitialCreate.Designer.cs
     partial class InitialCreate
     {
         /// <inheritdoc />

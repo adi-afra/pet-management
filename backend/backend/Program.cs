@@ -5,37 +5,25 @@ using backend.classes;
 var builder = WebApplication.CreateBuilder(args);
 
 // ------------------- Configure Services -------------------
-
-// Add controllers
 builder.Services.AddControllers();
 
+// CORS with credentials
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5212", "http://127.0.0.1:5500") 
+        policy.WithOrigins("http://localhost:63343") // your frontend
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials(); 
+            .AllowCredentials(); // required for cookies/sessions
     });
 });
 
-
-builder.Services.AddDistributedMemoryCache(); // required for session
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromHours(1); // session lasts 1 hour
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-});
-
-// Configure EF Core with SQL Server (AWS RDS)
+// EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Swagger for API testing
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Add these before builder.Build()
@@ -48,6 +36,15 @@ builder.Services.AddSession(options =>
 });
 
 
+// Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // ------------------- Configure Middleware -------------------
@@ -57,19 +54,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-// ------------------- Middleware -------------------
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseRouting();  
-
-// Apply the CORS policy here
+// ✅ Order matters here:
+app.UseRouting();       // Needed for session + endpoint routing
 app.UseCors("AllowFrontend");
 
-app.UseSession();
-
+app.UseSession();       // Must be BEFORE MapControllers
 app.UseAuthorization();
 
 app.MapControllers();

@@ -446,6 +446,10 @@ body { background: #fff; color: #0b1b2b; }
   height: 350px;
 }
 
+.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
 
 /* --- Pet Card Layout --- */
 .pet-card {

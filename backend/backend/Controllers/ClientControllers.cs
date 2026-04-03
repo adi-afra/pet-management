@@ -5,19 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+
 namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ClientsController : ControllerBase
     {
-        //database context used to read CLient table
+        //database context used to read CLient table and the storage for pet images
         private readonly AppDbContext _context;
+        private readonly string _storageConnectionString;
 
         //giving my controler access to database through constructor
-        public ClientsController(AppDbContext context)
+        public ClientsController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
 
         // POST: api/clients
@@ -61,82 +66,54 @@ namespace backend.Controllers
             }
         }
 
-        // POST: api/clients/login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            if (request == null || string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-            {
-                return BadRequest(new { message = "Username and password are required." });
-            }
+		//post method for creating an adoption meeting
+		[HttpPost("adoptionMeetings/{userId}")]
+		 public async Task<IActionResult> CreateAdoptionMeeting(int userId, [FromBody] JsonElement data)
+		{
+    		try
+    			{
+   					int petId = data.GetProperty("petId").GetInt32();
 
-            var client = await _context.Clients
-                .SingleOrDefaultAsync(c => c.Username == request.Username && c.Password == request.Password);
+        			if (!data.TryGetProperty("date", out var dateProp))
+            			return BadRequest(new { message = "date is required" });
 
-            if (client == null)
-            {
-                return Unauthorized(new { message = "Invalid username or password." });
-            }
+        			DateTime date = dateProp.GetDateTime();
+					
+					//check to see if the user selected past dates
+       				if (date.Date < DateTime.Today)
+            			return BadRequest(new { message = "You cannot book a meeting in the past." });
 
-            // store authenticated user info in session
-            HttpContext.Session.SetInt32("UserId", client.Id);
-            HttpContext.Session.SetString("Username", client.Username);
-            HttpContext.Session.SetString("UserRole", client.getRole());
 
-            return Ok(new { message = "Logged in.", userId = client.Id, username = client.Username });
-        }
+					//fetching pet from the database
+					var pet = await _context.Pets.FindAsync(petId);
+					
+        			// Check if this pet already has an adoption meeting on the same date
+       				 bool alreadyBooked = await _context.Meetings
+            .				AnyAsync(m => m.PetId == petId 
+                           	&& m.Type == MeetingType.Adoption 
+                           	&& m.Date.Date == date.Date); // compare only the date part
 
-        // GET: api/clients/login?username={username}&password={password}
-        [HttpGet("login")]
-        public async Task<IActionResult> Login([FromQuery] string username, [FromQuery] string password)
-        {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            {
-                return BadRequest(new { message = "Username and password are required." });
-            }
+        			if (alreadyBooked)
+            				return BadRequest(new { message = "This pet already has an adoption meeting on the selected date." });
 
-            var client = await _context.Clients
-                .SingleOrDefaultAsync(c => c.Username == username && c.Password == password);
 
-            if (client == null)
-            {
-                return Unauthorized(new { message = "Invalid username or password." });
-            }
+        			// Create the adoption meeting
+        			var meeting = new Meeting(date, pet, userId, MeetingType.Adoption);
 
-            // store authenticated user info in session
-            HttpContext.Session.SetInt32("UserId", client.Id);
-            HttpContext.Session.SetString("Username", client.Username);
-            HttpContext.Session.SetString("UserRole", client.getRole());
+        			_context.Meetings.Add(meeting);
+        			await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Logged in.", userId = client.Id, username = client.Username });
-        }
+        			return Ok(new { message = "Adoption meeting created successfully", meeting });
+    			}
+    		catch (Exception ex)
+    		{
+       	 		return StatusCode(500, new { message = "Internal server error", detail = ex.Message });
+				
+    		}
+	}
 
-        public record LoginRequest(string Username, string Password);
 
-        // GET: api/clients/session
-        [HttpGet("session")]
-        public IActionResult GetSession()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var username = HttpContext.Session.GetString("Username");
-            var userRole = HttpContext.Session.GetString("UserRole");
-
-            if (userId == null)
-            {
-                return Unauthorized(new { message = "Not logged in." });
-            }
-
-            return Ok(new { userId, username, userRole });
-        }
-
-        // DELETE: api/clients/logout
-        [HttpDelete("logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return NoContent();
-        }
-
+        
         [HttpGet("adoptionMeetings/{userId}")]
         public async Task<ActionResult<IEnumerable<Meeting>>> GetAdoptionMeetings(int userId)
         {
@@ -185,6 +162,23 @@ namespace backend.Controllers
             if (meeting.Type != MeetingType.Surrender)
                 return BadRequest("Cannot delete a meeting that is not a surrender meeting.");
 
+            if (!string.IsNullOrEmpty(meeting.Pet?.ImageUrl))
+            {
+                //Connect to Azure Blob Storage
+                var blobServiceClient = new BlobServiceClient(_storageConnectionString);
+
+                //Get container
+                var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
+
+                //extracting the file name from the string url we have 
+                var fileName = Path.GetFileName(new Uri(meeting.Pet.ImageUrl).LocalPath);
+
+                //getting the refrence from the blob
+                var blobImage = containerClient.GetBlobClient(fileName);
+
+                //deleting the image from the blob if it exist
+                await blobImage.DeleteIfExistsAsync();
+            }
             // Remove potential pet if it has no other purpose
             if (meeting.Pet.Status == PetStatus.Potential)
             {
@@ -217,6 +211,7 @@ namespace backend.Controllers
             
             try
             {
+                Console.WriteLine("Received JSON: " + data.GetRawText());
                 //  Validate required fields
                 if (!data.TryGetProperty("animalType", out var animalTypeProp))
                     return BadRequest(new { message = "animalType is required" });
@@ -227,21 +222,23 @@ namespace backend.Controllers
                 if (!Enum.TryParse<PetType>(animalTypeString, true, out var petType))
                     return BadRequest("Invalid animal type");
 
-                // 🐾 Create correct object using switch
+                // Create correct object using switch
                 Pet pet = petType switch
                 {
                     PetType.Dog => new Dog
                     (
                         data.GetProperty("name").GetString(),
                         data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString()
+                        data.GetProperty("breed").GetString(),
+                        data.GetProperty("imageUrl").GetString()
                     ),
 
                     PetType.Cat => new Cat
                     (
                         data.GetProperty("name").GetString(),
                         data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString()
+                        data.GetProperty("breed").GetString(),
+                        data.GetProperty("imageUrl").GetString()
                     ),
 
                     _ => throw new Exception("Invalid animal type")
@@ -250,12 +247,13 @@ namespace backend.Controllers
                 //setting the satus as potenial
                 pet.SetStatus(PetStatus.Potential);
 
+
                 //  Create meeting
                 var meeting = new Meeting
                 (
                     data.GetProperty("date").GetDateTime(),
                     pet,
-                    data.GetProperty("userId").GetInt16(),
+                    data.GetProperty("userId").GetInt32(),
                     MeetingType.Surrender 
                 );
 
@@ -272,6 +270,66 @@ namespace backend.Controllers
                 return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
             }
         }
+        
+        
+        
+        // POST: api/clients/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] JsonElement data)
+        {
+            try
+            {
+                var username = data.GetProperty("username").GetString();
+                var password = data.GetProperty("password").GetString();
 
+                if (string.IsNullOrWhiteSpace(username))
+                    return BadRequest(new { message = "Username is required." });
+
+                if (string.IsNullOrWhiteSpace(password))
+                    return BadRequest(new { message = "Password is required." });
+
+                var client = await _context.Clients
+                    .FirstOrDefaultAsync(c => c.Username == username);
+
+                if (client == null || client.Password != password)
+                    return Unauthorized(new { message = "Invalid username or password." });
+
+                
+                HttpContext.Session.SetInt32("UserId", client.Id);
+                HttpContext.Session.SetString("Username", client.Username);
+                HttpContext.Session.SetString("UserRole", client.getRole());
+                
+                return Ok(new { message = "Login successful" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", detail = ex.Message });
+            }
+        }
+        
+        //Get method to see if a user is logged in
+        [HttpGet("session")]
+        public IActionResult GetCurrentUser()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var username = HttpContext.Session.GetString("Username");
+            var userRole = HttpContext.Session.GetString("UserRole");
+            
+            if (userId == null)
+                return Unauthorized(new { message = "Not logged in" });
+
+            return Ok(new { userId, username,userRole });
+        }
+        
+        //logging out
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Clear the session completely
+            HttpContext.Session.Clear();
+
+            // Return a success message
+            return Ok(new { message = "Logged out successfully." });
+        }
     }
 }

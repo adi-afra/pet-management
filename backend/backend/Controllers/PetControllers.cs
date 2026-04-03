@@ -2,6 +2,8 @@ using backend.classes;
 using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 namespace backend.Controllers
 {
@@ -10,10 +12,12 @@ namespace backend.Controllers
     public class PetsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly string _storageConnectionString;
 
-        public PetsController(AppDbContext context)
+        public PetsController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
 
         // GET: api/Pets/5
@@ -33,13 +37,14 @@ namespace backend.Controllers
             {
                 var pets = await _context.Pets
                     .Where(p => p.Status == PetStatus.Registered)
+                    .AsNoTracking()
                     .Select(p => new
                     {
                         p.Id,
                         p.Name,
                         p.Age,
+                        Type = p.GetType().Name, // Dog or Cat
                         p.Breed,
-                        Type = p.GetType().Name,
                         p.ImageUrl
                     })
                     .ToListAsync();
@@ -64,98 +69,107 @@ namespace backend.Controllers
             }
         }
 
-        // POST: api/Pets/bookMeeting
-        [HttpPost("bookMeeting")]
-        public async Task<IActionResult> BookMeeting([FromBody] Meeting meeting)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPetById(int id)
         {
-            if (meeting == null) return BadRequest("Meeting data required");
+            var pet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pet == null)
+            {
+                return NotFound(new { message = "Pet not found." });
+            }
+
+            return Ok(pet);
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterPets(
+            [FromQuery] string? animalType,
+            [FromQuery] int? minAge,
+            [FromQuery] int? maxAge
+            )
+        {
+            IQueryable<Pet> query = _context.Pets;
 
             try
             {
-                _context.Meetings.Add(meeting);
-                await _context.SaveChangesAsync();
-                return Ok(meeting);
+                if (!string.IsNullOrWhiteSpace(animalType))
+                {
+                    if (animalType.Equals("Dog", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query = query.Where(p => p is Dog);
+                    }
+                    else if (animalType.Equals("Cat", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query = query.Where(p => p is Cat);
+                    }
+                }
+
+
+                if (minAge.HasValue)
+                {
+                    query = query.Where(p => p.Age >= minAge.Value);
+                }
+
+                if (maxAge.HasValue)
+                {
+                    query = query.Where(p => p.Age <= maxAge.Value);
+                }
+
+                var pets = await query.Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Age,
+                    Type = p.GetType().Name, // Dog or Cat
+                    p.ImageUrl
+                }).ToListAsync();
+                return Ok(pets);
             }
+
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Failed to book meeting", detail = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "Error retrieving pets",
+                    detail = ex.Message
+                });
             }
         }
 
-        [HttpPut("bookPet/{id}")] // 'id' is the Pet's ID
-        public async Task<IActionResult> BookPet(int id, [FromBody] Meeting incomingMeeting)
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            // 1. Find the existing Pet in the database
-            // We 'Include' AdoptionMeetings so EF knows they are linked
-            var pet = await _context.Pets
-                .Include(p => p.Meetings)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            //Validate file
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
 
-            if (pet == null) return NotFound("Pet not found");
+            if (!file.ContentType.StartsWith("image/"))
+                return BadRequest("Only image files allowed");
 
-            // 2. Use your SetPet function to link the meeting to the 'Tracked' pet
-            incomingMeeting.SetPet(pet);
+            //Connect to Azure Blob Storage
+            var blobServiceClient = new BlobServiceClient(_storageConnectionString);
 
-            // 3. Update the Pet's status (e.g., Status 2 = Pending Adoption)
-            // pet.Status = 2; 
+            //Get container
+            var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
 
-            // 4. Add the meeting to the Pet's list
-            _context.Meetings.Add(incomingMeeting);
+            //Create container if not exists
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Pet successfully booked for a meeting!" });
-        }
+            //Generate unique filename
+            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
 
-        [HttpPost("savePet")]
-        public async Task<IActionResult> SavePet([FromBody] SavedRequest request)
-        {
-            // Check if the record already exists
-            var existingSave = await _context.SavedPets
-                .FirstOrDefaultAsync(s => s.ClientId == request.UserId && s.PetId == request.PetId);
+            //Create blob reference
+            var blobClient = containerClient.GetBlobClient(fileName);
 
-            if (existingSave != null)
+            //Upload file
+            using (var stream = file.OpenReadStream())
             {
-                // TOGGLE OFF: If it exists, remove it
-                _context.SavedPets.Remove(existingSave);
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Pet unsaved", isSaved = false });
+                await blobClient.UploadAsync(stream, overwrite: true);
             }
 
-            // TOGGLE ON: If it doesn't exist, add it
-            var savedPet = new SavedPet
-            {
-                ClientId = request.UserId,
-                PetId = request.PetId
-            };
-
-            _context.SavedPets.Add(savedPet);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Pet saved", isSaved = true });
-        }
-
-        [HttpGet("savedPets/{userId}")]
-        public async Task<IActionResult> GetSavedPets(int userId)
-        {
-            var saved = await _context.SavedPets
-                .Where(s => s.ClientId == userId)
-                .ToListAsync();
-
-            return Ok(saved);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
-        {
-            // This returns EVERY pet in the database
-            return await _context.Pets.ToListAsync();
-        }
-
-        // Simple helper class for the request body
-        public class SavedRequest
-        {
-            public int UserId { get; set; }
-            public int PetId { get; set; }
+            // 8. Return URL
+            return Ok(new { imageUrl = blobClient.Uri.AbsoluteUri });
         }
     }
 }
