@@ -12,7 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
+<<<<<<<< HEAD:backend/backend/Migrations/20260327221618_InitialCreate.Designer.cs
+    [Migration("20260327221618_InitialCreate")]
+========
     [Migration("20260326153741_InitialCreate")]
+>>>>>>>> origin/ramtin-api2:backend/backend/Migrations/20260326153741_InitialCreate.Designer.cs
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +28,58 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("YourProject.Models.SavedPet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("PetId");
+
+                    b.ToTable("SavedPets");
+                });
+
+            modelBuilder.Entity("backend.classes.AdoptionApplication", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PetId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdoptionApplications");
+                });
 
             modelBuilder.Entity("backend.classes.Meeting", b =>
                 {
@@ -157,6 +213,25 @@ namespace backend.Migrations
                     b.HasBaseType("backend.classes.User");
 
                     b.HasDiscriminator().HasValue("Client");
+                });
+
+            modelBuilder.Entity("YourProject.Models.SavedPet", b =>
+                {
+                    b.HasOne("backend.classes.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.classes.Pet", "Pet")
+                        .WithMany()
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("backend.classes.Meeting", b =>

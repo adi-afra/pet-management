@@ -1,7 +1,7 @@
+using backend.classes;
+using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using backend.Data;
-using backend.classes;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
@@ -20,9 +20,18 @@ namespace backend.Controllers
             _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
 
-        // GET: api/pets
-        [HttpGet("pet")]
-        public async Task<IActionResult> GetPets()
+        // GET: api/Pets/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Pet>> GetPetById(int id)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null) return NotFound("Pet not found");
+            return Ok(pet);
+        }
+
+        // GET: api/Pets/search?query=dog
+        [HttpGet("search")]
+        public async Task<ActionResult> SearchPets(string query)
         {
             try
             {
@@ -40,15 +49,23 @@ namespace backend.Controllers
                     })
                     .ToListAsync();
 
+                // Optional: Filter list by query if needed
+                if (!string.IsNullOrEmpty(query))
+                {
+                    var q = query.ToLower();
+                    var filtered = pets.Where(p =>
+                        p.Name.ToLower().Contains(q) ||
+                        p.Breed.ToLower().Contains(q) ||
+                        p.Type.ToLower().Contains(q)
+                    ).ToList();
+                    return Ok(filtered);
+                }
+
                 return Ok(pets);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    message = "Error retrieving pets",
-                    detail = ex.Message
-                });
+                return StatusCode(500, new { message = "Error retrieving pets", detail = ex.Message });
             }
         }
 

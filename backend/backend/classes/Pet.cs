@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 namespace backend.classes
 {
     //abstract base class representing a pet in the shelter
+    [JsonDerivedType(typeof(Dog), typeDiscriminator: "Dog")]
+    [JsonDerivedType(typeof(Cat), typeDiscriminator: "Cat")]
     public abstract class Pet
     {
         //all the fields are public so the children classes can see them (C# is like this) with public getters
@@ -15,11 +17,11 @@ namespace backend.classes
         
 
         public int Id { get; private set; }
-        public string Name { get; private set; }
+        public string Name { get; private set; } 
         public int Age { get; private set; }
-        public string Breed { get; private set; }
+        public string Breed { get; private set; } 
         public PetStatus Status { get; private set; }
-        public string ImageUrl { get; private set; }
+        public string ImageUrl { get; private set; } = string.Empty;
         
         //to bring the discriminator here
         [NotMapped]
@@ -33,14 +35,17 @@ namespace backend.classes
         
         protected Pet() {} //Empty constructor for EF
         
+<<<<<<< HEAD
+        public Pet( string name, int age, string breed, string status = "Available")
+=======
         public Pet( string name, int age, string breed, string imageUrl)
+>>>>>>> origin/ramtin-api2
         {
-            Name = ValidateString(name, nameof(name));
-            Breed = ValidateString(breed, nameof(breed));
 
             if (age < 0)
                 throw new ArgumentException("Age cannot be negative.");
-
+            Name = name;
+            Breed = breed;
             Age = age;
             Meetings = new List<Meeting>();
             
@@ -74,7 +79,7 @@ namespace backend.classes
 
         public void SetStatus(PetStatus status) => Status = status;
 
-        public void SetImageUrl(string imageUrl) => imageUrl = ValidateString(imageUrl, nameof(imageUrl));
+        public void SetImageUrl(string url) => ImageUrl = ValidateString(url, nameof(url));
 
         //methods for adding and removing items from the list (no validation for now)
         public void AddMeeting(Meeting meeting)

@@ -1,5 +1,6 @@
-using backend.Data;
 using backend.classes;
+using Microsoft.AspNetCore.Http;
+using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -23,7 +24,6 @@ namespace backend.Controllers
             _context = context;
             _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
-        
 
         // POST: api/clients
         [HttpPost("register")]

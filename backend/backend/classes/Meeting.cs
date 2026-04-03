@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace backend.classes
 {
@@ -10,7 +11,7 @@ namespace backend.classes
         public int Id { get; private set;  }
 		public DateTime Date { get; private set; }
         //using Pet class as a data type so we wouldnt need verification
-        public Pet Pet { get; private set; }
+        public Pet Pet { get; private set; } 
         public int PetId { get; private set; }  // EF Foreign Key
         public int UserId { get; private set; } //EF Foreign key 
     
@@ -40,7 +41,7 @@ namespace backend.classes
             Date = date;
         }
 
-        protected void SetPet(Pet pet)
+        public void SetPet(Pet pet)
         {
             if (pet == null)
             {
@@ -48,6 +49,7 @@ namespace backend.classes
             }
 
             Pet = pet;
+            this.PetId = pet.Id;
         }
         
 

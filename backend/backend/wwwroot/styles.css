@@ -451,7 +451,84 @@ body { background: #fff; color: #0b1b2b; }
     transition: transform 0.2s ease;
 }
 
-.clickable-card:hover {
-    transform: scale(1.03);
+/* --- Pet Card Layout --- */
+.pet-card {
+    border-radius: 15px;
+    overflow: hidden;
 }
+
+.pet-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* --- Save Icon Styling (Bootstrap Icons) --- */
+.save-icon-wrapper {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    transition: transform 0.2s ease;
+}
+
+    .save-icon-wrapper:hover {
+        transform: scale(1.2);
+    }
+
+/* Default state: Black outline */
+.bi-bookmark {
+    font-size: 1.4rem;
+    color: #333;
+}
+
+/* Saved state: Solid Yellow */
+.bi-bookmark-fill.is-saved {
+    font-size: 1.4rem;
+    color: #ffc107 !important; /* Yellow */
+}
+
+/* Button Styling */
+.pet-actions .btn {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.filter-box {
+    background: white;
+    padding: 2.5rem; /* More space around the edges */
+    border-radius: 15px; /* Softer corners */
+    width: 90%; /* Responsive width for mobile */
+    max-width: 500px; /* Prevents it from being too skinny on desktop */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; /* Automatically spaces out the items inside */
+}
+
+
+.filter-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dim the background */
+    display: none; /* Controlled by JS */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1050; /* Sit on top of everything */
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
 

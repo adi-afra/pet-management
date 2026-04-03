@@ -1,96 +1,98 @@
 
 // Dashboard dropdown (open/close)
-
 const menuBtn = document.getElementById("menuBtn");
 const dashPanel = document.getElementById("dashPanel");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
 
 function openDash() {
-  overlay.classList.remove("hidden");
-  dashPanel.classList.remove("hidden");
-  // allows CSS animation to run
-  requestAnimationFrame(() => dashPanel.classList.add("show"));
+    overlay.classList.remove("hidden");
+    dashPanel.classList.remove("hidden");
+    // allows CSS animation to run
+    requestAnimationFrame(() => dashPanel.classList.add("show"));
 }
-
 
 function closeDash() {
-  dashPanel.classList.remove("show");
-  overlay.classList.add("hidden");
-  setTimeout(() => dashPanel.classList.add("hidden"), 220);
+    dashPanel.classList.remove("show");
+    overlay.classList.add("hidden");
+    setTimeout(() => dashPanel.classList.add("hidden"), 220);
 }
-
 
 if (menuBtn && dashPanel && overlay && closeBtn) {
-  menuBtn.addEventListener("click", openDash);
-  overlay.addEventListener("click", closeDash);
-  closeBtn.addEventListener("click", closeDash);
+    menuBtn.addEventListener("click", openDash);
+    overlay.addEventListener("click", closeDash);
+    closeBtn.addEventListener("click", closeDash);
 }
-
 
 // Page switching (show/hide pages)
 const pages = document.querySelectorAll(".page");
 const dashLinks = document.querySelectorAll(".dash-link[data-page]");
 
-
 //function for switching between pages
 function showPage(pageName) {
-  pages.forEach((p) => p.classList.remove("is-active"));
+    pages.forEach((p) => p.classList.remove("is-active"));
 
-  const target = document.querySelector(`.page[data-page="${pageName}"]`);
-  if (target) target.classList.add("is-active");
+    const target = document.querySelector(`.page[data-page="${pageName}"]`);
+    if (target) target.classList.add("is-active");
 
-  // dashboard highlight
-  dashLinks.forEach((b) => b.classList.remove("active"));
-  const activeBtn = document.querySelector(`.dash-link[data-page="${pageName}"]`);
-  if (activeBtn) activeBtn.classList.add("active");
+    if (pageName === "gallery") {
+        loadPetGallery();
+    }
 
-  //deleting the navbar if we are in login or register
-  const navbar = document.getElementById("mainNavbar");
 
-  if (pageName === "login" || pageName === "registration") {
-    navbar.classList.add("d-none")
-  } else {
-    navbar.classList.remove("d-none")
-  }
+    if (pageName === "dashboard") {
+        loadSavedPets();
+    }
+
+    // dashboard highlight
+    dashLinks.forEach((b) => b.classList.remove("active"));
+    const activeBtn = document.querySelector(`.dash-link[data-page="${pageName}"]`);
+    if (activeBtn) activeBtn.classList.add("active");
+
+    //deleting the navbar if we are in login or register
+    const navbar = document.getElementById("mainNavbar");
+
+    if (pageName === "login" || pageName === "registration") {
+        navbar?.classList.add("d-none")
+    } else {
+        navbar?.classList.remove("d-none")
+    }
 }
 
 dashLinks.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    showPage(btn.dataset.page);
-    closeDash();
-  });
+    btn.addEventListener("click", () => {
+        showPage(btn.dataset.page);
+        closeDash();
+    });
 });
 
-
 //show registration page
-const registrationBtn = document.getElementById("registrationPage");
-registrationBtn?.addEventListener("click", () => {
-  showPage("registration");
-  closeDash(); 
+const navRegistrationBtn = document.getElementById("registrationPage");
+navRegistrationBtn?.addEventListener("click", () => {
+    showPage("registration");
+    closeDash();
 });
 
 //switches from register to login
 const loginBtn = document.getElementById("loginBtn");
-loginBtn?.addEventListener("click",() => {
+loginBtn?.addEventListener("click", () => {
     showPage("login");
     closeDash();
 });
 
 //switches from login to register
 const signinBtn = document.getElementById("goToRegister");
-signinBtn?.addEventListener("click",() => {
+signinBtn?.addEventListener("click", () => {
     showPage("registration");
     closeDash();
 });
 
 //switches from login or register to home
 document.querySelectorAll(".backToHome").forEach(btn => {
-  btn.addEventListener("click", () =>{
-    showPage("gallery");
-  });
+    btn.addEventListener("click", () => {
+        showPage("gallery");
+    });
 });
-
 
 
 // Filter modal open/close
@@ -98,24 +100,21 @@ const filterModal = document.getElementById("filterModal");
 const openFiltersBtn = document.getElementById("openFiltersModal");
 const closeFiltersBtn = document.getElementById("closeFiltersModal");
 
-
 // Open filter modal
 openFiltersBtn?.addEventListener("click", () => {
-  filterModal.style.display = "flex";
+    filterModal.style.display = "flex";
 });
-
 
 // Close filter modal
 closeFiltersBtn?.addEventListener("click", () => {
-  filterModal.style.display = "none";
+    filterModal.style.display = "none";
 });
-
 
 // Click outside to close
 filterModal?.addEventListener("click", (e) => {
-  if (e.target === filterModal) {
-    filterModal.style.display = "none";
-  }
+    if (e.target === filterModal) {
+        filterModal.style.display = "none";
+    }
 });
 
 
@@ -149,11 +148,11 @@ document.getElementById("dashboardBTN")?.addEventListener("click", goToDashboard
 
 async function deleteAdoptionMeeting(id) {
     try {
-
         const response = await fetch(
-            `http://localhost:5212/api/Clients/adoptionMeetings/${id}`,
+            `${API_BASE}/Clients/adoptionMeetings/${id}`,
             {
-                method: "DELETE"
+                method: "DELETE",
+                credentials: "include"
             }
         );
 
@@ -161,130 +160,108 @@ async function deleteAdoptionMeeting(id) {
             console.error("Delete failed");
             return;
         }
-
     } catch (error) {
         console.error("Error deleting meeting:", error);
     }
 }
 
-async function deleteSurrendeMeeting(id) {
+async function deleteSurrenderMeeting(id) {
     try {
         const response = await fetch(
-            `http://localhost:5212/api/Clients/surrenderMeetings/${id}`,
-            { method: "DELETE" }
+            `${API_BASE}/Clients/surrenderMeetings/${id}`,
+            {
+                method: "DELETE",
+                credentials: "include"
+            }
         );
         if (!response.ok) {
             console.error("Delete failed");
             return;
         }
-        
     } catch (error) {
         console.error("Error deleting surrender meeting:", error);
     }
 }
 
-
 function makeMeetingCard(meeting) {
-
-    // main card
     const card = document.createElement("div");
-    card.className = "card shadow-sm";
+    card.className = "card shadow-sm mb-3 border-0 rounded-3";
 
     const cardBody = document.createElement("div");
     cardBody.className = "card-body";
 
-    // header section
+    // HEADER (icon + title)
     const headerDiv = document.createElement("div");
-    headerDiv.className = "d-flex justify-content-between";
+    headerDiv.className = "d-flex align-items-center";
 
-    const title = document.createElement("h5");
-    title.className = "card-title mb-1";
+    const title = document.createElement("h6");
+    title.className = "fw-bold mb-0";
 
-    const heartIcon = document.createElement("i");
-    heartIcon.className = "bi bi-heart me-2";
+    const iconClass = meeting.type === 0
+        ? "bi-heart-fill text-danger"
+        : "bi-box-arrow-up text-primary";
 
-    title.appendChild(heartIcon);
-    if (meeting.type == 0) {
-        title.appendChild(document.createTextNode("Meet " + meeting.pet.name));
-    } else {
-        title.appendChild(document.createTextNode("surrender " + meeting.pet.name));
-    }
-    
+    const prefix = meeting.type === 0 ? "Meet" : "Surrender";
 
+    title.innerHTML = `<i class="bi ${iconClass} me-2"></i>${prefix} ${meeting.pet.name}`;
     headerDiv.appendChild(title);
 
-    // date/time
-    const meetingDate = new Date(meeting.date);
-    const formattedDate = meetingDate.toLocaleDateString();
+    // TOP ROW (header + badge)
+    const topRow = document.createElement("div");
+    topRow.className = "d-flex justify-content-between align-items-center mb-2";
 
-    const date = document.createElement("p");
-    date.className = "mb-1";
+    const badge = document.createElement("span");
+    badge.className = "badge bg-light text-dark small";
+    badge.innerText = meeting.pet.animalType;
 
-    const calendarIcon = document.createElement("i");
-    calendarIcon.className = "bi bi-calendar-event me-2";
+    topRow.appendChild(headerDiv);
+    topRow.appendChild(badge);
 
-    date.appendChild(calendarIcon);
-    date.appendChild(
-        document.createTextNode(formattedDate)
-    );
+    // DATE
+    const dateStr = new Date(meeting.date).toLocaleString([], {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    });
 
-    // animal
-    const animal = document.createElement("p");
-    animal.className = "mb-1";
+    const dateP = document.createElement("p");
+    dateP.className = "small text-muted mb-1";
+    dateP.innerHTML = `<i class="bi bi-calendar3 me-2"></i>${dateStr}`;
 
-    const pawIcon = document.createElement("i");
-    pawIcon.className = "bi bi-paw me-2";
+    // BREED
+    const breedP = document.createElement("p");
+    breedP.className = "small text-muted mb-3";
+    breedP.innerHTML = `<i class="bi bi-tag me-2"></i>${meeting.pet.breed}`;
 
-    animal.appendChild(pawIcon);
-    animal.appendChild(
-        document.createTextNode("Animal: " + meeting.pet.animalType)
-    );
-
-    // breed
-    const breed = document.createElement("p");
-    breed.className = "mb-2";
-
-    const tagIcon = document.createElement("i");
-    tagIcon.className = "bi bi-tag me-2";
-
-    breed.appendChild(tagIcon);
-    breed.appendChild(
-        document.createTextNode("Breed: " + meeting.pet.breed)
-    );
-
-    // delete button
+    // DELETE BUTTON
     const deleteButton = document.createElement("button");
-    deleteButton.className = "btn btn-danger btn-sm";
+    deleteButton.className = "btn btn-outline-danger btn-sm w-100 rounded-pill";
+    deleteButton.innerHTML = `<i class="bi bi-trash3 me-1"></i> Cancel Meeting`;
 
-    const trashIcon = document.createElement("i");
-    trashIcon.className = "bi bi-trash me-1";
+    deleteButton.addEventListener("click", async () => {
+        const endpoint = meeting.type === 0
+            ? "adoptionMeetings"
+            : "surrenderMeetings";
 
-    deleteButton.appendChild(trashIcon);
-    deleteButton.appendChild(document.createTextNode("Delete"));
+        if (confirm(`Are you sure you want to cancel the meeting for ${meeting.pet.name}?`)) {
+            try {
+                const response = await fetch(`${API_BASE}/Clients/${endpoint}/${meeting.id}`, {
+                    method: "DELETE",
+                    credentials: "include"
+                });
 
-    if (meeting.type == 0) {
-        // DELETE API CALL
-        deleteButton.addEventListener("click", () => {
-            deleteAdoptionMeeting(meeting.id);
-            // remove card from UI
-            card.remove();
-        });
-    } else {
-        // DELETE API CALL
-        deleteButton.addEventListener("click", () => {
-            deleteSurrendeMeeting(meeting.id);
-            // remove card from UI
-            card.remove();
-        });
-    }
-    
+                if (response.ok) {
+                    card.remove();
+                }
+            } catch (error) {
+                console.error("Error deleting:", error);
+            }
+        }
+    });
 
-
-    // assembling the card
-    cardBody.appendChild(headerDiv);
-    cardBody.appendChild(date);
-    cardBody.appendChild(animal);
-    cardBody.appendChild(breed);
+    // APPEND EVERYTHING
+    cardBody.appendChild(topRow);
+    cardBody.appendChild(dateP);
+    cardBody.appendChild(breedP);
     cardBody.appendChild(deleteButton);
 
     card.appendChild(cardBody);
@@ -299,142 +276,146 @@ async function showMeetings() {
 
     console.log(userId);
     try {
+        const res = await fetch(`${API_BASE}/Clients/surrenderMeetings/${userId}`, {
+            credentials: "include"
+        });
+        if (!res.ok) throw new Error("Failed to fetch surrender requests");
 
-        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`);
-        if (!response.ok) {
-            console.error("failed");
-        }
-
-
-        const meetings = await response.json();
-
-        const container = document.getElementById("meetingsContainer");
-
-
+        const requests = await res.json();
         container.innerHTML = "";
 
-        meetings.forEach(meeting => {
-            const card = makeMeetingCard(meeting);
-            container.appendChild(card);
+        requests.forEach(requests => {
+            // mark type = 1 for surrender
+            requests.type = 1;
+            container.appendChild(makeMeetingCard(requests));
         });
 
-    } catch (error) {
-        console.error("Error show meeting:", error);
-    }
+        if (requests.length === 0) {
+            container.innerHTML = "<p class='text-center text-muted py-3'>No active surrender requests.</p>";
+        }
 
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p class='text-center text-danger py-3'>Failed to load requests.</p>";
+    }
+}
+
+// Example formatDateTime function (same as booked meetings)
+function formatDateTime(dateStr) {
+    const date = new Date(dateStr);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+// Helper to delete and remove from UI
+async function deleteSurrenderRequest(id, btn) {
+    if (confirm("Cancel this surrender request?")) {
+        const success = await deleteSurrenderMeeting(id); // Using your existing delete function
+        btn.closest('.card').remove();
+    }
+}
+
+//calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
+async function showMeetings() {
+    const container = document.getElementById("meetingsContainer");
+    if (!container) return;
+
+    const userId = await getUserId();
+    if (!userId) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/Clients/adoptionMeetings/${userId}`, {
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            const meetings = await response.json();
+            container.innerHTML = ""; 
+            meetings.forEach(meeting => {
+                container.appendChild(makeMeetingCard(meeting));
+            });
+        }
+    } catch (err) {
+        console.error("Error loading meetings:", err);
+    }
 }
 
 
-// Adoption modal open/close
-const adoptionModal = document.getElementById("adoptionModal");
-const openAdoptionsBtn = document.getElementById("openAdoptionsModal");
-const closeAdoptionsBtn = document.getElementById("closeAdoptionsModal");
+async function getUserId() {
+    try {
+        const response = await fetch(`${API_BASE}/Auth/status`, {
+            credentials: "include" 
+        });
 
+        if (response.ok) {
+            const data = await response.json();
+            return data.id; 
+        }
+        return null;
+    } catch (err) {
+        console.error("Auth check failed:", err);
+        return null;
+    }
+}
 
+// --- MODAL SELECTORS ---
+const surrenderFormModal = document.getElementById("surrenderModal"); // The "Give up a pet" form
+const surrenderRequestsModal = document.getElementById("surrenderRequestsModal"); // The "View my requests" list
+const adoptionMeetingsModal = document.getElementById("adoptionMeetingsModal");
 
+document.getElementById("closeSurrendersModal")?.addEventListener("click", () => {
+    surrenderFormModal.style.display = "none";
+});
 
+document.getElementById("closeSurrendersRequestModal")?.addEventListener("click", () => {
+    surrenderRequestsModal.style.display = "none";
+});
 
-// Open adoption modal
-openAdoptionsBtn?.addEventListener("click", () => {
-    adoptionModal.style.display = "flex";
+// --- FIX 3: Adoption Meetings Modal ---
+document.getElementById("closeMeetingsModal")?.addEventListener("click", () => {
+    adoptionMeetingsModal.style.display = "none";
+});
+
+// --- OPENING LOGIC ---
+document.getElementById("openSurrenderFormBtn")?.addEventListener("click", () => {
+    surrenderFormModal.style.display = "flex";
+});
+
+document.getElementById("statCardSurrenders")?.addEventListener("click", () => {
+    surrenderRequestsModal.style.display = "flex";
+    showSurrenderRequests();
+});
+
+document.getElementById("statCardMeetings")?.addEventListener("click", () => {
+    adoptionMeetingsModal.style.display = "flex";
     showMeetings();
 });
 
-
-// Close adoption modal
-closeAdoptionsBtn?.addEventListener("click", () => {
-    adoptionModal.style.display = "none";
-});
-
-
-// Click outside to close
-adoptionModal?.addEventListener("click", (e) => {
-    if (e.target === adoptionModal) {
-        adoptionModal.style.display = "none";
-    }
-});
-
-
-const registerForm = document.getElementById("submit");
-registerForm?.addEventListener("click" ,async (e) => {
-  e.preventDefault();
-
-  const username = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const res = await fetch("http://localhost:5212/api/Clients/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, email })
+// --- CLICK OUTSIDE TO CLOSE (Consolidated) ---
+[surrenderFormModal, surrenderRequestsModal, adoptionMeetingsModal].forEach(modal => {
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
     });
-
-      // Get the element where we display messages
-      const responseEl = document.getElementById("response");
-
-      // Try to read the backend response as JSON
-      const errorData = await res.json();
-    
-    // Check if the response from the backend was NOT successful
-    if (!res.ok) {
-        
-        // Default message in case backend doesn't provide one
-        let message = "registration unsuccessful";
-
-        try {
-            // Use the backend message if available, otherwise fallback to default
-            message = errorData.message || message;
-        }
-        //incase of any unexpected error
-        catch (e) {}
-
-        // Show the error message to the user
-        responseEl.style.color = "red";
-        responseEl.innerText = message;
-        
-
-        // Clear the message automatically after 30 seconds
-        
-        setTimeout(() => {
-           responseEl.innerText = "";
-        }, 10000);
-        
-    }
-    
-    else{
-        //default message
-        let message = "registration successful";
-        
-        try{
-            message = errorData.message || message;
-        }
-        catch (e) {}
-        
-        responseEl.style.color = "Green";
-        responseEl.innerText = message;
-        
-        // Clear the message automatically after 30 seconds
-        setTimeout(() => {
-           responseEl.innerText = "";
-        }, 10000);
-        
-    }
-    
-   
-  } catch (err) {
-    console.log(err);
-  }
 });
 
-// ----- SURRENDER MEETINGS MODAL -----
+// Open Adoption Meetings from Dashboard
+document.getElementById("statCardMeetings")?.addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "flex";
+    showMeetings(); 
+});
 
-// Grab the modal and buttons
-const surrenderModal = document.getElementById("surrenderModal");
-const openSurrendersBtn = document.getElementById("openSurrendersModal");
-const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
-const surrenderContainer = document.getElementById("surrendersContainer"); // container inside modal
-const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting");
+// Close logic for the new modals
+document.getElementById("closeMeetingsModal")?.addEventListener("click", () => {
+    document.getElementById("adoptionMeetingsModal").style.display = "none";
+});
+
+// Click outside to close for Meetings and Surrenders modals
+[document.getElementById("adoptionMeetingsModal"), document.getElementById("surrenderRequestsModal")].forEach(modal => {
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
 
 
 // Function to fetch and show surrender meetings
@@ -445,26 +426,195 @@ async function showSurrenders() {
     
     const userId = session.user.userId || 0;
 
-    try {
-        const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
-        if (!response.ok) {
-            console.error("Failed to fetch surrender meetings");
+async function loadPetGallery(searchQuery = "", filterType = "all") {
+    const isResultsPage = document.querySelector('.page.is-active')?.dataset.page === "results";
+
+    const container = isResultsPage
+        ? document.getElementById("resultsContainer")
+        : document.getElementById("petsContainer");
+    if (!container) return;
+
+    // ✅ start fade out
+    container.classList.add("fade-out");
+
+    setTimeout(async () => {
+
+        container.innerHTML = "";
+
+        const userId = await getUserId();
+
+        // If not logged in, show the message and STOP
+        if (!userId) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-person-lock" style="font-size: 3rem; color: #ccc;"></i>
+                    <h4 class="mt-3">Members Only</h4>
+                    <p class="text-muted">Please log in to see our adorable pets!</p>
+                    <button class="btn btn-warning rounded-pill px-4" onclick="showPage('login')">Login</button>
+                </div>`;
+
+            // ✅ fade back in
+            container.classList.remove("fade-out");
+            container.classList.add("fade-in");
             return;
         }
 
-        const surrenders = await response.json();
+        try {
+            const [petsRes, savedRes] = await Promise.all([
+                fetch(`${API_BASE}/Pets`),
+                fetch(`${API_BASE}/Pets/savedPets/${userId}`)
+            ]);
 
-        surrenderContainer.innerHTML = "";
+            const pets = await petsRes.json();
+            let savedPetIds = [];
 
-        surrenders.forEach(surrender => {
-            const card = makeMeetingCard(surrender);
-            surrenderContainer.appendChild(card);
+            if (savedRes.ok) {
+                const savedData = await savedRes.json();
+                savedPetIds = savedData.map(s => s.petId);
+            }
+
+            // --- FILTERING LOGIC ---
+            let filteredPets = pets.filter(pet => pet.status == 1 || pet.status === "Registered");
+
+            if (filterType !== "all") {
+                filteredPets = filteredPets.filter(p => p.animalType === filterType);
+            }
+
+            if (searchQuery) {
+                filteredPets = filteredPets.filter(p =>
+                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    p.breed.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            if (filteredPets.length === 0) {
+                container.innerHTML = `<div class="col-12 text-center"><p>No pets found.</p></div>`;
+
+                container.classList.remove("fade-out");
+                container.classList.add("fade-in");
+                return;
+            }
+
+            filteredPets.forEach(pet => {
+                const isSaved = savedPetIds.includes(pet.id);
+                const iconClass = isSaved ? "bi-bookmark-fill is-saved" : "bi-bookmark";
+
+                const card = `
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 pet-card">
+                            <img src="${pet.imageUrl || 'images/placeholder.jpg'}" class="card-img-top pet-img">
+                    
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div class="pet-details">
+                                    <h5 class="fw-bold mb-1">${pet.name}</h5>
+                                    <p class="text-muted mb-0 small">${pet.breed}</p>
+                                    <p class="text-secondary mb-0 small">${pet.age} years old</p>
+                                </div>
+
+                                <div class="pet-actions d-flex flex-column align-items-center">
+                                    <div class="save-icon-wrapper mb-2" onclick="toggleSavePet(${pet.id})">
+                                        <i class="bi ${iconClass}" id="save-${pet.id}"></i>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="openBookingModal(${pet.id}, '${pet.name}', '${pet.breed}', '${pet.animalType}')">
+                                        Book
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+
+        } catch (err) {
+            console.error("Failed to load pets:", err);
+        }
+
+        // ✅ fade back in
+        container.classList.remove("fade-out");
+        container.classList.add("fade-in");
+
+    }, 200);
+}
+
+
+function openBookingModal(id, name, breed, type) {
+    // 1. Get the modal element (Make sure you have this in your HTML!)
+    const modal = document.getElementById("bookingModal");
+
+    // 2. Store the pet data in the modal's dataset so the "Confirm" button can find it later
+    modal.dataset.selectedPetId = id;
+    modal.dataset.selectedPetName = name;
+    modal.dataset.selectedPetBreed = breed;
+    modal.dataset.selectedPetType = type;
+
+    // 3. Update the modal title so the user knows which pet they are booking
+    const title = modal.querySelector('h3') || modal.querySelector('.modal-title');
+    if (title) title.innerText = `Book Meeting for ${name}`;
+
+    // 4. Show the modal
+    modal.style.display = "flex";
+}
+
+// Assuming your booking modal has a button with id="confirmBookingBtn"
+// and a date input with id="bookingDate"
+document.getElementById("confirmBookingBtn")?.addEventListener("click", async () => {
+    const modal = document.getElementById("bookingModal");
+    const dateInput = document.getElementById("bookingDate");
+
+    const petId = modal.dataset.selectedPetId;
+    const petName = modal.dataset.selectedPetName;
+    const petBreed = modal.dataset.selectedPetBreed;
+    const petType = modal.dataset.selectedPetType;
+    const selectedDate = dateInput.value;
+
+    if (!selectedDate) {
+        return alert("Please select a date and time.");
+    }
+
+    // Call your existing booking function
+    await bookMeeting(petId, selectedDate, petType, petName, petBreed);
+
+    // Close modal on success
+    modal.style.display = "none";
+});
+
+
+async function bookMeeting(petId, date, petType, petName, petBreed) {
+    const userId = await getUserId();
+    if (!userId) return alert("Please log in first!");
+
+    const meetingData = {
+        date: date,
+        userId: userId,
+        type: 0,
+        pet: { // You still send the whole object as requested
+            "$type": petType,
+            "id": petId,
+            "name": petName,
+            "breed": petBreed,
+            "age": 0
+        }
+    };
+
+    try {
+        // CHANGED TO PUT and added petId to the URL
+        const response = await fetch(`${API_BASE}/Pets/bookPet/${petId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(meetingData),
+            credentials: "include"
         });
-        addSurrenderMeetingButton.classList.remove("d-none");
 
-
-    } catch (error) {
-        console.error("Error showing surrender meetings:", error);
+        if (response.ok) {
+            alert("Meeting booked successfully!");
+            showMeetings();
+        } else {
+            const error = await response.json();
+            alert("Error: " + (error.detail || "Booking failed"));
+        }
+    } catch (err) {
+        console.error("Booking error:", err);
     }
 }
 
@@ -544,6 +694,7 @@ async function addSurrenders() {
             })
         });
 
+        const result = await response.json();
 
         if (!res2.ok) {
             const errorData = await res2.json();
@@ -551,16 +702,24 @@ async function addSurrenders() {
             return;
         }
 
-        showSurrenders();
-        
-    } catch (err) {
-        console.error(err);
-        alert("Something went wrong!");
-    }
+        // ✅ Render cards (same style as gallery)
+        savedPets.forEach(pet => {
+            const card = `
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0 pet-card">
+                        <img src="${pet.imageUrl || 'images/placeholder.jpg'}" class="card-img-top pet-img">
 
-}
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div class="pet-details">
+                                <h5 class="fw-bold mb-1">${pet.name}</h5>
+                                <p class="text-muted mb-0 small">${pet.breed}</p>
+                                <p class="text-secondary mb-0 small">${pet.age} years old</p>
+                            </div>
 
-function createMeetingForm() {
+                            <div class="pet-actions d-flex flex-column align-items-center">
+                                <div class="save-icon-wrapper mb-2" onclick="toggleSavePet(${pet.id})">
+                                    <i class="bi bi-bookmark-fill is-saved" id="save-${pet.id}"></i>
+                                </div>
 
     // main card
     const formCard = document.createElement("div");
@@ -1119,11 +1278,19 @@ async function loadPets() {
                     <h3>${pet.name}</h3>
                     <p>${pet.age} years • ${pet.type}</p>
                 </div>
+            `;
+
+            container.innerHTML += card;
+        });
+
+    } catch (error) {
+        console.error("Error loading saved pets:", error);
+        container.innerHTML = `
+            <div class="col-12 text-center py-4">
+                <p class="text-danger small">Failed to load saved pets.</p>
             </div>
         `;
-
-        container.appendChild(card);
-    });
+    }
 }
 */
 
