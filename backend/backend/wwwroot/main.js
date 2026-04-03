@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-const API_BASE = "http://localhost:5212/api";
-=======
->>>>>>> origin/ramtin-api2
 
 // Dashboard dropdown (open/close)
 const menuBtn = document.getElementById("menuBtn");
@@ -98,25 +94,6 @@ document.querySelectorAll(".backToHome").forEach(btn => {
     });
 });
 
-<<<<<<< HEAD
-//Search input handling (show results after searching in the box)
-const searchInput = document.querySelector('.search input');
-
-// FIND your existing searchInput listener and UPDATE it:
-searchInput?.addEventListener('keydown', async (e) => {
-    if (e.key === 'Enter') {
-        const query = searchInput.value.trim();
-        showPage("results");
-
-        // Actually load the pets from the backend
-        loadPetGallery(query);
-
-        if (filterModal) filterModal.style.display = "none";
-    }
-});
-=======
-
->>>>>>> origin/ramtin-api2
 
 // Filter modal open/close
 const filterModal = document.getElementById("filterModal");
