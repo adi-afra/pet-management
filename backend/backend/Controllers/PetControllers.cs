@@ -19,15 +19,7 @@ namespace backend.Controllers
             _context = context;
             _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
-
-        // GET: api/Pets/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPetById(int id)
-        {
-            var pet = await _context.Pets.FindAsync(id);
-            if (pet == null) return NotFound("Pet not found");
-            return Ok(pet);
-        }
+        
 
         // GET: api/Pets/search?query=dog
         [HttpGet("search")]

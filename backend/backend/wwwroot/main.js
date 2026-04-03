@@ -358,64 +358,11 @@ async function getUserId() {
 }
 
 // --- MODAL SELECTORS ---
-const surrenderFormModal = document.getElementById("surrenderModal"); // The "Give up a pet" form
-const surrenderRequestsModal = document.getElementById("surrenderRequestsModal"); // The "View my requests" list
-const adoptionMeetingsModal = document.getElementById("adoptionMeetingsModal");
-
-document.getElementById("closeSurrendersModal")?.addEventListener("click", () => {
-    surrenderFormModal.style.display = "none";
-});
-
-document.getElementById("closeSurrendersRequestModal")?.addEventListener("click", () => {
-    surrenderRequestsModal.style.display = "none";
-});
-
-// --- FIX 3: Adoption Meetings Modal ---
-document.getElementById("closeMeetingsModal")?.addEventListener("click", () => {
-    adoptionMeetingsModal.style.display = "none";
-});
-
-// --- OPENING LOGIC ---
-document.getElementById("openSurrenderFormBtn")?.addEventListener("click", () => {
-    surrenderFormModal.style.display = "flex";
-});
-
-document.getElementById("statCardSurrenders")?.addEventListener("click", () => {
-    surrenderRequestsModal.style.display = "flex";
-    showSurrenderRequests();
-});
-
-document.getElementById("statCardMeetings")?.addEventListener("click", () => {
-    adoptionMeetingsModal.style.display = "flex";
-    showMeetings();
-});
-
-// --- CLICK OUTSIDE TO CLOSE (Consolidated) ---
-[surrenderFormModal, surrenderRequestsModal, adoptionMeetingsModal].forEach(modal => {
-    modal?.addEventListener("click", (e) => {
-        if (e.target === modal) modal.style.display = "none";
-    });
-});
-
-// Open Adoption Meetings from Dashboard
-document.getElementById("statCardMeetings")?.addEventListener("click", () => {
-    document.getElementById("adoptionMeetingsModal").style.display = "flex";
-    showMeetings(); 
-});
-
-// Close logic for the new modals
-document.getElementById("closeMeetingsModal")?.addEventListener("click", () => {
-    document.getElementById("adoptionMeetingsModal").style.display = "none";
-});
-
-// Click outside to close for Meetings and Surrenders modals
-[document.getElementById("adoptionMeetingsModal"), document.getElementById("surrenderRequestsModal")].forEach(modal => {
-    modal?.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            modal.style.display = "none";
-        }
-    });
-});
+const surrenderModal = document.getElementById("surrenderModal");
+const openSurrendersBtn = document.getElementById("openSurrendersModal");
+const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
+const surrenderContainer = document.getElementById("surrendersContainer"); // container inside modal
+const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting");
 
 
 // Function to fetch and show surrender meetings
@@ -618,108 +565,97 @@ async function bookMeeting(petId, date, petType, petName, petBreed) {
     }
 }
 
-async function addSurrenders() {
-    
-    
-    
-    //getting all the values from the entry fields 
-    const petName = document.getElementById("petName").value.trim();
-    const petAge = document.getElementById("petAge").value.trim();
-    const petBreed = document.getElementById("petBreed").value.trim();
-    const petType = document.getElementById("petType").value.trim();
-    const meetingDateValue = document.getElementById("meetingDate").value.trim();
-    const petImageInput = document.getElementById("petImage");
-    const petImage = petImageInput.files[0];
-    
-    
-    
-    //getting the message <p>
-    const formMessage = document.getElementById("formMessage");
+    async function addSurrenders() {
 
-    //check if none of the fields are empty
-    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
-        formMessage.textContent = "all fields must be filled";
-        return
-    } else if (Number(petAge) < 0) {
-        formMessage.textContent = "Age cannot be negative";
-        return;
-    }
 
-    // Check meeting date
-    const meetingDate = new Date(meetingDateValue);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    if (meetingDate <= today) {
-        formMessage.textContent = "Meeting date must be after today";
-        return;
-    }
+        //getting all the values from the entry fields 
+        const petName = document.getElementById("petName").value.trim();
+        const petAge = document.getElementById("petAge").value.trim();
+        const petBreed = document.getElementById("petBreed").value.trim();
+        const petType = document.getElementById("petType").value.trim();
+        const meetingDateValue = document.getElementById("meetingDate").value.trim();
+        const petImageInput = document.getElementById("petImage");
+        const petImage = petImageInput.files[0];
 
-    formMessage.textContent = "";
 
-    const session = await isUserLoggedIn();
-    
-    const userId = session.user.userId || 0; 
-    try {
-        //adding the image 
-        const formData = new FormData();
-        formData.append("file", petImage);
 
-        const res1 = await fetch("http://localhost:5212/api/Pets/upload", {
-            method: "POST",
-            body: formData
-        });
+        //getting the message <p>
+        const formMessage = document.getElementById("formMessage");
 
-        if (!res1.ok) {
-            const errorData = await res1.json();
-            console.log("adding meeting failed: " + errorData.message);
+        //check if none of the fields are empty
+        if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
+            formMessage.textContent = "all fields must be filled";
+            return
+        } else if (Number(petAge) < 0) {
+            formMessage.textContent = "Age cannot be negative";
             return;
         }
 
-        const uploadData = await res1.json();
-        const imageUrl = uploadData.imageUrl;
-        
-        // adding the new pet
-        const res2 = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                "name": petName,
-                "age": Number(petAge),
-                "breed": petBreed,
-                "date": meetingDate,
-                "userId": userId,
-                "animalType": petType,
-                "imageUrl": imageUrl
-            })
-        });
+        // Check meeting date
+        const meetingDate = new Date(meetingDateValue);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        const result = await response.json();
-
-        if (!res2.ok) {
-            const errorData = await res2.json();
-            console.log("adding meeting failed: " + errorData.message);
+        if (meetingDate <= today) {
+            formMessage.textContent = "Meeting date must be after today";
             return;
         }
 
-        // ✅ Render cards (same style as gallery)
-        savedPets.forEach(pet => {
-            const card = `
-                <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm border-0 pet-card">
-                        <img src="${pet.imageUrl || 'images/placeholder.jpg'}" class="card-img-top pet-img">
+        formMessage.textContent = "";
 
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div class="pet-details">
-                                <h5 class="fw-bold mb-1">${pet.name}</h5>
-                                <p class="text-muted mb-0 small">${pet.breed}</p>
-                                <p class="text-secondary mb-0 small">${pet.age} years old</p>
-                            </div>
+        const session = await isUserLoggedIn();
 
-                            <div class="pet-actions d-flex flex-column align-items-center">
-                                <div class="save-icon-wrapper mb-2" onclick="toggleSavePet(${pet.id})">
-                                    <i class="bi bi-bookmark-fill is-saved" id="save-${pet.id}"></i>
-                                </div>
+        const userId = session.user.userId || 0;
+        try {
+            //adding the image 
+            const formData = new FormData();
+            formData.append("file", petImage);
+
+            const res1 = await fetch("http://localhost:5212/api/Pets/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res1.ok) {
+                const errorData = await res1.json();
+                console.log("adding meeting failed: " + errorData.message);
+                return;
+            }
+
+            const uploadData = await res1.json();
+            const imageUrl = uploadData.imageUrl;
+
+            // adding the new pet
+            const res2 = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "name": petName,
+                    "age": Number(petAge),
+                    "breed": petBreed,
+                    "date": meetingDate,
+                    "userId": userId,
+                    "animalType": petType,
+                    "imageUrl": imageUrl
+                })
+            });
+
+
+            if (!res2.ok) {
+                const errorData = await res2.json();
+                console.log("adding meeting failed: " + errorData.message);
+                return;
+            }
+
+            showSurrenders();
+
+        } catch (err) {
+            console.error(err);
+            alert("Something went wrong!");
+        }
+
+    }
 
     // main card
     const formCard = document.createElement("div");
@@ -859,10 +795,6 @@ const PETS_API_BASE = "/api/Pets";
 
 function renderPets(pets, containerId) {
     const container = document.getElementById(containerId);
-    if (!container) {
-        console.error("Missing container:", containerId);
-        return;
-    }
 
     if (!pets || pets.length === 0) {
         container.innerHTML = `<div class="col-12"><p class="text-center">No pets found.</p></div>`;
@@ -870,22 +802,36 @@ function renderPets(pets, containerId) {
     }
 
     container.innerHTML = pets.map(pet => `
-        <div class="col-12 col-md-6 col-lg-4">
+    <div class="col-12 col-md-6 col-lg-4">
         <div class="pet-card h-100 clickable-card"
              data-id="${pet.id}"
              data-name="${pet.name}"
              data-age="${pet.age}"
              data-breed="${pet.breed}"
              data-image="${pet.imageUrl}">
-             
+
+            <!-- 🐾 IMAGE -->
             <img class="pet-img"
                  src="${pet.imageUrl}"
                  alt="${pet.name}">
-                 
+             
+            <!-- 🐾 INFO -->
             <div class="info">
-                <h3>${pet.name}</h3>
-                <p>${pet.age} years • ${pet.type}</p>
+
+                <!-- NAME + SAVE BUTTON ROW -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">${pet.name}</h3>
+
+                    <button class="save-btn-inline"
+                            data-save-id="${pet.id}"
+                            type="button">
+                        <i class="bi bi-bookmark" id="save-${pet.id}"></i>
+                    </button>
+                </div>
+
+                <p class="mt-1">${pet.age} years • ${pet.type}</p>
             </div>
+
         </div>
     </div>
     `).join("");

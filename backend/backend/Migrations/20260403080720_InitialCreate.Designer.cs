@@ -12,11 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:backend/backend/Migrations/20260327221618_InitialCreate.Designer.cs
-    [Migration("20260327221618_InitialCreate")]
-========
-    [Migration("20260326153741_InitialCreate")]
->>>>>>>> origin/ramtin-api2:backend/backend/Migrations/20260326153741_InitialCreate.Designer.cs
+    [Migration("20260403080720_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -28,29 +24,6 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("YourProject.Models.SavedPet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PetId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("PetId");
-
-                    b.ToTable("SavedPets");
-                });
 
             modelBuilder.Entity("backend.classes.AdoptionApplication", b =>
                 {
@@ -150,6 +123,25 @@ namespace backend.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("backend.classes.SavedPet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SavedPets");
+                });
+
             modelBuilder.Entity("backend.classes.User", b =>
                 {
                     b.Property<int>("Id")
@@ -213,25 +205,6 @@ namespace backend.Migrations
                     b.HasBaseType("backend.classes.User");
 
                     b.HasDiscriminator().HasValue("Client");
-                });
-
-            modelBuilder.Entity("YourProject.Models.SavedPet", b =>
-                {
-                    b.HasOne("backend.classes.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.classes.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("backend.classes.Meeting", b =>

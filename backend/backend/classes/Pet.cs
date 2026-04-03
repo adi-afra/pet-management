@@ -35,11 +35,9 @@ namespace backend.classes
         
         protected Pet() {} //Empty constructor for EF
         
-<<<<<<< HEAD
-        public Pet( string name, int age, string breed, string status = "Available")
-=======
+            
         public Pet( string name, int age, string breed, string imageUrl)
->>>>>>> origin/ramtin-api2
+
         {
 
             if (age < 0)
