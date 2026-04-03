@@ -20,8 +20,7 @@ namespace backend.Data
         public DbSet<Cat> Cats { get; set; }
 
         public DbSet<Meeting> Meetings { get; set; }
-        public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
-        public DbSet<SavedPet> SavedPets { get; set; } 
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,18 +38,7 @@ namespace backend.Data
             modelBuilder.Entity<Meeting>()
                 .Property(m => m.Id)
                 .ValueGeneratedOnAdd();
-
-            // --- Configure User Constraints ---
-
-            //email is required for each user
-            modelBuilder.Entity<User>()
-                .Property(u => u.Email)
-                .IsRequired();
-
-            //emails must be unique
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+            
 
             // --- Configure inheritance ---
 

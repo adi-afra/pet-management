@@ -20,6 +20,39 @@ namespace backend.Controllers
             _storageConnectionString = configuration.GetConnectionString("AzureStorage");
         }
         
+        
+        
+        // GET: api/pets
+        [HttpGet("pet")]
+        public async Task<IActionResult> GetPets()
+        {
+            try
+            {
+                var pets = await _context.Pets
+                    .Where(p => p.Status == PetStatus.Registered)
+                    .AsNoTracking()
+                    .Select(p => new
+                    {
+                        p.Id,
+                        p.Name,
+                        p.Age,
+                        Type = p.GetType().Name, // Dog or Cat
+                        p.Breed,
+                        p.ImageUrl
+                    })
+                    .ToListAsync();
+
+                return Ok(pets);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Error retrieving pets",
+                    detail = ex.Message
+                });
+            }
+        }
 
         // GET: api/Pets/search?query=dog
         [HttpGet("search")]
@@ -61,6 +94,7 @@ namespace backend.Controllers
             }
         }
 
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPetById(int id)
         {

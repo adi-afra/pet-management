@@ -34,15 +34,7 @@ function showPage(pageName) {
 
     const target = document.querySelector(`.page[data-page="${pageName}"]`);
     if (target) target.classList.add("is-active");
-
-    if (pageName === "gallery") {
-        loadPetGallery();
-    }
-
-
-    if (pageName === "dashboard") {
-        loadSavedPets();
-    }
+    
 
     // dashboard highlight
     dashLinks.forEach((b) => b.classList.remove("active"));
@@ -269,36 +261,6 @@ function makeMeetingCard(meeting) {
     return card;
 }
 
-//calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
-async function showMeetings() {
-    const session = await isUserLoggedIn();
-    const userId = session.user.userId;
-
-    console.log(userId);
-    try {
-        const res = await fetch(`${API_BASE}/Clients/surrenderMeetings/${userId}`, {
-            credentials: "include"
-        });
-        if (!res.ok) throw new Error("Failed to fetch surrender requests");
-
-        const requests = await res.json();
-        container.innerHTML = "";
-
-        requests.forEach(requests => {
-            // mark type = 1 for surrender
-            requests.type = 1;
-            container.appendChild(makeMeetingCard(requests));
-        });
-
-        if (requests.length === 0) {
-            container.innerHTML = "<p class='text-center text-muted py-3'>No active surrender requests.</p>";
-        }
-
-    } catch (err) {
-        console.error(err);
-        container.innerHTML = "<p class='text-center text-danger py-3'>Failed to load requests.</p>";
-    }
-}
 
 //registeration
 const registerForm = document.getElementById("registerBTN");
@@ -550,23 +512,7 @@ async function loadPetGallery(searchQuery = "", filterType = "all") {
 }
 
 
-function openBookingModal(id, name, breed, type) {
-    // 1. Get the modal element (Make sure you have this in your HTML!)
-    const modal = document.getElementById("bookingModal");
 
-    // 2. Store the pet data in the modal's dataset so the "Confirm" button can find it later
-    modal.dataset.selectedPetId = id;
-    modal.dataset.selectedPetName = name;
-    modal.dataset.selectedPetBreed = breed;
-    modal.dataset.selectedPetType = type;
-
-    // 3. Update the modal title so the user knows which pet they are booking
-    const title = modal.querySelector('h3') || modal.querySelector('.modal-title');
-    if (title) title.innerText = `Book Meeting for ${name}`;
-
-    // 4. Show the modal
-    modal.style.display = "flex";
-}
 
 // Assuming your booking modal has a button with id="confirmBookingBtn"
 // and a date input with id="bookingDate"
@@ -1024,17 +970,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //Login 
 
-const loginForm = document.getElementById("loginsubmit"); // change to your button ID
+const loginForm = document.getElementById("loginSubmitBtn"); // change to your button ID
 
 loginForm?.addEventListener("click", async (e) => {
     e.preventDefault();
 
     // Get input values and trim spaces/newlines
-    const username = document.getElementById("loginusername").value.trim();
-    const password = document.getElementById("loginpassword").value.trim();
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
     // Element to show messages
-    const responseEl = document.getElementById("loginresponse");
+    const responseEl = document.getElementById("loginResponse");
     
 
     try {
@@ -1059,18 +1005,18 @@ loginForm?.addEventListener("click", async (e) => {
             responseEl.innerText = data.message || `Welcome, ${data.username}!`;
             
             //clearing the placeholders
-            document.getElementById("loginusername").value = "";
-            document.getElementById("loginpassword").value = "";
+            document.getElementById("loginUsername").value = "";
+            document.getElementById("loginPassword").value = "";
         }
 
         // Clear message after 10 seconds
-        setTimeout(() => { responseEl.innerText = ""; }, 10000);
+        setTimeout(() => { 
+            responseEl.innerText = ""; 
+            showPage("gallery");
+            }, 10000);
 
-    } catch (err) { // ⚡ Make sure this is 'err', not 'e' if you reference 'err'
+    } catch (err) {
         console.error("Login error:", err);
-        responseEl.style.color = "red";
-        responseEl.innerText = "Server error, please try again.";
-        setTimeout(() => { responseEl.innerText = ""; }, 10000);
     }
 });
 

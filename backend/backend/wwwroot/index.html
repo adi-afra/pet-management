@@ -315,26 +315,19 @@
 
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
                     <h2 class="fw-bold m-0">Available for Adoption</h2>
-
-
-                    <div class="filter-container mb-4 text-center">
-                        <button class="btn btn-outline-dark filter-btn active" data-type="all">All Pets</button>
-                        <button class="btn btn-outline-dark filter-btn" data-type="Dog">Dogs</button>
-                        <button class="btn btn-outline-dark filter-btn" data-type="Cat">Cats</button>
-
+                    
                     <div class="filter-icon" id="openFiltersModal">
                         <i class="fa-solid fa-sliders"></i>
-
                     </div>
 
                 </div>
 
     <!-- PET CARDS (loaded by JavaScript) -->
                     <div id="petGallery" class="row g-4"></div>
-
                 </div>
+        </section>
     </section>
-</section>
+
 
     <!-- PAGE Dashboard (Brandon)-->
     <section class="page" data-page="dashboard">
@@ -544,15 +537,15 @@
 
                 <!-- Header -->
                 <h3 class="fw-bold mb-2">Sign In</h3>
-                <p id="loginresponse"></p>
+                
                 <p class="text-muted mb-4">Manage your shelter account</p>
 
                 <!-- Form -->
                 <form>
                     <div class="mb-3 text-start">
-<<<<<<< HEAD
-                        <label for="loginEmail" class="form-label fw-semibold mb-1">Username</label>
-                        <input name="loginEmail" type="email" class="form-control form-control-sm" required id="loginEmail">
+
+                        <label for="loginUsername" class="form-label fw-semibold mb-1">Username</label>
+                        <input name="loginUsername" type="text" class="form-control form-control-sm" required id="loginUsername">
                     </div>
 
                     <div class="mb-3 text-start">
@@ -561,19 +554,8 @@
                     </div>
 
                     <p id="loginResponse" style="font-weight: bold;"></p>
-                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3" id="loginSubmitBtn">Sign In</button>
-=======
-                        <label class="form-label fw-semibold mb-1">Username</label>
-                        <input id="loginusername" type="text" class="form-control form-control-sm"  required>
-                    </div>
+                    <button type="button" class="btn btn-warning w-100 fw-bold py-2 mt-3" id="loginSubmitBtn">Sign In</button>
 
-                    <div class="mb-3 text-start">
-                        <label class="form-label fw-semibold mb-1">Password</label>
-                        <input id="loginpassword" type="password" class="form-control form-control-sm"  required>
-                    </div>
-
-                    <button id="loginsubmit" class="btn btn-warning w-100 fw-bold py-2 mt-3">Sign In</button>
->>>>>>> origin/ramtin-api2
                 </form>
 
                 <!-- Divider -->
@@ -597,38 +579,13 @@
             <div class="container">
                 <h2 class="fw-bold text-center">Results</h2>
                 <p class="text-muted text-center">Filtered results will appear here.</p>
-    
-                
                 <div id="resultsGallery" class="row g-4 mt-2"></div>
     
             </div>
         </section>
     </section>
 
-    <div id="bookingModal" class="filter-modal" style="display:none;">
-        <div class="filter-box">
-            <div class="text-center mb-2">
-                <i class="bi bi-calendar-check text-warning" style="font-size: 2.5rem;"></i>
-                <h3 class="modal-title mt-2 fw-bold">Book a Meeting</h3>
-                <p class="text-muted small">Choose a time to meet your new friend</p>
-            </div>
 
-            <div class="form-group">
-                <label for="bookingDate" class="form-label fw-semibold">Date & Time</label>
-                <input type="datetime-local" id="bookingDate" class="form-control form-control-lg">
-            </div>
-
-            <div class="d-grid gap-2 mt-3">
-                <button id="confirmBookingBtn" class="btn btn-warning btn-lg rounded-pill fw-bold">
-                    Confirm Booking
-                </button>
-                <button type="button" class="btn btn-link text-secondary btn-sm"
-                        onclick="document.getElementById('bookingModal').style.display='none'">
-                    Maybe Later
-                </button>
-            </div>
-        </div>
-    </div>
 
 
     <!-- Surrender Requests Modal -->
@@ -652,7 +609,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-    <script src="main.js"></script>
+    <script  src="main.js"></script>
 </body>
 
 </html>

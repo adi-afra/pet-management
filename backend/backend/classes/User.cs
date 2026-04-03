@@ -47,9 +47,6 @@ namespace backend.classes
         }
 
         
-
-
-        
         
         //each derived class must define its role
         public abstract string getRole();
