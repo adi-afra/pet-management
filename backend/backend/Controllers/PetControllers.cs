@@ -56,37 +56,40 @@ namespace backend.Controllers
 
         // GET: api/Pets/search?query=dog
         [HttpGet("search")]
-        public async Task<ActionResult> SearchPets(string query)
+        public async Task<ActionResult> SearchPets(
+            [FromQuery] string? query
+            )
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return Ok(new List<object>()); 
+                }
+
+                query = query.ToLower();
+
                 var pets = await _context.Pets
                     .Where(p => p.Status == PetStatus.Registered)
+                    .Where(p =>
+
+                    (p.Name != null && EF.Functions.Like(p.Name, $"%{query}%")) ||
+                    (p.Breed != null && EF.Functions.Like(p.Breed, $"%{query}%"))
+)
                     .AsNoTracking()
                     .Select(p => new
                     {
                         p.Id,
                         p.Name,
                         p.Age,
-                        Type = p.GetType().Name, // Dog or Cat
+                        Type = p.GetType().Name,
                         p.Breed,
                         p.ImageUrl
                     })
                     .ToListAsync();
 
-                // Optional: Filter list by query if needed
-                if (!string.IsNullOrEmpty(query))
-                {
-                    var q = query.ToLower();
-                    var filtered = pets.Where(p =>
-                        p.Name.ToLower().Contains(q) ||
-                        p.Breed.ToLower().Contains(q) ||
-                        p.Type.ToLower().Contains(q)
-                    ).ToList();
-                    return Ok(filtered);
-                }
-
                 return Ok(pets);
+
             }
             catch (Exception ex)
             {
