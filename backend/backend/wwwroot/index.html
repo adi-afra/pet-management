@@ -34,10 +34,10 @@
                 <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
             </span>
             <span class="brand-name">Fortuna Tails</span>
-            
+
         </div>
 
-        
+
 
 
         <div class="search-wrapper">
@@ -99,7 +99,7 @@
 
             <div class="filter-header">
                 <h3>Meetings</h3>
-                <i class="fa-solid fa-xmark" id="closeMeetingsModal"></i>
+                <i class="fa-solid fa-xmark" id="closeAdoptionMeetingsModal"></i>
             </div>
 
 
@@ -113,13 +113,14 @@
     </div>
 
 
-    <!-- surrender meeting modal -->
-    <div class="filter-modal" id="surrenderModal">
+    <!-- surrender meeting modal form for giving up-->
+    <div class="filter-modal" id="surrenderModalForm">
         <div class="filter-box" style="height: 650px;">
             <div class="filter-header">
-                <h3>Surrender a Pet</h3>
-                <i class="fa-solid fa-xmark" id="closeSurrendersModal"></i>
+                <h2>Surrender a Pet</h2>
+                <i class="fa-solid fa-xmark" id="closeSurrendersModalForm"></i>
             </div>
+
 
             <div class="mt-3 p-2">
                 <div class="mb-2">
@@ -143,13 +144,14 @@
                 </div>
                 <div class="mb-3">
                     <label class="small fw-bold">Preferred Meeting Date</label>
-                    <input type="datetime-local" class="form-control form-control-sm" id="surrenderDate">
+                    <input type="date" class="form-control form-control-sm" id="surrenderDate">
                 </div>
 
                 <div class="mb-2">
                     <label class="small fw-bold">Pet Image URL</label>
-                    <input type="url" class="form-control form-control-sm" id="surrenderPetImageUrl" placeholder="https://example.com/photo.jpg">
+                    <input type="File" class="form-control form-control-sm" id="surrenderPetImageUrl" placeholder="https://example.com/photo.jpg" accept="image/*">
                 </div>
+                <p id="formMessage" class="text-danger"></p>
             </div>
 
             <div class="d-flex justify-content-center mt-2">
@@ -159,13 +161,27 @@
                 </button>
             </div>
 
-            <hr>
-            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:200px;" id="surrendersContainer">
-            </div>
+
+
         </div>
 
     </div>
 
+    <!-- surrender meeting modal -->
+    <div class="filter-modal" id="surrenderModal">
+        <div class="filter-box">
+            <div class="filter-header">
+                <h3>Surrenders</h3>
+                <i class="fa-solid fa-xmark" id="closeSurrendersModal"></i>
+            </div>
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="surrendersContainer">
+                <!-- Cards get injected here -->
+
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+            </div>
+        </div>
+    </div>
 
     <!-- modal for booking an adoption meeting in the main page  -->
     <div class="filter-modal" id="bookingModal">
@@ -174,7 +190,7 @@
             <!-- Header -->
             <div class="filter-header">
                 <h3>Book Meeting</h3>
-                
+
                 <i class="fa-solid fa-xmark" id="closeBookingModal"></i>
             </div>
 
@@ -241,7 +257,7 @@
             <div class="dash-divider"></div>
 
             <button class="dash-link" type="button" data-page="settings">
-                <i  class="fa-solid fa-gear"></i> Settings
+                <i class="fa-solid fa-gear"></i> Settings
             </button>
 
             <button class="dash-link logout" type="button" id="logoutBtn">
@@ -315,16 +331,16 @@
 
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
                     <h2 class="fw-bold m-0">Available for Adoption</h2>
-                    
+
                     <div class="filter-icon" id="openFiltersModal">
                         <i class="fa-solid fa-sliders"></i>
                     </div>
 
                 </div>
 
-    <!-- PET CARDS (loaded by JavaScript) -->
-                    <div id="petGallery" class="row g-4"></div>
-                </div>
+                <!-- PET CARDS (loaded by JavaScript) -->
+                <div id="petGallery" class="row g-4"></div>
+            </div>
         </section>
     </section>
 
@@ -343,7 +359,7 @@
 
                 <!-- Header -->
                 <div class="mb-4">
-                    <h2  class="fw-bold mb-1">Your Overview</h2>
+                    <h2 class="fw-bold mb-1">Your Overview</h2>
                     <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
                 </div>
 
@@ -497,7 +513,7 @@
                                 <label for="regPassword" class="form-label fw-semibold">Password</label>
                                 <input name="registerPassword" type="password" class="form-control form-control-sm" required id="regPassword">
                             </div>
-                            
+
 
                             <p id="response" style="font-weight: bold;"></p>
 
@@ -537,7 +553,7 @@
 
                 <!-- Header -->
                 <h3 class="fw-bold mb-2">Sign In</h3>
-                
+
                 <p class="text-muted mb-4">Manage your shelter account</p>
 
                 <!-- Form -->
@@ -577,10 +593,21 @@
     <section class="page" data-page="results">
         <section class="py-5">
             <div class="container">
-                <h2 class="fw-bold text-center">Results</h2>
-                <p class="text-muted text-center">Filtered results will appear here.</p>
-                <div id="resultsGallery" class="row g-4 mt-2"></div>
-    
+                <div class="d-flex align-items-center mb-3">
+
+                    <!-- Close button (LEFT) -->
+                    <button class="btn btn-light me-3" id="closeSearchResultBtn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <!-- Title -->
+                    <h2 class="fw-bold mb-0 flex-grow-1">Results</h2>
+
+
+                </div>
+
+                <div id="resultsGallery" class="row g-4"></div>
+
             </div>
         </section>
     </section>
@@ -588,28 +615,12 @@
 
 
 
-    <!-- Surrender Requests Modal -->
-    <div class="filter-modal" id="surrenderRequestsModal">
-        <div class="filter-box">
-
-            <div class="filter-header">
-                <h3>Surrender Requests</h3>
-                <i class="fa-solid fa-xmark" id="closeSurrendersRequestModal"></i>
-            </div>
-
-            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="surrendersRequestContainer">
-                <!-- Surrender cards or form go here -->
-            </div>
-
-        </div>
-    </div>
-
 
     <!-- Bootstrap link -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-    <script  src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>

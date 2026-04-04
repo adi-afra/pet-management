@@ -34,7 +34,7 @@ function showPage(pageName) {
 
     const target = document.querySelector(`.page[data-page="${pageName}"]`);
     if (target) target.classList.add("is-active");
-    
+
 
     // dashboard highlight
     dashLinks.forEach((b) => b.classList.remove("active"));
@@ -87,28 +87,6 @@ document.querySelectorAll(".backToHome").forEach(btn => {
 });
 
 
-// Filter modal open/close
-const filterModal = document.getElementById("filterModal");
-const openFiltersBtn = document.getElementById("openFiltersModal");
-const closeFiltersBtn = document.getElementById("closeFiltersModal");
-
-// Open filter modal
-openFiltersBtn?.addEventListener("click", () => {
-    filterModal.style.display = "flex";
-});
-
-// Close filter modal
-closeFiltersBtn?.addEventListener("click", () => {
-    filterModal.style.display = "none";
-});
-
-// Click outside to close
-filterModal?.addEventListener("click", (e) => {
-    if (e.target === filterModal) {
-        filterModal.style.display = "none";
-    }
-});
-
 
 async function goToDashboard() {
     const session = await isUserLoggedIn();
@@ -141,7 +119,7 @@ document.getElementById("dashboardBTN")?.addEventListener("click", goToDashboard
 async function deleteAdoptionMeeting(id) {
     try {
         const response = await fetch(
-            `${API_BASE}/Clients/adoptionMeetings/${id}`,
+            `http://localhost:5212/api/Clients/adoptionMeetings/${id}`,
             {
                 method: "DELETE",
                 credentials: "include"
@@ -160,7 +138,7 @@ async function deleteAdoptionMeeting(id) {
 async function deleteSurrenderMeeting(id) {
     try {
         const response = await fetch(
-            `${API_BASE}/Clients/surrenderMeetings/${id}`,
+            `http://localhost:5212/api/Clients/surrenderMeetings/${id}`,
             {
                 method: "DELETE",
                 credentials: "include"
@@ -229,26 +207,21 @@ function makeMeetingCard(meeting) {
     deleteButton.className = "btn btn-outline-danger btn-sm w-100 rounded-pill";
     deleteButton.innerHTML = `<i class="bi bi-trash3 me-1"></i> Cancel Meeting`;
 
-    deleteButton.addEventListener("click", async () => {
-        const endpoint = meeting.type === 0
-            ? "adoptionMeetings"
-            : "surrenderMeetings";
-
-        if (confirm(`Are you sure you want to cancel the meeting for ${meeting.pet.name}?`)) {
-            try {
-                const response = await fetch(`${API_BASE}/Clients/${endpoint}/${meeting.id}`, {
-                    method: "DELETE",
-                    credentials: "include"
-                });
-
-                if (response.ok) {
-                    card.remove();
-                }
-            } catch (error) {
-                console.error("Error deleting:", error);
-            }
-        }
-    });
+    if (meeting.type == 0) {
+        // DELETE API CALL
+        deleteButton.addEventListener("click", () => {
+            deleteAdoptionMeeting(meeting.id);
+            // remove card from UI
+            card.remove();
+        });
+    } else {
+        // DELETE API CALL
+        deleteButton.addEventListener("click", () => {
+            deleteSurrenderMeeting(meeting.id);
+            // remove card from UI
+            card.remove();
+        });
+    }
 
     // APPEND EVERYTHING
     cardBody.appendChild(topRow);
@@ -264,7 +237,7 @@ function makeMeetingCard(meeting) {
 
 //registeration
 const registerForm = document.getElementById("registerBTN");
-registerForm?.addEventListener("click" ,async (e) => {
+registerForm?.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const username = document.getElementById("regUsername").value;
@@ -294,8 +267,8 @@ registerForm?.addEventListener("click" ,async (e) => {
                 // Use the backend message if available, otherwise fallback to default
                 message = errorData.message || message;
             }
-                //incase of any unexpected error
-            catch (e) {}
+            //incase of any unexpected error
+            catch (e) { }
 
             // Show the error message to the user
             responseEl.style.color = "red";
@@ -310,14 +283,14 @@ registerForm?.addEventListener("click" ,async (e) => {
 
         }
 
-        else{
+        else {
             //default message
             let message = "registration successful";
 
-            try{
+            try {
                 message = errorData.message || message;
             }
-            catch (e) {}
+            catch (e) { }
             // Show the original message in green
             responseEl.style.color = "green";
             responseEl.innerText = message;
@@ -348,452 +321,92 @@ function formatDateTime(dateStr) {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-// Helper to delete and remove from UI
-async function deleteSurrenderRequest(id, btn) {
-    if (confirm("Cancel this surrender request?")) {
-        const success = await deleteSurrenderMeeting(id); // Using your existing delete function
-        btn.closest('.card').remove();
-    }
-}
+// Adoption modal open/close
+const adoptionModal = document.getElementById("adoptionMeetingsModal");
+const openAdoptionsBtn = document.getElementById("statCardMeetings");
+const closeAdoptionsBtn = document.getElementById("closeAdoptionMeetingsModal");
+const adoptionContainer = document.getElementById("meetingsContainer");
 
 //calls the make meeting card for every meeting it has gotten by calling the api for getting all meetings
 async function showMeetings() {
-    const container = document.getElementById("meetingsContainer");
-    if (!container) return;
+    const session = await isUserLoggedIn();
+    const userId = session.user.userId;
 
-    const userId = await getUserId();
-    if (!userId) return;
-
+    console.log(userId);
     try {
-        const response = await fetch(`${API_BASE}/Clients/adoptionMeetings/${userId}`, {
-            credentials: "include"
+
+        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("failed");
+        }
+
+
+        const meetings = await response.json();
+
+        const adoptionContainer = document.getElementById("meetingsContainer");
+
+
+        adoptionContainer.innerHTML = "";
+
+        meetings.forEach(meeting => {
+            const card = makeMeetingCard(meeting);
+            adoptionContainer.appendChild(card);
         });
 
-        if (response.ok) {
-            const meetings = await response.json();
-            container.innerHTML = ""; 
-            meetings.forEach(meeting => {
-                container.appendChild(makeMeetingCard(meeting));
-            });
-        }
-    } catch (err) {
-        console.error("Error loading meetings:", err);
+    } catch (error) {
+        console.error("Error show meeting:", error);
     }
+
 }
 
 
 
-
-// --- MODAL SELECTORS ---
-const surrenderModal = document.getElementById("surrenderModal");
-const openSurrendersBtn = document.getElementById("openSurrendersModal");
-const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
-const surrenderContainer = document.getElementById("surrendersContainer"); // container inside modal
-const addSurrenderMeetingButton = document.getElementById("addSurrenderMeeting");
-
-
-// Function to fetch and show surrender meetings
-async function showSurrenders() {
-    
-    const session = await isUserLoggedIn();
-
-    
-    const userId = session.user.userId || 0;
-
-async function loadPetGallery(searchQuery = "", filterType = "all") {
-    const isResultsPage = document.querySelector('.page.is-active')?.dataset.page === "results";
-
-    const container = isResultsPage
-        ? document.getElementById("resultsContainer")
-        : document.getElementById("petsContainer");
-    if (!container) return;
-
-    // ✅ start fade out
-    container.classList.add("fade-out");
-
-    setTimeout(async () => {
-
-        container.innerHTML = "";
-
-        const userId = await getUserId();
-
-        // If not logged in, show the message and STOP
-        if (!userId) {
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-person-lock" style="font-size: 3rem; color: #ccc;"></i>
-                    <h4 class="mt-3">Members Only</h4>
-                    <p class="text-muted">Please log in to see our adorable pets!</p>
-                    <button class="btn btn-warning rounded-pill px-4" onclick="showPage('login')">Login</button>
-                </div>`;
-
-            // ✅ fade back in
-            container.classList.remove("fade-out");
-            container.classList.add("fade-in");
-            return;
-        }
-
-        try {
-            const [petsRes, savedRes] = await Promise.all([
-                fetch(`${API_BASE}/Pets`),
-                fetch(`${API_BASE}/Pets/savedPets/${userId}`)
-            ]);
-
-            const pets = await petsRes.json();
-            let savedPetIds = [];
-
-            if (savedRes.ok) {
-                const savedData = await savedRes.json();
-                savedPetIds = savedData.map(s => s.petId);
-            }
-
-            // --- FILTERING LOGIC ---
-            let filteredPets = pets.filter(pet => pet.status == 1 || pet.status === "Registered");
-
-            if (filterType !== "all") {
-                filteredPets = filteredPets.filter(p => p.animalType === filterType);
-            }
-
-            if (searchQuery) {
-                filteredPets = filteredPets.filter(p =>
-                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    p.breed.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-            }
-
-            if (filteredPets.length === 0) {
-                container.innerHTML = `<div class="col-12 text-center"><p>No pets found.</p></div>`;
-
-                container.classList.remove("fade-out");
-                container.classList.add("fade-in");
-                return;
-            }
-
-            filteredPets.forEach(pet => {
-                const isSaved = savedPetIds.includes(pet.id);
-                const iconClass = isSaved ? "bi-bookmark-fill is-saved" : "bi-bookmark";
-
-                const card = `
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm border-0 pet-card">
-                            <img src="${pet.imageUrl || 'images/placeholder.jpg'}" class="card-img-top pet-img">
-                    
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div class="pet-details">
-                                    <h5 class="fw-bold mb-1">${pet.name}</h5>
-                                    <p class="text-muted mb-0 small">${pet.breed}</p>
-                                    <p class="text-secondary mb-0 small">${pet.age} years old</p>
-                                </div>
-
-                                <div class="pet-actions d-flex flex-column align-items-center">
-                                    <div class="save-icon-wrapper mb-2" onclick="toggleSavePet(${pet.id})">
-                                        <i class="bi ${iconClass}" id="save-${pet.id}"></i>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-dark rounded-pill px-3" onclick="openBookingModal(${pet.id}, '${pet.name}', '${pet.breed}', '${pet.animalType}')">
-                                        Book
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-
-        } catch (err) {
-            console.error("Failed to load pets:", err);
-        }
-
-        // ✅ fade back in
-        container.classList.remove("fade-out");
-        container.classList.add("fade-in");
-
-    }, 200);
-}
-
-
-
-
-// Assuming your booking modal has a button with id="confirmBookingBtn"
-// and a date input with id="bookingDate"
-document.getElementById("confirmBookingBtn")?.addEventListener("click", async () => {
-    const modal = document.getElementById("bookingModal");
-    const dateInput = document.getElementById("bookingDate");
-
-    const petId = modal.dataset.selectedPetId;
-    const petName = modal.dataset.selectedPetName;
-    const petBreed = modal.dataset.selectedPetBreed;
-    const petType = modal.dataset.selectedPetType;
-    const selectedDate = dateInput.value;
-
-    if (!selectedDate) {
-        return alert("Please select a date and time.");
-    }
-
-    // Call your existing booking function
-    await bookMeeting(petId, selectedDate, petType, petName, petBreed);
-
-    // Close modal on success
-    modal.style.display = "none";
+// Open adoption modal
+openAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "flex";
+    showMeetings();
 });
 
 
-async function bookMeeting(petId, date, petType, petName, petBreed) {
-    const userId = await getUserId();
-    if (!userId) return alert("Please log in first!");
+// Close adoption modal
+closeAdoptionsBtn?.addEventListener("click", () => {
+    adoptionModal.style.display = "none";
+});
 
-    const meetingData = {
-        date: date,
-        userId: userId,
-        type: 0,
-        pet: { // You still send the whole object as requested
-            "$type": petType,
-            "id": petId,
-            "name": petName,
-            "breed": petBreed,
-            "age": 0
-        }
-    };
 
-    try {
-        // CHANGED TO PUT and added petId to the URL
-        const response = await fetch(`${API_BASE}/Pets/bookPet/${petId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(meetingData),
-            credentials: "include"
-        });
-
-        if (response.ok) {
-            alert("Meeting booked successfully!");
-            showMeetings();
-        } else {
-            const error = await response.json();
-            alert("Error: " + (error.detail || "Booking failed"));
-        }
-    } catch (err) {
-        console.error("Booking error:", err);
+// Click outside to close
+adoptionModal?.addEventListener("click", (e) => {
+    if (e.target === adoptionModal) {
+        adoptionModal.style.display = "none";
     }
-}
-
-    async function addSurrenders() {
+});
 
 
 
-        //getting all the values from the entry fields 
-        const petName = document.getElementById("petName").value.trim();
-        const petAge = document.getElementById("petAge").value.trim();
-        const petBreed = document.getElementById("petBreed").value.trim();
-        const petType = document.getElementById("petType").value.trim();
-        const meetingDateValue = document.getElementById("meetingDate").value.trim();
-        const petImageInput = document.getElementById("petImage");
-        const petImage = petImageInput.files[0];
+
+// --- surrenders ---
+const surrenderModal = document.getElementById("surrenderModal");
+const openSurrendersBtn = document.getElementById("statCardSurrenders");
+const closeSurrendersBtn = document.getElementById("closeSurrendersModal");
+const surrenderModalForm = document.getElementById("surrenderModalForm");
+const openSurrenderFormBtn = document.getElementById("openSurrenderFormBtn");
+const closeSurrendersFormBtn = document.getElementById("closeSurrendersModalForm");
+const surrenderContainer = document.getElementById("surrendersContainer");
 
 
 
-        //getting the message <p>
-        const formMessage = document.getElementById("formMessage");
-
-        //check if none of the fields are empty
-        if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
-            formMessage.textContent = "all fields must be filled";
-            return
-        } else if (Number(petAge) < 0) {
-            formMessage.textContent = "Age cannot be negative";
-            return;
-        }
-
-        // Check meeting date
-        const meetingDate = new Date(meetingDateValue);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (meetingDate <= today) {
-            formMessage.textContent = "Meeting date must be after today";
-            return;
-        }
-
-        formMessage.textContent = "";
-
-        const session = await isUserLoggedIn();
-
-        const userId = session.user.userId || 0;
-        try {
-            //adding the image 
-            const formData = new FormData();
-            formData.append("file", petImage);
-
-            const res1 = await fetch("http://localhost:5212/api/Pets/upload", {
-                method: "POST",
-                body: formData
-            });
-
-            if (!res1.ok) {
-                const errorData = await res1.json();
-                console.log("adding meeting failed: " + errorData.message);
-                return;
-            }
-
-            const uploadData = await res1.json();
-            const imageUrl = uploadData.imageUrl;
-
-            // adding the new pet
-            const res2 = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "name": petName,
-                    "age": Number(petAge),
-                    "breed": petBreed,
-                    "date": meetingDate,
-                    "userId": userId,
-                    "animalType": petType,
-                    "imageUrl": imageUrl
-                })
-            });
-
-
-            if (!res2.ok) {
-                const errorData = await res2.json();
-                console.log("adding meeting failed: " + errorData.message);
-                return;
-            }
-
-            showSurrenders();
-
-        } catch (err) {
-            console.error(err);
-            alert("Something went wrong!");
-        }
-
-    }
-
-    // main card
-    const formCard = document.createElement("div");
-    formCard.className = "card shadow-sm mt-3";
-
-    const formBody = document.createElement("div");
-    formBody.className = "card-body d-flex flex-column gap-2";
-
-    //  Name
-    const nameInput = document.createElement("input");
-    nameInput.className = "form-control";
-    nameInput.placeholder = "Pet Name";
-
-    //  Age
-    const ageInput = document.createElement("input");
-    ageInput.type = "number";
-    ageInput.className = "form-control";
-    ageInput.placeholder = "Age";
-    ageInput.min = "";
-
-    //  Breed
-    const breedInput = document.createElement("input");
-    breedInput.className = "form-control";
-    breedInput.placeholder = "Breed";
-
-    //  Animal Type Dropdown
-    const typeSelect = document.createElement("select");
-    typeSelect.className = "form-select";
-
-    const types = ["Dog", "Cat", "Rabbit", "Other"];
-
-    types.forEach(type => {
-        const option = document.createElement("option");
-        option.value = type;
-        option.textContent = type;
-        typeSelect.appendChild(option);
-    });
-
-    //  Date
-    const dateInput = document.createElement("input");
-    dateInput.type = "date";
-    dateInput.className = "form-control";
-
-
-    // Image label 
-    const imageLabel = document.createElement("label");
-    imageLabel.className = "form-label";
-    imageLabel.textContent = "Upload Image";
-
-    // adding a image upload 
-    const imageInput = document.createElement("input");
-    imageInput.type = "file";
-    imageInput.className = "form-control";
-    imageInput.accept = "image/*";
-    imageInput.name = "file";
-
-    
-
-    //  Submit button
-    const submitBtn = document.createElement("button");
-    submitBtn.className = "btn btn-success mt-2";
-    submitBtn.textContent = "Submit";
-
-    //  Close button
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "btn btn-secondary mt-2";
-    closeBtn.textContent = "Close";
-
-    // Create a <p> element for errors
-    const messageParagraph = document.createElement("p");  
-    messageParagraph.className = "text-danger"; 
-    messageParagraph.textContent = "";
-
-    //adding IDs to all the entry fields
-    nameInput.id = "petName";
-    ageInput.id = "petAge";
-    breedInput.id = "petBreed";
-    typeSelect.id = "petType";
-    dateInput.id = "meetingDate";
-    messageParagraph.id = "formMessage";
-    imageInput.id = "petImage";
-
-    
-    //  Submit logic
-    submitBtn.addEventListener("click", async () => {
-        
-        addSurrenders();
-    });
-    
-
-    //  Close logic
-    closeBtn.addEventListener("click", async () => {
-        formCard.remove();
-        addSurrenderMeetingButton.classList.remove("d-none");
-        showSurrenders();
-    });
-
-    // assemble form
-    formBody.appendChild(nameInput);
-    formBody.appendChild(ageInput);
-    formBody.appendChild(dateInput);
-    formBody.appendChild(breedInput);
-    formBody.appendChild(typeSelect);
-    formBody.appendChild(imageLabel);
-    formBody.appendChild(imageInput);
-    formBody.appendChild(submitBtn);
-    formBody.appendChild(closeBtn);
-    formBody.appendChild(messageParagraph);
-
-    formCard.appendChild(formBody);
-
-    surrenderContainer.appendChild(formCard);
-}
-
-// Open modal
+// Open surrender modal
 openSurrendersBtn?.addEventListener("click", () => {
     surrenderModal.style.display = "flex";
-    addSurrenderMeetingButton.classList.remove("d-none");
     showSurrenders();
 });
 
-// Close modal
+// Close surrender modal
 closeSurrendersBtn?.addEventListener("click", () => {
     surrenderModal.style.display = "none";
 });
 
-// Click outside to close
+// Click outside to close surrender modal
 surrenderModal?.addEventListener("click", (e) => {
     if (e.target === surrenderModal) {
         surrenderModal.style.display = "none";
@@ -801,6 +414,149 @@ surrenderModal?.addEventListener("click", (e) => {
 });
 
 
+// Open surrender modal form
+openSurrenderFormBtn?.addEventListener("click", () => {
+    surrenderModalForm.style.display = "flex";
+    //showSurrenders();
+});
+
+// Close surrender modal form
+closeSurrendersFormBtn?.addEventListener("click", () => {
+    surrenderModalForm.style.display = "none";
+});
+
+// Click outside to close surrender modal form
+surrenderModalForm?.addEventListener("click", (e) => {
+    if (e.target === surrenderModalForm) {
+        surrenderModalForm.style.display = "none";
+    }
+});
+
+
+// Function to fetch and show surrender meetings
+async function showSurrenders() {
+
+    const session = await isUserLoggedIn();
+
+
+    const userId = session.user.userId || 0;
+
+    try {
+        const response = await fetch(`http://localhost:5212/api/Clients/surrenderMeetings/${userId}`);
+        if (!response.ok) {
+            console.error("Failed to fetch surrender meetings");
+            return;
+        }
+
+        const surrenders = await response.json();
+        surrenderContainer.innerHTML = "";
+
+        surrenders.forEach(surrender => {
+            const card = makeMeetingCard(surrender);
+            surrenderContainer.appendChild(card);
+        });
+
+
+    } catch (error) {
+        console.error("Error showing surrender meetings:", error);
+    }
+}
+
+//adding suurnder meetings
+async function addSurrenders() {
+
+    //getting all the values from the entry fields 
+    const petName = document.getElementById("surrenderPetName").value.trim();
+    const petAge = document.getElementById("surrenderPetAge").value.trim();
+    const petBreed = document.getElementById("surrenderPetBreed").value.trim();
+    const petType = document.getElementById("surrenderAnimalType").value.trim();
+    const meetingDateValue = document.getElementById("surrenderDate").value.trim();
+    const petImageInput = document.getElementById("surrenderPetImageUrl");
+    const petImage = petImageInput.files[0];
+
+
+    //getting the message <p>
+    const formMessage = document.getElementById("formMessage");
+
+    //check if none of the fields are empty
+    if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
+        formMessage.textContent = "all fields must be filled";
+        return
+    } else if (Number(petAge) < 0) {
+        formMessage.textContent = "Age cannot be negative";
+        return;
+    }
+
+    // Check meeting date
+    const meetingDate = new Date(meetingDateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (meetingDate <= today) {
+        formMessage.textContent = "Meeting date must be after today";
+        return;
+    }
+
+    formMessage.textContent = "";
+
+    const session = await isUserLoggedIn();
+
+    const userId = session.user.userId || 0;
+    try {
+        //adding the image 
+        const formData = new FormData();
+        formData.append("file", petImage);
+
+        const res1 = await fetch("http://localhost:5212/api/Pets/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res1.ok) {
+            const errorData = await res1.json();
+            console.log("adding meeting failed: " + errorData.message);
+            return;
+        }
+
+        const uploadData = await res1.json();
+        const imageUrl = uploadData.imageUrl;
+
+        // adding the new pet
+        const res2 = await fetch("http://localhost:5212/api/Clients/surrenderMeetings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "name": petName,
+                "age": Number(petAge),
+                "breed": petBreed,
+                "date": meetingDate,
+                "userId": userId,
+                "animalType": petType,
+                "imageUrl": imageUrl
+            })
+        });
+
+
+        if (!res2.ok) {
+            const errorData = await res2.json();
+            console.log("adding meeting failed: " + errorData.message);
+            return;
+        }
+
+
+
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong!");
+    }
+
+}
+
+const addSurrenderBtn = document.getElementById("surrenderSubmitBtn");
+// Close surrender modal form
+addSurrenderBtn?.addEventListener("click", async() => {
+    addSurrenders();
+});
 
 const PETS_API_BASE = "/api/Pets";
 
@@ -826,7 +582,7 @@ function renderPets(pets, containerId) {
                  src="${pet.imageUrl}"
                  alt="${pet.name}">
              
-            <!-- 🐾 INFO -->
+            <!--  INFO -->
             <div class="info">
 
                 <!-- NAME + SAVE BUTTON ROW -->
@@ -848,7 +604,72 @@ function renderPets(pets, containerId) {
     `).join("");
 }
 
-const filters = {};
+// function for updating all the filter buttons
+function syncFilterUI() {
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+
+        const group = btn.dataset.group;
+
+        // "All" buttons
+        if (!btn.dataset.value && !btn.dataset.min) {
+            if (
+                !tempFilters[group] &&
+                !(group === "age" && (tempFilters.minAge || tempFilters.maxAge))
+            ) {
+                btn.classList.add("active");
+            }
+        }
+
+        // Normal filters
+        if (btn.dataset.value && tempFilters[group] === btn.dataset.value) {
+            btn.classList.add("active");
+        }
+
+        // Age filters
+        if (
+            group === "age" &&
+            btn.dataset.min == tempFilters.minAge &&
+            btn.dataset.max == tempFilters.maxAge
+        ) {
+            btn.classList.add("active");
+        }
+    });
+}
+
+//holding filter and temp filter
+let tempFilters = {};
+let filters = {};
+
+
+
+// Filter modal open/close
+const filterModal = document.getElementById("filterModal");
+const openFiltersBtn = document.getElementById("openFiltersModal");
+const closeFiltersBtn = document.getElementById("closeFiltersModal");
+
+// Open filter modal
+openFiltersBtn?.addEventListener("click", () => {
+    tempFilters = { ...filters }; // discard changes
+    filterModal.style.display = "flex";
+});
+
+// Close filter modal
+closeFiltersBtn?.addEventListener("click", () => {
+    tempFilters = { ...filters }; // discard changes
+    syncFilterUI();
+    filterModal.style.display = "none";
+});
+
+// Click outside to close
+filterModal?.addEventListener("click", (e) => {
+    if (e.target === filterModal) {
+        tempFilters = { ...filters }; // discard changes
+        syncFilterUI();
+        filterModal.style.display = "none";
+    }
+});
 
 // Handle filter button clicks
 document.querySelectorAll(".filter-btn").forEach(btn => {
@@ -862,10 +683,10 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
         this.classList.add("active");
 
         // Remove previous values
-        delete filters[group];
+        delete tempFilters[group];
         if (group === "age") {
-            delete filters.minAge;
-            delete filters.maxAge;
+            delete tempFilters.minAge;
+            delete tempFilters.maxAge;
         }
 
         // If "All" clicked → do nothing (keeps filters empty)
@@ -873,16 +694,16 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 
         // Normal filters
         if (this.dataset.value) {
-            filters[group] = this.dataset.value;
+            tempFilters[group] = this.dataset.value;
         }
 
         // Age filters
         if (this.dataset.min) {
-            filters.minAge = this.dataset.min;
+            tempFilters.minAge = this.dataset.min;
         }
 
         if (this.dataset.max) {
-            filters.maxAge = this.dataset.max;
+            tempFilters.maxAge = this.dataset.max;
         }
     });
 });
@@ -898,7 +719,7 @@ async function loadAllPets() {
 }
 
 async function loadFilteredPets() {
-    
+    console.log(filters);
     if (Object.keys(filters).length === 0) {
         loadAllPets();
         return;
@@ -913,21 +734,44 @@ async function loadFilteredPets() {
     }
 }
 
+//seraching functionality 
 
 async function searchPets() {
     const input = document.getElementById("searchInput");
-    const breed = input.value.trim();
+    const searchValue = input.value.trim();
 
-    const url = breed
-        ? `${PETS_API_BASE}/filter?breed=${encodeURIComponent(breed)}`
-        : PETS_API_BASE;
+    //return if there is nothging in the search bar
+    if (searchValue === "") {
+        return 
+    }
+    
+    try {
+        const params = new URLSearchParams({ query: searchValue });
+        const res = await fetch(`http://localhost:5212/api/Pets/search?${params.toString() }`);
+        const pets = await res.json();
 
-    const res = await fetch(url);
-    const pets = await res.json();
-
-    renderPets(pets, "resultsGallery");
-    showPage("results");
+        showPage("results");
+        console.log(pets);
+        renderPets(pets, "resultsGallery");
+    } catch (error) {
+        console.error("Error fetching pets:", error);
+    }
 }
+
+closeSearchResultBtn = document.getElementById("closeSearchResultBtn");
+closeSearchResultBtn?.addEventListener("click", () => {
+
+    const searchValue = document.getElementById("searchInput").value = "";
+
+    showPage("gallery");
+    closeDash();
+});
+
+searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        searchPets();
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = document.getElementById("resetBtn");
@@ -937,7 +781,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("reset burron clicked");
         // Clear filters object
         for (let key in filters) {
-            delete filters[key];
+            delete tempFilters[key];
         }
 
         // Reset UI
@@ -951,17 +795,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     showFilterResultBtn?.addEventListener("click", () => {
+        filters = { ...tempFilters };
         loadFilteredPets();
         filterModal.style.display = "none";
     });
 
-    // Open meeting form logic form
-    addSurrenderMeetingButton?.addEventListener("click", () => {
-        surrenderContainer.innerHTML = "";
-        createMeetingForm();
-        addSurrenderMeetingButton.classList.add("d-none");
-
-    });
+    
 
     loadAllPets();
 });
@@ -981,7 +820,7 @@ loginForm?.addEventListener("click", async (e) => {
 
     // Element to show messages
     const responseEl = document.getElementById("loginResponse");
-    
+
 
     try {
         const res = await fetch("http://localhost:5212/api/Clients/login", {
@@ -994,26 +833,26 @@ loginForm?.addEventListener("click", async (e) => {
         const data = await res.json();
 
         if (!res.ok) {
-            
+
             // Show backend error message
             responseEl.style.color = "red";
             responseEl.innerText = data.message || "Login failed.";
         } else {
-            
+
             // Successful login
             responseEl.style.color = "green";
             responseEl.innerText = data.message || `Welcome, ${data.username}!`;
-            
+
             //clearing the placeholders
             document.getElementById("loginUsername").value = "";
             document.getElementById("loginPassword").value = "";
         }
 
         // Clear message after 10 seconds
-        setTimeout(() => { 
-            responseEl.innerText = ""; 
+        setTimeout(() => {
+            responseEl.innerText = "";
             showPage("gallery");
-            }, 10000);
+        }, 10000);
 
     } catch (err) {
         console.error("Login error:", err);
@@ -1037,11 +876,11 @@ async function isUserLoggedIn() {
         const data = await res.json();
 
         // Optional: check if userId exists
-        
+
         if (data.userId) {
-            
+
             return { loggedIn: true, user: data };
-            
+
         } else {
             return { loggedIn: false, user: null };
         }
@@ -1067,7 +906,7 @@ logoutBTN?.addEventListener("click", async () => {
 
         // Redirect to login page
         showPage("gallery");
-        
+
 
     } catch (err) {
         console.error("Logout failed:", err);
@@ -1091,6 +930,22 @@ document.getElementById("petGallery").addEventListener("click", (e) => {
     openBookingModal(petData);
 });
 
+document.getElementById("resultsGallery").addEventListener("click", (e) => {
+    const card = e.target.closest(".clickable-card");
+    if (!card) return;
+
+    const petData = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        age: card.dataset.age,
+        breed: card.dataset.breed,
+        image: card.dataset.image
+    };
+
+    console.log("Yes", petData);
+    openBookingModal(petData);
+});
+
 
 //modal logic for adopting
 const bookingModal = document.getElementById("bookingModal");
@@ -1099,10 +954,10 @@ let selectedPetId = null;
 
 function openBookingModal(pet) {
     selectedPetId = pet.id;
-    
+
     //image
     document.getElementById("bookingPetImage").src = pet.image;
-    
+
     //details
     const details = document.getElementById("bookingPetDetails");
     details.innerHTML = `
@@ -1114,7 +969,7 @@ function openBookingModal(pet) {
     // reset previous state
     document.getElementById("bookingDate").value = "";
     document.getElementById("bookingMessage").innerText = "";
-    
+
     bookingModal.style.display = "flex";
 }
 
@@ -1130,7 +985,7 @@ async function bookAdoptionMeeting(userId, petId, date) {
             headers: {
                 'Content-Type': 'application/json'
             },
-                body: JSON.stringify({
+            body: JSON.stringify({
                 petId: Number(petId),
                 date: date // ISO string e.g., "2026-04-05T10:00:00"
             })
@@ -1171,7 +1026,7 @@ document.getElementById("confirmBooking").addEventListener("click", async () => 
 
     const userId = session.user.userId;
     const dateInput = document.getElementById("bookingDate").value;
-    
+
 
     const date = new Date(dateInput).toISOString();
     // Call your function
@@ -1250,4 +1105,3 @@ async function loadPets() {
     }
 }
 */
-
