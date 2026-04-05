@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using System.Text.Json;
 
 namespace backend.Controllers
 {
@@ -199,6 +200,65 @@ namespace backend.Controllers
 
             // 8. Return URL
             return Ok(new { imageUrl = blobClient.Uri.AbsoluteUri });
+        }
+        
+        
+        [HttpPost("toggleSavePets")]
+        public async Task<IActionResult> ToggleSavePet([FromBody] JsonElement body)
+        {
+            try
+            {
+                int userId = body.GetProperty("userId").GetInt32();
+                int petId = body.GetProperty("petId").GetInt32();
+
+                var existing = await _context.SavedPets
+                    .FirstOrDefaultAsync(sp => sp.UserId == userId && sp.PetId == petId);
+
+                if (existing != null)
+                {
+                    // removing save
+                    _context.SavedPets.Remove(existing);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { saved = false });
+                }
+
+                // save
+                var savedPet = new SavedPets
+                {
+                    UserId = userId,
+                    PetId = petId
+                };
+
+                _context.SavedPets.Add(savedPet);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { saved = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
+        
+        //getting saved pets based on user id 
+        [HttpGet("savedPets/{userId}")]
+        public async Task<IActionResult> GetSavedPets(int userId)
+        {
+            var savedPets = await _context.SavedPets
+                .Where(s => s.UserId == userId)
+                .Include(s => s.Pet) 
+                .Select(s => new {
+                    s.Pet.Id,
+                    s.Pet.Name,
+                    s.Pet.Breed,
+                    s.Pet.Age,
+                    s.Pet.ImageUrl
+                })
+                .ToListAsync();
+
+            return Ok(savedPets);
         }
     }
 }

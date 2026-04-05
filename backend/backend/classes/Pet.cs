@@ -23,6 +23,8 @@ namespace backend.classes
         public PetStatus Status { get; private set; }
         public string ImageUrl { get; private set; } = string.Empty;
         
+        public List<SavedPets> SavedPets { get; set; } = new List<SavedPets>();
+        
         //to bring the discriminator here
         [NotMapped]
         public string AnimalType => GetType().Name;

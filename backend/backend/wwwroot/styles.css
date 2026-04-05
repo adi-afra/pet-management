@@ -531,4 +531,32 @@ body { background: #fff; color: #0b1b2b; }
     transition: opacity 0.2s ease;
 }
 
+.save-btn-inline {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.save-btn-inline i {
+    font-size: 1.3rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.save-btn-inline:hover i {
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Saved state */
+.save-btn-inline i.bi-bookmark-fill {
+    color: #ff9800;
+}
+
+/* Click animation */
+.save-btn-inline:active i {
+    transform: scale(0.9);
+}
 
