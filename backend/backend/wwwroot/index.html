@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fortuna Tails</title>
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.png">
+
+    <!-- Bootstrap CSS (Brandon)-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geom:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR (Brandon)-->
+    <header id="mainNavbar" class="navbar px-4 py-3 d-flex align-items-center justify-content-between">
+        <div class="logo d-flex align-items-center gap-2">
+            <span class="brand-badge">
+                <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
+            </span>
+            <span class="brand-name">Fortuna Tails</span>
+
+        </div>
+
+
+
+
+        <div class="search-wrapper">
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="searchInput" type="text" placeholder="Search Pets">
+            </div>
+
+        </div>
+
+        <div class="nav-icons d-flex align-items-center gap-4">
+            <i class="fa-regular fa-user" id="registrationPage"></i>
+            <i class="fa-solid fa-bars" id="menuBtn"></i>
+        </div>
+    </header>
+
+    <!-- SEARCH FILTER MODAL -->
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-box">
+
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <i class="fa-solid fa-xmark" id="closeFiltersModal"></i>
+            </div>
+
+            <!-- SPECIES -->
+            <div class="filter-section">
+                <p>Species</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-group="animalType">All</button>
+                    <button class="filter-btn" data-group="animalType" data-value="Dog">Dogs</button>
+                    <button class="filter-btn" data-group="animalType" data-value="Cat">Cats</button>
+                </div>
+            </div>
+
+            <!-- AGE -->
+            <div class="filter-section">
+                <p>Age</p>
+                <div class="filters">
+                    <button class="filter-btn active" data-group="age">All</button>
+                    <button class="filter-btn" data-group="age" data-min="0" data-max="1">Puppy / Kitten</button>
+                    <button class="filter-btn" data-group="age" data-min="1" data-max="5">Young</button>
+                    <button class="filter-btn" data-group="age" data-min="5">Adult</button>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="filter-actions">
+                <button class="reset-btn" id="resetBtn">Reset</button>
+                <button class="show-btn" id="showFilterResultBtn">Show Results</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- adoption meeting modal -->
+    <div class="filter-modal" id="adoptionMeetingsModal">
+        <div class="filter-box">
+
+            <div class="filter-header">
+                <h3>Meetings</h3>
+                <i class="fa-solid fa-xmark" id="closeAdoptionMeetingsModal"></i>
+            </div>
+
+
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="meetingsContainer">
+                <!-- Cards get injected here -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- surrender meeting modal form for giving up-->
+    <div class="filter-modal" id="surrenderModalForm">
+        <div class="filter-box" style="height: 650px;">
+            <div class="filter-header">
+                <h2>Surrender a Pet</h2>
+                <i class="fa-solid fa-xmark" id="closeSurrendersModalForm"></i>
+            </div>
+
+
+            <div class="mt-3 p-2">
+                <div class="mb-2">
+                    <label class="small fw-bold">Animal Type</label>
+                    <select class="form-control form-control-sm" id="surrenderAnimalType">
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Pet Name</label>
+                    <input type="text" class="form-control form-control-sm" id="surrenderPetName" placeholder="e.g. Buddy">
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Breed</label>
+                    <input type="text" class="form-control form-control-sm" id="surrenderPetBreed" placeholder="e.g. Golden Retriever">
+                </div>
+                <div class="mb-2">
+                    <label class="small fw-bold">Age</label>
+                    <input type="number" class="form-control form-control-sm" id="surrenderPetAge" value="0">
+                </div>
+                <div class="mb-3">
+                    <label class="small fw-bold">Preferred Meeting Date</label>
+                    <input type="date" class="form-control form-control-sm" id="surrenderDate">
+                </div>
+
+                <div class="mb-2">
+                    <label class="small fw-bold">Pet Image URL</label>
+                    <input type="File" class="form-control form-control-sm" id="surrenderPetImageUrl" placeholder="https://example.com/photo.jpg" accept="image/*">
+                </div>
+                <p id="formMessage" class="text-danger"></p>
+            </div>
+
+            <div class="d-flex justify-content-center mt-2">
+                <button class="btn btn-warning shadow-sm w-100 fw-bold" id="surrenderSubmitBtn">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Submit Surrender Request
+                </button>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <!-- surrender meeting modal -->
+    <div class="filter-modal" id="surrenderModal">
+        <div class="filter-box">
+            <div class="filter-header">
+                <h3>Surrenders</h3>
+                <i class="fa-solid fa-xmark" id="closeSurrendersModal"></i>
+            </div>
+            <div class="mt-3 d-flex flex-column gap-3 overflow-auto" style="max-height:350px;" id="surrendersContainer">
+                <!-- Cards get injected here -->
+
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for booking an adoption meeting in the main page  -->
+    <div class="filter-modal" id="bookingModal">
+        <div class="filter-box">
+
+            <!-- Header -->
+            <div class="filter-header">
+                <h3>Book Meeting</h3>
+
+                <i class="fa-solid fa-xmark" id="closeBookingModal"></i>
+            </div>
+
+            <!-- Content -->
+            <div class="mt-3 d-flex flex-column gap-3">
+                <p id="bookResponse"></p>
+                <!-- IMAGE -->
+                <img id="bookingPetImage"
+                     class="w-100 rounded"
+                     style="max-height:180px; object-fit:cover;">
+
+                <!-- DETAILS -->
+                <div id="bookingPetDetails" class="text-start">
+                    <!-- filled dynamically -->
+                </div>
+
+                <!--  DATE -->
+                <input type="date" id="bookingDate" class="form-control">
+
+                <!-- MESSAGE -->
+                <p id="bookingMessage" class="text-danger"></p>
+
+                <!-- CONFIRM -->
+                <button class="btn btn-success" id="confirmBooking">
+                    Confirm Booking
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD MENU -->
+    <div id="overlay" class="overlay hidden"></div>
+
+    <div id="dashPanel" class="dash-panel hidden">
+        <div class="dash-head">
+            <div class="dash-brand">
+                <span class="brand-badge">
+                    <img src="images/logo.png" alt="Fortuna Tails Logo" class="logo-img">
+                </span>
+
+                <span class="brand-name">Fortuna Tails</span>
+            </div>
+            <button class="position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" id="closeBtn" type="button">✕</button>
+        </div>
+
+        <nav class="dash-links">
+            <button class="dash-link active" type="button" data-page="gallery">
+                <i class="fa-solid fa-user-group"></i> Pet Gallery
+            </button>
+
+            <button id="dashboardBTN" class="dash-link" type="button" data-page="dashboard">
+                <i class="fa-solid fa-table-columns"></i> Dashboard
+            </button>
+
+            
+
+            <div class="dash-divider"></div>
+
+            <button class="dash-link logout" type="button" id="logoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </nav>
+    </div>
+
+    <!-- PAGE Pet Gallery (brandon) -->
+    <section class="page is-active" data-page="gallery">
+
+        <!-- HERO CAROUSEL -->
+        <section class="hero">
+            <div id="fortunaCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#fortunaCarousel" data-bs-slide-to="2"></button>
+                </div>
+
+                <!-- Slides -->
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <img src="images/c1.jpg"
+                             class="d-block w-100 carousel-img" alt="Dog">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Find a Forever Friend</h1>
+                            <p>Give a rescue pet a second chance at happiness.</p>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="images/c2.jpg"
+                             class="d-block w-100 carousel-img" alt="Dog">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Adopt. Love. Repeat.</h1>
+                            <p>Your new best friend is waiting for you.</p>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="images/c3.jpeg"
+                             class="d-block w-100 carousel-img" alt="Cat">
+                        <div class="carousel-caption">
+                            <h1 class="fw-bold">Fortuna Favors the Kind</h1>
+                            <p>Open your heart. Change a life.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next" type="button" data-bs-target="#fortunaCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+            </div>
+        </section>
+
+
+        <!-- CONTENT -->
+        <section class="py-5">
+            <div class="container">
+
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                    <h2 class="fw-bold m-0">Available for Adoption</h2>
+
+                    <div class="filter-icon" id="openFiltersModal">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+
+                </div>
+
+                <!-- PET CARDS (loaded by JavaScript) -->
+                <div id="petGallery" class="row g-4"></div>
+            </div>
+        </section>
+    </section>
+
+
+    <!-- PAGE Dashboard (Brandon)-->
+    <section class="page" data-page="dashboard">
+        <section class="hero text-center">
+            <div class="container py-4">
+
+                <!-- Breadcrumb -->
+                <div class="d-flex align-items-center gap-2 text-muted mb-3" style="font-size:14px;">
+                    
+                    <span class="fw-semibold" id="loggInId">Logged in as:</span>
+                </div>
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1">Your Overview</h2>
+                    <p class="text-muted mb-0">Quick summary of your activity and saved pets.</p>
+                </div>
+
+                <!-- Stat cards -->
+                <div class="row g-3 mb-4 justify-content-center">
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="dash-stat card border-0 border-start border-4 border-primary shadow-sm" id="statCardSurrenders" style="cursor: pointer;">
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="dash-big-icon text-primary">
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                </div>
+
+                                <div class="ms-5">
+                                    <div class="text-muted small fw-semibold">Surrenders Requested</div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="dash-stat card border-0 border-start border-4 border-success shadow-sm" id="statCardMeetings" style="cursor: pointer;">
+                            <div class="card-body d-flex align-items-center">
+
+                                <div class="dash-big-icon text-success">
+                                    <i class="bi bi-calendar-check-fill"></i>
+                                </div>
+
+                                <div class="ms-5">
+                                    <div class="text-muted small fw-semibold">Visits Booked</div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Main panels -->
+        <div class="row g-3">
+
+            <!-- Saved pets -->
+
+            <div class="col-12 col-lg-7">
+                <div class="card activity-card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-heart me-2 text-primary"></i>Your Saved Pets</h5>
+
+                        <div id="savedPetsContainer" class="row g-3"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Preferences (plain content) -->
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 mb-4 p-3 text-center bg-light" style="margin-top: 110px; margin-left: 110px;">
+                    <h6 class="fw-bold mb-3">Need to surrender a pet?</h6>
+                    <button class="btn btn-primary rounded-pill w-100" id="openSurrenderFormBtn">
+                        <i class="bi bi-plus-lg me-2"></i>Create Surrender Request
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- PAGE Inventory (brandon) -->
+    <section class="page" data-page="inventory">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Pet Inventory</h2>
+                <p>Manage pets.</p>
+            </div>
+        </section>
+    </section>
+
+    <!-- PAGE Adoptions (Brandon) -->
+    <section class="page" data-page="adoptions">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Adoptions</h2>
+                <p>Adoption requests.</p>
+            </div>
+        </section>
+    </section>
+
+    <!-- PAGE Settings (Brandon) -->
+    <section class="page" data-page="settings">
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold">Settings</h2>
+                <p>Account / preferences.</p>
+            </div>
+        </section>
+    </section>
+
+
+    <!-- Registration Page -->
+    <section class="page" data-page="registration">
+        <div class="register-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
+
+            <!-- Close Button -->
+            <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3"
+                    type="button">
+                ✕
+            </button>
+
+            <div class="card register-card p-0 overflow-hidden">
+
+                <div class="row g-0">
+
+                    <!-- LEFT SIDE -->
+                    <div class="col-md-5 register-left d-flex flex-column justify-content-center align-items-center text-center p-4">
+                        <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo mb-3">
+                        <h3 class="fw-bold">Join Fortuna Tails</h3>
+                        <p class="small text-muted">
+                            Create your account and start managing your shelter.
+                        </p>
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="col-md-7 p-4">
+
+                        <form>
+                            <div class="mb-3">
+                                <label for="regUsername" class="form-label fw-semibold">Username</label>
+                                <input name="regUsername" type="text" class="form-control form-control-sm" required id="regUsername">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="regEmail" class="form-label fw-semibold">Email</label>
+                                <input name="registerEmail" type="email" class="form-control form-control-sm" required id="regEmail">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="regPassword" class="form-label fw-semibold">Password</label>
+                                <input name="registerPassword" type="password" class="form-control form-control-sm" required id="regPassword">
+                            </div>
+
+
+                            <p id="response" style="font-weight: bold;"></p>
+
+                            <button id="registerBTN" class="btn btn-warning w-100 fw-bold py-2 mt-2">
+                                Create Account
+                            </button>
+                        </form>
+
+                        <p class="small mt-3 mb-0 text-center">
+                            Already have an account?
+                            <span type="button" id="loginBtn" class="fw-bold text-warning text-decoration-underline"
+                                  style="cursor:pointer;">Sign In</span>
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- LOGIN PAGE -->
+    <section class="page" data-page="login">
+        <div class="login-bg d-flex align-items-center justify-content-center min-vh-100 position-relative">
+
+            <!-- Close button  -->
+            <button class="backToHome position-absolute top-0 end-0 m-3 btn btn-light shadow-sm rounded-3" type="button">✕</button>
+
+            <div class="card login-card p-4 p-md-5 text-center">
+                <!-- Logo -->
+                <div class="mb-3">
+                    <img src="images/logo.png" alt="Fortuna Tails Logo" class="login-logo">
+                </div>
+
+                <!-- Header -->
+                <h3 class="fw-bold mb-2">Sign In</h3>
+
+                <p class="text-muted mb-4">Manage your shelter account</p>
+
+                <!-- Form -->
+                <form>
+                    <div class="mb-3 text-start">
+
+                        <label for="loginUsername" class="form-label fw-semibold mb-1">Username</label>
+                        <input name="loginUsername" type="text" class="form-control form-control-sm" required id="loginUsername">
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label for="loginPassword" class="form-label fw-semibold mb-1">Password</label>
+                        <input name="loginPassword" type="password" class="form-control form-control-sm" placeholder="••••••••" required id="loginPassword">
+                    </div>
+
+                    <p id="loginResponse" style="font-weight: bold;"></p>
+                    <button type="button" class="btn btn-warning w-100 fw-bold py-2 mt-3" id="loginSubmitBtn">Sign In</button>
+
+                </form>
+
+                <!-- Divider -->
+                <hr class="my-3">
+
+                <!-- Register -->
+                <p class="mb-0 small">
+                    Don't have an account?
+                    <span id="goToRegister" class="fw-bold text-warning text-decoration-underline" style="cursor:pointer;">Register</span>
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- PAGE Search Results -->
+    <section class="page" data-page="results">
+        <section class="py-5">
+            <div class="container">
+                <div class="d-flex align-items-center mb-3">
+
+                    <!-- Close button (LEFT) -->
+                    <button class="btn btn-light me-3" id="closeSearchResultBtn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <!-- Title -->
+                    <h2 class="fw-bold mb-0 flex-grow-1">Results</h2>
+
+
+                </div>
+
+                <div id="resultsGallery" class="row g-4"></div>
+
+            </div>
+        </section>
+    </section>
+
+
+
+
+
+    <!-- Bootstrap link -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="main.js"></script>
+</body>
+
+</html>
