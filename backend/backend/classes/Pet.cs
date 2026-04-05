@@ -25,6 +25,8 @@ namespace backend.classes
         
         public List<SavedPets> SavedPets { get; set; } = new List<SavedPets>();
         
+        public int? UserId { get; private set; }
+
         //to bring the discriminator here
         [NotMapped]
         public string AnimalType => GetType().Name;
@@ -38,7 +40,7 @@ namespace backend.classes
         protected Pet() {} //Empty constructor for EF
         
             
-        public Pet( string name, int age, string breed, string imageUrl)
+        public Pet( string name, int age, string breed, string imageUrl, int? userId = null)
 
         {
 
@@ -52,6 +54,8 @@ namespace backend.classes
             Status = PetStatus.Registered; //setting the default status as registered
 
             ImageUrl = imageUrl;
+
+            UserId = userId;
         }
 
         //validation helper
@@ -78,6 +82,11 @@ namespace backend.classes
         public void SetBreed(string breed) => Breed = ValidateString(breed, nameof(breed));
 
         public void SetStatus(PetStatus status) => Status = status;
+
+        public void SetUserId(int? userId)
+        {
+            UserId = userId;
+        }
 
         public void SetImageUrl(string url) => ImageUrl = ValidateString(url, nameof(url));
 

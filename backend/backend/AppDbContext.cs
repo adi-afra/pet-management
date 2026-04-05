@@ -87,6 +87,14 @@ namespace backend.Data
                 .HasOne(sp => sp.Pet)
                 .WithMany(p => p.SavedPets)
                 .HasForeignKey(sp => sp.PetId);
+
+            modelBuilder.Entity<Pet>()
+                .HasIndex(p => new { p.UserId, p.Name, p.Age, p.Breed })
+                .IsUnique();
+
+            modelBuilder.Entity<Meeting>()
+                .HasIndex(m => new { m.PetId, m.Type })
+                .IsUnique();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260405131630_AddPetUserIdAndConstraints")]
+    partial class AddPetUserIdAndConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,30 +95,6 @@ namespace backend.Migrations
                     b.HasDiscriminator().HasValue("Pet");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("backend.classes.SavedPets", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PetId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetId");
-
-                    b.HasIndex("UserId", "PetId")
-                        .IsUnique();
-
-                    b.ToTable("SavedPets");
                 });
 
             modelBuilder.Entity("backend.classes.User", b =>
@@ -197,35 +176,9 @@ namespace backend.Migrations
                     b.Navigation("Pet");
                 });
 
-            modelBuilder.Entity("backend.classes.SavedPets", b =>
-                {
-                    b.HasOne("backend.classes.Pet", "Pet")
-                        .WithMany("SavedPets")
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.classes.User", "User")
-                        .WithMany("SavedPets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("backend.classes.Pet", b =>
                 {
                     b.Navigation("Meetings");
-
-                    b.Navigation("SavedPets");
-                });
-
-            modelBuilder.Entity("backend.classes.User", b =>
-                {
-                    b.Navigation("SavedPets");
                 });
 
             modelBuilder.Entity("backend.classes.Client", b =>
