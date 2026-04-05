@@ -91,6 +91,7 @@ document.querySelectorAll(".backToHome").forEach(btn => {
 async function goToDashboard() {
     const session = await isUserLoggedIn();
 
+    console.log(session.loggedIn)
     if (!session.loggedIn) {
         // Show a message in your login page message container
         const responseEl = document.getElementById("loginresponse");
@@ -104,7 +105,7 @@ async function goToDashboard() {
 
         // Switch to login page
         showPage("login");
-        
+        return;
     }
 
     // User is logged in → show dashboard
@@ -421,7 +422,13 @@ surrenderModal?.addEventListener("click", (e) => {
 // Open surrender modal form
 openSurrenderFormBtn?.addEventListener("click", () => {
     surrenderModalForm.style.display = "flex";
-    //showSurrenders();
+    //getting all the values from the entry fields 
+    const petName = document.getElementById("surrenderPetName").value = "";
+    const petAge = document.getElementById("surrenderPetAge").value = 0;
+    const petBreed = document.getElementById("surrenderPetBreed").value = "";
+    const meetingDateValue = document.getElementById("surrenderDate").value = "";
+    const petImageInput = document.getElementById("surrenderPetImageUrl") = "";
+    
 });
 
 // Close surrender modal form
