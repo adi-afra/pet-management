@@ -146,7 +146,9 @@ namespace backend.Controllers
                     query = query.Where(p => p.Age <= maxAge.Value);
                 }
 
-                var pets = await query.Select(p => new
+                var pets = await query
+                    .Where(p => p.Status == PetStatus.Registered)
+                    .Select(p => new
                 {
                     p.Id,
                     p.Name,
