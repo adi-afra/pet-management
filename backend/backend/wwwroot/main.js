@@ -49,6 +49,10 @@ function showPage(pageName) {
     } else {
         navbar?.classList.remove("d-none")
     }
+    
+    if (pageName === "gallery"){
+        loadAllPets();
+    }
 }
 
 dashLinks.forEach((btn) => {
@@ -421,7 +425,7 @@ openSurrenderFormBtn?.addEventListener("click", () => {
     const petAge = document.getElementById("surrenderPetAge").value = 0;
     const petBreed = document.getElementById("surrenderPetBreed").value = "";
     const meetingDateValue = document.getElementById("surrenderDate").value = "";
-    const petImageInput = document.getElementById("surrenderPetImageUrl") = "";
+    const petImageInput = document.getElementById("surrenderPetImageUrl").value = "";
     
 });
 
@@ -557,7 +561,7 @@ async function addSurrenders() {
 
         // Clear message after 10 seconds
         setTimeout(() => {
-            responseEl.innerText = "";
+            formMessage.innerText = "";
             showPage("gallery");
         }, 10000);
 
@@ -871,7 +875,6 @@ loginForm?.addEventListener("click", async (e) => {
         // Clear message after 10 seconds
         setTimeout(() => {
             responseEl.innerText = "";
-            showPage("gallery");
         }, 10000);
 
     } catch (err) {
@@ -926,6 +929,7 @@ logoutBTN?.addEventListener("click", async () => {
 
         // Redirect to login page
         showPage("gallery");
+        loadAllPets();
 
 
     } catch (err) {
