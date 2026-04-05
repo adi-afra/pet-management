@@ -69,6 +69,14 @@ namespace backend.Data
                 .WithOne(m => m.Pet)
                 .HasForeignKey(m => m.PetId)
                 .IsRequired();
+
+            modelBuilder.Entity<Pet>()
+                .HasIndex(p => new { p.UserId, p.Name, p.Age, p.Breed })
+                .IsUnique();
+
+            modelBuilder.Entity<Meeting>()
+                .HasIndex(m => new { m.PetId, m.Type })
+                .IsUnique();
         }
     }
 }

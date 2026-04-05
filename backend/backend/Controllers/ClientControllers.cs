@@ -204,75 +204,124 @@ namespace backend.Controllers
             return Ok(meetings);
         }
 
-        // POST: api/clients
         [HttpPost("surrenderMeetings")]
         public async Task<IActionResult> CreateSurrender([FromBody] JsonElement data)
         {
-            
             try
             {
                 Console.WriteLine("Received JSON: " + data.GetRawText());
+
                 //  Validate required fields
                 if (!data.TryGetProperty("animalType", out var animalTypeProp))
                     return BadRequest(new { message = "animalType is required" });
 
-                var animalTypeString = animalTypeProp.GetString();
+                var petTypeString = animalTypeProp.GetString();
 
-                //  Convert string → enum
-                if (!Enum.TryParse<PetType>(animalTypeString, true, out var petType))
-                    return BadRequest("Invalid animal type");
+                if (!Enum.TryParse<PetType>(petTypeString, true, out var petType))
+                    return BadRequest(new { message = "Invalid animal type" });
 
-                // Create correct object using switch
-                Pet pet = petType switch
-                {
-                    PetType.Dog => new Dog
-                    (
-                        data.GetProperty("name").GetString(),
-                        data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString(),
-                        data.GetProperty("imageUrl").GetString()
-                    ),
+                var name = data.GetProperty("name").GetString()?.Trim();
+                var age = data.GetProperty("age").GetInt32();
+                var breed = data.GetProperty("breed").GetString()?.Trim();
+                var imageUrl = data.GetProperty("imageUrl").GetString();
+                var userId = data.GetProperty("userId").GetInt32();
+                var date = data.GetProperty("date").GetDateTime();
 
-                    PetType.Cat => new Cat
-                    (
-                        data.GetProperty("name").GetString(),
-                        data.GetProperty("age").GetInt32(),
-                        data.GetProperty("breed").GetString(),
-                        data.GetProperty("imageUrl").GetString()
-                    ),
-
-                    _ => throw new Exception("Invalid animal type")
-                };
-
-                //setting the satus as potenial
-                pet.SetStatus(PetStatus.Potential);
-
-
-                //  Create meeting
-                var meeting = new Meeting
-                (
-                    data.GetProperty("date").GetDateTime(),
-                    pet,
-                    data.GetProperty("userId").GetInt32(),
-                    MeetingType.Surrender 
+                // Try find existing pet
+                var pet = await _context.Pets.FirstOrDefaultAsync(p =>
+                    p.UserId == userId &&
+                    p.Name == name &&
+                    p.Age == age &&
+                    p.Breed == breed
                 );
 
-                //  Save to DB
-                _context.Pets.Add(pet);
-                _context.Meetings.Add(meeting);
-                _context.SaveChanges();
+                // Create if not exists
+                if (pet == null)
+                {
+                    pet = petType switch
+                    {
+                        PetType.Dog => new Dog(name, age, breed, imageUrl, userId),
+                        PetType.Cat => new Cat(name, age, breed, imageUrl, userId),
+                        _ => throw new Exception("Invalid animal type")
+                    };
 
-                return Ok(new { message = "Surrender meeting created successfully" });
+                    pet.SetStatus(PetStatus.Potential);
+
+                    _context.Pets.Add(pet);
+
+                    try
+                    {
+                        await _context.SaveChangesAsync(); // ensures unique constraint enforced
+                    }
+                    catch (DbUpdateException)
+                    {
+                        //If race condition happens, fetch existing pet
+                        pet = await _context.Pets.FirstOrDefaultAsync(p =>
+                            p.UserId == userId &&
+                            p.Name == name &&
+                            p.Age == age &&
+                            p.Breed == breed
+                        );
+
+                        if (pet == null)
+                            throw; // something unexpected
+                    }
+                }
+
+                //Prevent duplicate surrender meeting
+                bool surrenderExists = await _context.Meetings.AnyAsync(m =>
+                    m.PetId == pet.Id &&
+                    m.Type == MeetingType.Surrender
+                );
+
+                if (surrenderExists)
+                {
+                    return BadRequest(new
+                    {
+                        message = "This pet already has a surrender meeting."
+                    });
+                }
+
+                //Create meeting
+                var meeting = new Meeting(
+                    date,
+                    pet,
+                    userId,
+                    MeetingType.Surrender
+                );
+
+                _context.Meetings.Add(meeting);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    return BadRequest(new
+                    {
+                        message = "This pet already has a surrender meeting."
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Surrender meeting created successfully",
+                    petId = pet.Id
+                });
             }
             catch (Exception ex)
             {
-                // Return JSON even on server error
-                return StatusCode(500, new { message = "Internal server error.", detail = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "Internal server error",
+                    detail = ex.Message
+                });
             }
         }
-        
-        
-        
+
+
+
         // POST: api/clients/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] JsonElement data)

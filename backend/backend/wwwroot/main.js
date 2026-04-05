@@ -104,11 +104,15 @@ async function goToDashboard() {
 
         // Switch to login page
         showPage("login");
-        return;
+        
     }
 
     // User is logged in → show dashboard
     showPage("dashboard");
+    const userIdContiner = document.getElementById("loggInId");
+    console.log(session.user.userId);
+    userIdContiner.innerText = "Logged in as: " + session.user.username;
+    return;
 }
 
 // Attach to dashboard button
@@ -480,6 +484,7 @@ async function addSurrenders() {
 
     //check if none of the fields are empty
     if (petName === "" || petAge === "" || petBreed === "" || petType === "" || meetingDateValue === "" || petImage === undefined) {
+        formMessage.style.color = "red";
         formMessage.textContent = "all fields must be filled";
         return
     } else if (Number(petAge) < 0) {
@@ -493,6 +498,7 @@ async function addSurrenders() {
     today.setHours(0, 0, 0, 0);
 
     if (meetingDate <= today) {
+        formMessage.style.color = "red";
         formMessage.textContent = "Meeting date must be after today";
         return;
     }
@@ -540,10 +546,19 @@ async function addSurrenders() {
         if (!res2.ok) {
             const errorData = await res2.json();
             console.log("adding meeting failed: " + errorData.message);
+            formMessage.style.color = "red";
+            formMessage.innerText = errorData.message;
             return;
         }
 
+        formMessage.style.color = "green";
+        formMessage.innerText = res2.message;
 
+        // Clear message after 10 seconds
+        setTimeout(() => {
+            responseEl.innerText = "";
+            showPage("gallery");
+        }, 10000);
 
     } catch (err) {
         console.error(err);
@@ -558,7 +573,6 @@ addSurrenderBtn?.addEventListener("click", async() => {
     addSurrenders();
 });
 
-const PETS_API_BASE = "/api/Pets";
 
 function renderPets(pets, containerId) {
     const container = document.getElementById(containerId);
@@ -865,7 +879,7 @@ async function isUserLoggedIn() {
     try {
         const res = await fetch("http://localhost:5212/api/Clients/session", {
             method: "GET",
-            credentials: "include" // ⚡ important to include session cookie
+            credentials: "include" // important to include session cookie
         });
 
         if (!res.ok) {
