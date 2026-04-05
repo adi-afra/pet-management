@@ -380,5 +380,7 @@ namespace backend.Controllers
             // Return a success message
             return Ok(new { message = "Logged out successfully." });
         }
+        
+        
     }
 }

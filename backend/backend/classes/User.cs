@@ -15,6 +15,8 @@ namespace backend.classes
         public string Username { get; private set; }
         public string Password { get; private set; }
         public string Email { get; private set; }
+        
+        public List<SavedPets> SavedPets { get; set; } = new List<SavedPets>();
 
 
         //constructor with validation

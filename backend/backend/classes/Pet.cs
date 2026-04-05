@@ -22,6 +22,9 @@ namespace backend.classes
         public string Breed { get; private set; } 
         public PetStatus Status { get; private set; }
         public string ImageUrl { get; private set; } = string.Empty;
+        
+        public List<SavedPets> SavedPets { get; set; } = new List<SavedPets>();
+        
         public int? UserId { get; private set; }
 
         //to bring the discriminator here

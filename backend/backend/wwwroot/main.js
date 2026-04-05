@@ -110,6 +110,7 @@ async function goToDashboard() {
 
     // User is logged in → show dashboard
     showPage("dashboard");
+    loadSavedPets();
     const userIdContiner = document.getElementById("loggInId");
     console.log(session.user.userId);
     userIdContiner.innerText = "Logged in as: " + session.user.username;
@@ -302,15 +303,8 @@ registerForm?.addEventListener("click", async (e) => {
 
             // After 5 seconds, show redirect message
             setTimeout(() => {
-                responseEl.innerText = "Redirecting to login in 10 seconds...";
-
-                // After another 10 seconds, clear message and navigate to login
-                setTimeout(() => {
-                    responseEl.innerText = "";
-                    showPage("login");
-                }, 10000);
-
-            }, 5000);
+                responseEl.innerText = "";
+            }, 10000);
         }
     } catch (err) {
         console.log(err);
@@ -581,15 +575,21 @@ addSurrenderBtn?.addEventListener("click", async() => {
 });
 
 
-function renderPets(pets, containerId) {
+async function renderPets(pets, containerId) {
     const container = document.getElementById(containerId);
 
     if (!pets || pets.length === 0) {
         container.innerHTML = `<div class="col-12"><p class="text-center">No pets found.</p></div>`;
         return;
     }
+    
+    await loadSavedPets();
+    
+    container.innerHTML = pets.map(pet =>{
+    const isSaved = savedPetsId.includes(pet.id); // check if pet is saved
+    const bookmarkClass = isSaved ? "bi-bookmark-fill" : "bi-bookmark"; // fill if saved
+        return `
 
-    container.innerHTML = pets.map(pet => `
     <div class="col-12 col-md-6 col-lg-4">
         <div class="pet-card h-100 clickable-card"
              data-id="${pet.id}"
@@ -603,7 +603,7 @@ function renderPets(pets, containerId) {
                  src="${pet.imageUrl}"
                  alt="${pet.name}">
              
-            <!--  INFO -->
+            <!-- 🐾 INFO -->
             <div class="info">
 
                 <!-- NAME + SAVE BUTTON ROW -->
@@ -613,7 +613,7 @@ function renderPets(pets, containerId) {
                     <button class="save-btn-inline"
                             data-save-id="${pet.id}"
                             type="button">
-                        <i class="bi bi-bookmark" id="save-${pet.id}"></i>
+                        <i class="bi ${bookmarkClass}" id="save-${pet.id}"></i>
                     </button>
                 </div>
 
@@ -622,7 +622,7 @@ function renderPets(pets, containerId) {
 
         </div>
     </div>
-    `).join("");
+    `}).join("");
 }
 
 // function for updating all the filter buttons
@@ -755,8 +755,7 @@ async function loadFilteredPets() {
     }
 }
 
-//seraching functionality 
-
+//seraching functionality
 async function searchPets() {
     const input = document.getElementById("searchInput");
     const searchValue = input.value.trim();
@@ -936,6 +935,8 @@ logoutBTN?.addEventListener("click", async () => {
 
 //adoption meeting
 document.getElementById("petGallery").addEventListener("click", (e) => {
+    if (e.target.closest(".save-btn-inline")) return;
+
     const card = e.target.closest(".clickable-card");
     if (!card) return;
 
@@ -952,6 +953,9 @@ document.getElementById("petGallery").addEventListener("click", (e) => {
 });
 
 document.getElementById("resultsGallery").addEventListener("click", (e) => {
+
+    if (e.target.closest(".save-btn-inline")) return;
+    
     const card = e.target.closest(".clickable-card");
     if (!card) return;
 
@@ -1061,6 +1065,174 @@ document.getElementById("confirmBooking").addEventListener("click", async () => 
         confirmBtn.textContent = "Booked ✔"; // optional: show feedback
     }
 })
+
+//saving the pet function
+async function toggleSavePet(petId) {
+    const session = await isUserLoggedIn();
+
+    if (!session.loggedIn) {
+        showPage("login");
+        document.getElementById("loginResponse").innerText = "You must be logged in!";
+        document.getElementById("loginResponse").style.color = "Red";
+        return;
+    }
+
+    const userId = session.user.userId;
+
+    try {
+        const response = await fetch("http://localhost:5212/api/Pets/toggleSavePets", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                userId:Number(userId),
+                petId: Number(petId)
+            })
+        });
+
+        // Parse JSON for error messages
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Save failed:", data?.message || response.statusText);
+            return;
+        }
+
+        // Toggle UI icon
+        const icon = document.getElementById(`save-${petId}`);
+        if (icon.classList.contains("bi-bookmark-fill")) {
+            icon.classList.replace("bi-bookmark-fill", "bi-bookmark");
+        } else {
+            icon.classList.replace("bi-bookmark", "bi-bookmark-fill");
+        }
+
+        console.log("Save succeeded:", data);
+
+    } catch (error) {
+        console.error("Error saving pet:", error);
+    }
+}
+
+document.addEventListener("click", (e) => {
+    const saveBtn = e.target.closest(".save-btn-inline");
+
+    if (!saveBtn) return;
+
+    // STOP the card click from firing
+    e.stopPropagation();
+
+    const petId = saveBtn.dataset.saveId;
+    toggleSavePet(petId);
+});
+
+
+//array for saving savedPets id
+let savedPetsId=[];
+
+//loading saved pets 
+async function loadSavedPets() {
+    savedPetsId = [];
+
+    const session = await isUserLoggedIn();
+    if (!session.loggedIn) return;
+
+    const userId = session.user.userId;
+
+    try {
+        const response = await fetch(`http://localhost:5212/api/Pets/savedPets/${userId}`, {
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            console.error("Failed to fetch saved pets");
+            return;
+        }
+
+        const pets = await response.json();
+        const container = document.getElementById("savedPetsContainer");
+
+        container.innerHTML = "";
+
+        if (pets.length === 0) {
+            container.innerHTML = `<p class="text-muted">No saved pets yet.</p>`;
+            return;
+        }
+
+        pets.forEach(pet => {
+            savedPetsId.push(pet.id);
+
+            container.insertAdjacentHTML("beforeend", `
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="pet-card h-100 clickable-card"
+                         data-id="${pet.id}"
+                         data-name="${pet.name}"
+                         data-age="${pet.age}"
+                         data-breed="${pet.breed}"
+                         data-image="${pet.imageUrl}">
+
+                        <img class="pet-img" src="${pet.imageUrl}" alt="${pet.name}">
+
+                        <div class="info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="mb-0">${pet.name}</h3>
+                                <button class="save-btn-inline" data-save-id="${pet.id}" type="button">
+                                    <i class="bi bi-bookmark-fill" id="save-${pet.id}"></i>
+                                </button>
+                            </div>
+                            <p class="mt-1">${pet.age} years • ${pet.breed}</p>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+
+        console.log("Saved pets:", savedPetsId);
+
+    } catch (err) {
+        console.error("Error:", err);
+    }
+}
+
+document.addEventListener("click", async (e) => {
+    const saveBtn = e.target.closest(".save-btn-inline");
+    if (!saveBtn) return;
+
+    e.stopPropagation(); // stop card click from firing
+    const petId = saveBtn.dataset.saveId;
+
+    await toggleSavePet(petId);
+
+    // If this card is in the savedPetsContainer, remove it
+    const card = saveBtn.closest(".col-12.col-md-6.col-lg-4");
+    if (card && card.parentElement.id === "savedPetsContainer") {
+        card.remove();
+
+        // If container becomes empty, show message
+        const container = document.getElementById("savedPetsContainer");
+        if (container.children.length === 0) {
+            container.innerHTML = `<p class="text-muted">No saved pets yet.</p>`;
+        }
+    }
+});
+
+document.getElementById("savedPetsContainer").addEventListener("click", (e) => {
+    if (e.target.closest(".save-btn-inline")) return;
+
+    const card = e.target.closest(".clickable-card");
+    if (!card) return;
+
+    const petData = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        age: card.dataset.age,
+        breed: card.dataset.breed,
+        image: card.dataset.image
+    };
+
+    console.log("Clicked saved pet:", petData);
+    openBookingModal(petData);
+});
+
 
 
 

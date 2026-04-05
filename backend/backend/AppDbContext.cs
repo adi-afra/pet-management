@@ -21,6 +21,7 @@ namespace backend.Data
 
         public DbSet<Meeting> Meetings { get; set; }
         
+        public DbSet<SavedPets> SavedPets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +70,23 @@ namespace backend.Data
                 .WithOne(m => m.Pet)
                 .HasForeignKey(m => m.PetId)
                 .IsRequired();
+            
+            //prevents duplicate saves from the same user
+            modelBuilder.Entity<SavedPets>()
+                .HasIndex(sp => new { sp.UserId, sp.PetId })
+                .IsUnique();
+
+            // 1 User -> * Saved Pets
+            modelBuilder.Entity<SavedPets>()
+                .HasOne(sp => sp.User)
+                .WithMany(u => u.SavedPets)
+                .HasForeignKey(sp => sp.UserId);
+
+            // 1 Pet -> * Saved Pets
+            modelBuilder.Entity<SavedPets>()
+                .HasOne(sp => sp.Pet)
+                .WithMany(p => p.SavedPets)
+                .HasForeignKey(sp => sp.PetId);
 
             modelBuilder.Entity<Pet>()
                 .HasIndex(p => new { p.UserId, p.Name, p.Age, p.Breed })
