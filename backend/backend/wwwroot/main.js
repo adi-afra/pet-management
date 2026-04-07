@@ -547,22 +547,22 @@ async function addSurrenders() {
             })
         });
 
-
+        const data = await res2.json();
         if (!res2.ok) {
-            const errorData = await res2.json();
-            console.log("adding meeting failed: " + errorData.message);
+            
+            console.log("adding meeting failed: " + data.message);
             formMessage.style.color = "red";
-            formMessage.innerText = errorData.message;
+            formMessage.innerText = data.message;
             return;
         }
 
+        
         formMessage.style.color = "green";
-        formMessage.innerText = res2.message;
+        formMessage.innerText = data.message || "Meeting added successfully";
 
         // Clear message after 10 seconds
         setTimeout(() => {
             formMessage.innerText = "";
-            showPage("gallery");
         }, 10000);
 
     } catch (err) {

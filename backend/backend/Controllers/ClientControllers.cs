@@ -232,7 +232,7 @@ namespace backend.Controllers
                     p.UserId == userId &&
                     p.Name == name &&
                     p.Age == age &&
-                    p.Breed == breed
+                    p.Breed == breed 
                 );
 
                 // Create if not exists
@@ -271,7 +271,8 @@ namespace backend.Controllers
                 //Prevent duplicate surrender meeting
                 bool surrenderExists = await _context.Meetings.AnyAsync(m =>
                     m.PetId == pet.Id &&
-                    m.Type == MeetingType.Surrender
+                    m.Type == MeetingType.Surrender 
+
                 );
 
                 if (surrenderExists)
