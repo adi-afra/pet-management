@@ -26,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 // Add these before builder.Build()
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
