@@ -981,13 +981,15 @@ const bookingModal = document.getElementById("bookingModal");
 
 let selectedPetId = null;
 
-function openBookingModal(pet) {
+async function openBookingModal(pet) {
     selectedPetId = pet.id;
 
-    //image
+    await loadBookedPets(); // load booked pets first
+
+    // image
     document.getElementById("bookingPetImage").src = pet.image;
 
-    //details
+    // details
     const details = document.getElementById("bookingPetDetails");
     details.innerHTML = `
         <h5>${pet.name}</h5>
@@ -995,7 +997,18 @@ function openBookingModal(pet) {
         <p>Breed: ${pet.breed}</p>
     `;
 
-    // reset previous state
+    const confirmBtn = document.getElementById("confirmBooking");
+
+    //check if already booked
+    if (bookedPetsId.includes(Number(pet.id))) {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Already Booked ✔";
+    } else {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Confirm Booking";
+    }
+
+    // reset date + message
     document.getElementById("bookingDate").value = "";
     document.getElementById("bookingMessage").innerText = "";
 
@@ -1007,6 +1020,41 @@ document.getElementById("closeBookingModal")?.addEventListener("click", () => {
 });
 
 //booking an adoption meeting
+
+let bookedPetsId = [];
+
+async function loadBookedPets() {
+    bookedPetsId = [];
+
+    const session = await isUserLoggedIn();
+    if (!session.loggedIn) return;
+
+    const userId = session.user.userId;
+
+    try {
+        const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`, {
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            console.error("Failed to fetch booked meetings");
+            return;
+        }
+
+        const meetings = await response.json();
+
+        meetings.forEach(meeting => {
+            if (meeting.pet && meeting.pet.id) {
+                bookedPetsId.push(meeting.pet.id);
+            }
+        });
+
+        console.log("Booked pets:", bookedPetsId);
+
+    } catch (err) {
+        console.error("Error:", err);
+    }
+}
 async function bookAdoptionMeeting(userId, petId, date) {
     try {
         const response = await fetch(`http://localhost:5212/api/Clients/adoptionMeetings/${userId}`, {
@@ -1065,8 +1113,12 @@ document.getElementById("confirmBooking").addEventListener("click", async () => 
     // If booking succeeded, disable the button
     if (success) {
         const confirmBtn = document.getElementById("confirmBooking");
+
         confirmBtn.disabled = true;
-        confirmBtn.textContent = "Booked ✔"; // optional: show feedback
+        confirmBtn.textContent = "Booked ✔";
+
+        // update memory instantly
+        bookedPetsId.push(Number(selectedPetId));
     }
 })
 
@@ -1103,12 +1155,25 @@ async function toggleSavePet(petId) {
         }
 
         // Toggle UI icon
-        const icon = document.getElementById(`save-${petId}`);
-        if (icon.classList.contains("bi-bookmark-fill")) {
-            icon.classList.replace("bi-bookmark-fill", "bi-bookmark");
+        // update savedPetsId first
+        if (!savedPetsId.includes(Number(petId))) {
+            savedPetsId.push(Number(petId));
         } else {
-            icon.classList.replace("bi-bookmark", "bi-bookmark-fill");
+            savedPetsId = savedPetsId.filter(id => id !== Number(petId));
         }
+
+        // update ALL icons based on truth
+        const icons = document.querySelectorAll(`#save-${petId}`);
+
+        icons.forEach(icon => {
+            if (savedPetsId.includes(Number(petId))) {
+                icon.classList.add("bi-bookmark-fill");
+                icon.classList.remove("bi-bookmark");
+            } else {
+                icon.classList.add("bi-bookmark");
+                icon.classList.remove("bi-bookmark-fill");
+            }
+        });
 
         console.log("Save succeeded:", data);
 
