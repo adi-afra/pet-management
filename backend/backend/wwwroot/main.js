@@ -1074,13 +1074,13 @@ async function bookAdoptionMeeting(userId, petId, date) {
             // show error message from server
             document.getElementById("bookResponse").innerText = data.message || "Something went wrong";
             document.getElementById("bookResponse").style.color = "Red";
-            setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 20000);
+            setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 10000);
             return false;
         }
 
         document.getElementById("bookResponse").innerText = data.message;
         document.getElementById("bookResponse").style.color = "Green";
-        setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 20000);
+        setTimeout(() => { document.getElementById("bookResponse").innerText = ""; }, 10000);
         console.log(data.meeting);
         return true;
 
@@ -1103,7 +1103,15 @@ document.getElementById("confirmBooking").addEventListener("click", async () => 
 
     const userId = session.user.userId;
     const dateInput = document.getElementById("bookingDate").value;
+    
 
+    // Validate date input before converting
+    if (!dateInput) {
+        const responseEl = document.getElementById("bookResponse");
+        responseEl.innerText = "Please select a date!";
+        responseEl.style.color = "red";
+        return; // stop further execution
+    }
 
     const date = new Date(dateInput).toISOString();
     // Call your function
@@ -1182,19 +1190,6 @@ async function toggleSavePet(petId) {
     }
 }
 
-document.addEventListener("click", (e) => {
-    const saveBtn = e.target.closest(".save-btn-inline");
-
-    if (!saveBtn) return;
-
-    // STOP the card click from firing
-    e.stopPropagation();
-
-    const petId = saveBtn.dataset.saveId;
-    toggleSavePet(petId);
-});
-
-
 //array for saving savedPets id
 let savedPetsId=[];
 
@@ -1262,26 +1257,23 @@ async function loadSavedPets() {
     }
 }
 
+// ONE click listener for all save buttons
 document.addEventListener("click", async (e) => {
     const saveBtn = e.target.closest(".save-btn-inline");
     if (!saveBtn) return;
 
-    e.stopPropagation(); // stop card click from firing
+    e.stopPropagation();
     const petId = saveBtn.dataset.saveId;
 
     await toggleSavePet(petId);
 
-    // If this card is in the savedPetsContainer, remove it
-    const card = saveBtn.closest(".col-12.col-md-6.col-lg-4");
-    if (card && card.parentElement.id === "savedPetsContainer") {
-        card.remove();
+    // Update all icons for this pet
+    const icons = document.querySelectorAll(`.save-icon[data-id="${petId}"]`);
+    icons.forEach(icon => {
+        icon.classList.toggle("saved");
+    });
 
-        // If container becomes empty, show message
-        const container = document.getElementById("savedPetsContainer");
-        if (container.children.length === 0) {
-            container.innerHTML = `<p class="text-muted">No saved pets yet.</p>`;
-        }
-    }
+
 });
 
 document.getElementById("savedPetsContainer").addEventListener("click", (e) => {
