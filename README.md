@@ -19,3 +19,5 @@ The goal is to make the adoption process easier by allowing users to view pets a
 
 #Project Structure
 - all the code related files are in the backend folder
+- the query file export of our databse can be fine in databse.sql (you can run this file in your local database to see the darabse with some data).
+- all the daily meetings, MOSCOW tables and the report can be fine in the documents folder
