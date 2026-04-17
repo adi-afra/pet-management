@@ -164,20 +164,25 @@ namespace backend.Controllers
 
             if (!string.IsNullOrEmpty(meeting.Pet?.ImageUrl))
             {
-                //Connect to Azure Blob Storage
-                var blobServiceClient = new BlobServiceClient(_storageConnectionString);
+                try
+                {
+                    // Extract file name from URL
+                    var fileName = Path.GetFileName(new Uri(meeting.Pet.ImageUrl).LocalPath);
 
-                //Get container
-                var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
+                    // Build full local path
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/petPhotos", fileName);
 
-                //extracting the file name from the string url we have 
-                var fileName = Path.GetFileName(new Uri(meeting.Pet.ImageUrl).LocalPath);
-
-                //getting the refrence from the blob
-                var blobImage = containerClient.GetBlobClient(fileName);
-
-                //deleting the image from the blob if it exist
-                await blobImage.DeleteIfExistsAsync();
+                    // Delete file if exists
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Optional: log error instead of crashing
+                    Console.WriteLine($"Error deleting file: {ex.Message}");
+                }
             }
             // Remove potential pet if it has no other purpose
             if (meeting.Pet.Status == PetStatus.Potential)

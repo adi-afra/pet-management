@@ -172,39 +172,35 @@ namespace backend.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            //Validate file
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
             if (!file.ContentType.StartsWith("image/"))
                 return BadRequest("Only image files allowed");
 
-            //Connect to Azure Blob Storage
-            var blobServiceClient = new BlobServiceClient(_storageConnectionString);
+            // Path to save images
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/petPhotos");
 
-            //Get container
-            var containerClient = blobServiceClient.GetBlobContainerClient("pet-images");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            //Create container if not exists
-            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
-
-            //Generate unique filename
+            // Generate unique filename
             var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
-            //Create blob reference
-            var blobClient = containerClient.GetBlobClient(fileName);
-
-            //Upload file
-            using (var stream = file.OpenReadStream())
+            // Save file locally
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await blobClient.UploadAsync(stream, overwrite: true);
+                await file.CopyToAsync(stream);
             }
 
-            // 8. Return URL
-            return Ok(new { imageUrl = blobClient.Uri.AbsoluteUri });
+            // Return URL
+            var imageUrl = $"{Request.Scheme}://{Request.Host}/images/{fileName}";
+
+            return Ok(new { imageUrl });
         }
-        
-        
+
+
         [HttpPost("toggleSavePets")]
         public async Task<IActionResult> ToggleSavePet([FromBody] JsonElement body)
         {

@@ -59,7 +59,7 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// ✅ Order matters here:
+//  Order matters here:
 app.UseRouting();       // Needed for session + endpoint routing
 app.UseCors("AllowFrontend");
 

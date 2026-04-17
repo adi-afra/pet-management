@@ -23,7 +23,33 @@ namespace backend.Controllers
             if (request == null || string.IsNullOrWhiteSpace(request.Status))
             {
                 return BadRequest(new { message = "Status is required." });
+           sername = data.GetProperty("username").GetString();
+                var password = data.GetProperty("password").GetString();
+
+                if (string.IsNullOrWhiteSpace(username))
+                    return BadRequest(new { message = "Username is required." });
+
+                if (string.IsNullOrWhiteSpace(password))
+                    return BadRequest(new { message = "Password is required." });
+
+                var client = await _context.Clients
+                    .FirstOrDefaultAsync(c => c.Username == username);
+
+                if (client == null || client.Password != password)
+                    return Unauthorized(new { message = "Invalid username or password." });
+
+                
+                HttpContext.Session.SetInt32("UserId", client.Id);
+                HttpContext.Session.SetString("Username", client.Username);
+                HttpContext.Session.SetString("UserRole", client.getRole());
+                
+                return Ok(new { message = "Login successful" });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", detail = ex.Message });
+            }
+        } }
 
             var pet = await _context.Pets.FindAsync(petId);
             if (pet == null)
