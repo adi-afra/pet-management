@@ -3,12 +3,13 @@ This is a group project focused on building a pet management system for an anima
 
 The goal is to make the adoption process easier by allowing users to view pets available for adoption and give up their own pets for rehoming.
 
+
 ## technologies used
 - HTML/CSS/JS and bootstrap
 - ASP.NET core (.NET 8.0)
 - Entity Framework (turning our classes into SQL tables)
 - SQL Database
-- Microsoft Azure (cloud server for our Database)
+- using local server for hosting our database
 
 ## How to run the project
 - fetch the latest version of main
