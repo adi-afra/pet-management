@@ -3,7 +3,7 @@ This is a group project focused on building a pet management system for an anima
 
 The goal is to make the adoption process easier by allowing users to view pets available for adoption and give up their own pets for rehoming.
 
-There are two accounts used by Scrum Master ( Ramtin-Am is the contributor one and is used for merging,                                                  ramtin is not added as a contributor and is used for normal                                                commits and pushes)
+There are two accounts used by Scrum Master ( "Ramtin-Am" is the contributor one and is used for merging,                                                  "ramtin" is not added as a contributor and is used for normal                                                commits and pushes)
 
 Also the account used by Najifa Tahsin is not among the contributors either but commits were made by her
 
